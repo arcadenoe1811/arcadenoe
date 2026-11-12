@@ -9,7 +9,7 @@ Sistema personal para registrar, buscar y consultar los cuellos de una tejedora 
 ## Requisitos
 
 - Node.js 20 o superior
-- Docker Desktop **en ejecución**
+- Docker Desktop **en ejecución** s
 
 ## Puesta en marcha
 
