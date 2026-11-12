@@ -1,0 +1,24 @@
+{
+  "name": "inventario-cuellos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Inventario personal de cuellos de tejedora industrial",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @inventario/web",
+    "build": "npm run build -w @inventario/web",
+    "preview": "npm run preview -w @inventario/web",
+    "db:iniciar": "supabase start",
+    "db:detener": "supabase stop",
+    "db:estado": "supabase status",
+    "db:reiniciar": "supabase db reset",
+    "db:compose": "docker compose up -d",
+    "db:compose:bajar": "docker compose down"
+  },
+  "devDependencies": {
+    "supabase": "^2.0.0"
+  }
+}

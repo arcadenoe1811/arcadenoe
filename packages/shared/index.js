@@ -1,0 +1,17 @@
+// Punto de entrada de @inventario/shared.
+// Este paquete no depende de React DOM: solo de @supabase/supabase-js.
+
+export { configurarCliente, obtenerCliente } from './api/cliente.js';
+export { ErrorNormalizado, normalizarError, verificarRespuesta } from './api/errores.js';
+
+export * from './cuellos/constantes.js';
+export * from './cuellos/validaciones.js';
+export * from './cuellos/campos.js';
+export * from './cuellos/columnas.js';
+export * from './cuellos/filtros.js';
+export * from './cuellos/api.js';
+
+export * from './colores/validaciones.js';
+export * from './colores/api.js';
+
+export * from './formato/index.js';
