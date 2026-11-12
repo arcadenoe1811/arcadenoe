@@ -116,7 +116,7 @@ export default function PaginaColores() {
               <code className="texto-suave">{color.hex ?? '—'}</code>
               <button
                 type="button"
-                className="boton boton-enlace"
+                className="boton boton-fantasma"
                 onClick={() => {
                   setFormulario({ id: color.id, nombre: color.nombre, hex: color.hex ?? '' });
                   setErrores({});
@@ -124,7 +124,7 @@ export default function PaginaColores() {
               >
                 Editar
               </button>
-              <button type="button" className="boton boton-enlace boton-enlace-peligro" onClick={() => borrar(color)}>
+              <button type="button" className="boton boton-fantasma boton-fantasma-peligro" onClick={() => borrar(color)}>
                 Eliminar
               </button>
             </li>

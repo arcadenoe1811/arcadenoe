@@ -1,0 +1,27 @@
+.tarjeta-ui {
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-grande);
+  box-shadow: var(--sombra);
+}
+.tarjeta-ui-sm {
+  padding: var(--espacio-3);
+}
+.tarjeta-ui-md {
+  padding: var(--espacio-4);
+}
+.tarjeta-ui-lg {
+  padding: var(--espacio-6);
+}
+@media (min-width: 640px) {
+  .tarjeta-ui-lg {
+    padding: var(--espacio-8);
+  }
+}
+.tarjeta-ui-hoverable {
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.tarjeta-ui-hoverable:hover {
+  box-shadow: var(--sombra-elevada);
+  transform: translateY(-1px);
+}

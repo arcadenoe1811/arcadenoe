@@ -1,0 +1,84 @@
+/* Mobile-first: la tarjeta ocupa todo el ancho con 1rem de margen lateral. */
+
+.acceso {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: var(--espacio-4);
+  background: linear-gradient(160deg, var(--color-fondo-acceso) 0%, var(--color-fondo-acceso-2) 100%);
+}
+
+.acceso-spinner {
+  color: #fff;
+}
+
+.acceso-tarjeta {
+  width: 100%;
+  border: 0;
+  box-shadow: var(--sombra-grande);
+}
+
+.acceso-encabezado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espacio-3);
+  margin-bottom: var(--espacio-6);
+  text-align: center;
+}
+.acceso-encabezado h1 {
+  margin: 0;
+  font-size: var(--texto-grande);
+}
+.acceso-logo {
+  border-radius: var(--radio-grande);
+}
+
+.acceso-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-4);
+}
+.acceso-formulario .boton {
+  margin-top: var(--espacio-2);
+  padding: 0.75rem;
+}
+
+.boton-ver-contrasena {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--objetivo-tactil);
+  height: var(--objetivo-tactil);
+  background: none;
+  border: 0;
+  border-radius: var(--radio);
+  color: var(--color-texto-suave);
+  cursor: pointer;
+}
+.boton-ver-contrasena:hover {
+  color: var(--color-texto);
+}
+
+/* Tablet y escritorio: tarjeta centrada de 420px */
+@media (min-width: 640px) {
+  .acceso-tarjeta {
+    max-width: 420px;
+  }
+  .acceso-encabezado h1 {
+    font-size: var(--texto-titulo);
+  }
+}
+
+/* Escritorio: fondo decorativo sutil */
+@media (min-width: 1024px) {
+  .acceso {
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.08) 0, transparent 35%),
+      radial-gradient(circle at 85% 80%, rgba(255, 255, 255, 0.06) 0, transparent 40%),
+      repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0 2px, transparent 2px 14px),
+      linear-gradient(160deg, var(--color-fondo-acceso) 0%, var(--color-fondo-acceso-2) 100%);
+  }
+}

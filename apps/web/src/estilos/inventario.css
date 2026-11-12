@@ -1,131 +1,6 @@
-/* Estilos globales. Los valores vienen de theme.js como var(--...). */
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  margin: 0;
-  background: var(--color-fondo);
-  color: var(--color-texto);
-  font-family: var(--fuente-base);
-  font-size: var(--texto-base);
-  line-height: 1.5;
-}
-
-h1,
-h2,
-h3 {
-  margin: 0 0 var(--espacio-3);
-  line-height: 1.25;
-}
-h1 {
-  font-size: var(--texto-titulo);
-}
-h2 {
-  font-size: 1rem;
-}
-h3 {
-  font-size: var(--texto-pequeno);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--color-texto-suave);
-}
-
-a {
-  color: var(--color-primario);
-}
-
-code {
-  font-family: var(--fuente-mono);
-  font-size: 0.9em;
-}
-
-:focus-visible {
-  outline: 2px solid var(--color-primario);
-  outline-offset: 2px;
-}
-
-.solo-lector {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-
-.texto-suave {
-  color: var(--color-texto-suave);
-}
-.texto-pequeno {
-  font-size: var(--texto-pequeno);
-}
+/* Estilos de las pantallas del inventario (busqueda, ficha, formulario, colores). */
 
 /* ---------- Estructura ---------- */
-
-.contenedor {
-  width: 100%;
-  max-width: var(--ancho-maximo);
-  margin: 0 auto;
-  padding: 0 var(--espacio-4);
-}
-
-.principal {
-  padding-top: var(--espacio-6);
-  padding-bottom: var(--espacio-8);
-}
-
-.encabezado {
-  background: var(--color-superficie);
-  border-bottom: 1px solid var(--color-borde);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.encabezado-contenido {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--espacio-4);
-  min-height: 60px;
-  flex-wrap: wrap;
-}
-
-.marca {
-  display: flex;
-  align-items: center;
-  gap: var(--espacio-2);
-  font-weight: 700;
-  color: var(--color-texto);
-  text-decoration: none;
-}
-
-.navegacion {
-  display: flex;
-  align-items: center;
-  gap: var(--espacio-4);
-}
-
-.navegacion a:not(.boton) {
-  color: var(--color-texto-suave);
-  text-decoration: none;
-  font-weight: 500;
-  padding: var(--espacio-1) 0;
-  border-bottom: 2px solid transparent;
-}
-
-.navegacion a:not(.boton).active {
-  color: var(--color-texto);
-  border-bottom-color: var(--color-primario);
-}
 
 .migas {
   margin-bottom: var(--espacio-4);
@@ -133,81 +8,12 @@ code {
 .migas a {
   text-decoration: none;
 }
-
-/* ---------- Botones ---------- */
-
-.boton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--espacio-2);
-  min-height: 38px;
-  padding: 0 var(--espacio-4);
-  border: 1px solid transparent;
-  border-radius: var(--radio);
-  font: inherit;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.boton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.boton-primario {
-  background: var(--color-primario);
-  color: #fff;
-}
-.boton-primario:hover:not(:disabled) {
-  background: var(--color-primario-hover);
-}
-
-.boton-secundario {
-  background: var(--color-superficie);
-  color: var(--color-texto);
-  border-color: var(--color-borde-fuerte);
-}
-.boton-secundario:hover:not(:disabled) {
-  background: var(--color-superficie-suave);
-}
-
-.boton-enlace {
-  background: none;
-  color: var(--color-primario);
-  padding: 0 var(--espacio-2);
-  min-height: 32px;
-  font-weight: 500;
-}
-.migas .boton-enlace {
+.migas .boton-fantasma {
   padding: 0;
-}
-.boton-enlace-peligro {
-  color: var(--color-peligro);
-}
-
-.boton-icono {
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio);
-  background: var(--color-superficie);
-  color: var(--color-texto-suave);
-  cursor: pointer;
-  font: inherit;
-}
-.boton-icono:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-.boton-icono-peligro:hover {
-  color: var(--color-peligro);
-  border-color: var(--color-peligro);
 }
 
 /* ---------- Avisos y estados ---------- */
+
 
 .aviso {
   display: flex;
@@ -245,26 +51,18 @@ code {
   color: var(--color-texto-suave);
   padding: var(--espacio-6) 0;
 }
-.cargando-punto {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--color-primario);
-  animation: latido 1s ease-in-out infinite;
-}
-@keyframes latido {
-  50% {
-    opacity: 0.25;
-  }
-}
 
 .vacio {
+  display: grid;
+  justify-items: center;
+  gap: var(--espacio-4);
   text-align: center;
   padding: var(--espacio-8) var(--espacio-4);
   color: var(--color-texto-suave);
 }
 
 /* ---------- Busqueda ---------- */
+
 
 .panel-busqueda {
   margin-bottom: var(--espacio-4);
@@ -394,6 +192,7 @@ code {
 
 /* ---------- Imagen ---------- */
 
+
 .imagen-cuello {
   display: block;
   width: 100%;
@@ -427,6 +226,7 @@ code {
 }
 
 /* ---------- Ficha ---------- */
+
 
 .ficha-encabezado {
   display: flex;
@@ -518,6 +318,7 @@ code {
 }
 
 /* ---------- Formularios ---------- */
+
 
 .formulario {
   max-width: 820px;
@@ -642,6 +443,7 @@ code {
 
 /* ---------- Catalogo de colores ---------- */
 
+
 .pagina-colores {
   max-width: 720px;
 }
@@ -693,6 +495,7 @@ code {
 }
 
 /* ---------- Pantallas pequenas ---------- */
+
 
 @media (max-width: 720px) {
   .ficha-cuerpo {

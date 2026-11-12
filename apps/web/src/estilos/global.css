@@ -1,0 +1,128 @@
+/* Reset minimo + estilos base (mobile-first). */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--fuente-base);
+  font-size: var(--texto-base);
+  color: var(--color-texto);
+  background: var(--color-fondo);
+  line-height: 1.5;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* En movil las entradas van a 16px como minimo para evitar el zoom de iOS */
+@media (max-width: 639px) {
+  input,
+  textarea,
+  select {
+    font-size: var(--texto-entrada-movil);
+  }
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 var(--espacio-3);
+  line-height: 1.25;
+}
+h1 {
+  font-size: var(--texto-grande);
+}
+h2 {
+  font-size: 1rem;
+}
+h3 {
+  font-size: var(--texto-pequeno);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-texto-suave);
+}
+@media (min-width: 640px) {
+  h1 {
+    font-size: var(--texto-titulo);
+  }
+}
+
+a {
+  color: var(--color-primario);
+}
+
+code {
+  font-family: var(--fuente-mono);
+  font-size: 0.9em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
+}
+
+/* ---------- Utilidades ---------- */
+
+.contenedor {
+  width: 100%;
+  max-width: var(--ancho-maximo);
+  margin: 0 auto;
+  padding: 0 var(--espacio-4);
+}
+@media (min-width: 1024px) {
+  .contenedor {
+    padding: 0 var(--espacio-8);
+  }
+}
+
+.solo-lector {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.texto-suave {
+  color: var(--color-texto-suave);
+}
+.texto-pequeno {
+  font-size: var(--texto-pequeno);
+}
+
+.solo-mobile {
+  display: block;
+}
+.solo-desktop {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .solo-mobile {
+    display: none;
+  }
+  .solo-desktop {
+    display: block;
+  }
+}

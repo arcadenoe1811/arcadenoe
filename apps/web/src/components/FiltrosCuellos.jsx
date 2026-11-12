@@ -28,7 +28,7 @@ export default function FiltrosCuellos({ filtros, alCambiar, alLimpiar, hayFiltr
           <CampoFormulario key={descriptor.nombre} descriptor={descriptor} valor={filtros[descriptor.nombre]} alCambiar={alCambiar} />
         ))}
         {hayFiltros && (
-          <button type="button" className="boton boton-enlace" onClick={alLimpiar}>
+          <button type="button" className="boton boton-fantasma" onClick={alLimpiar}>
             Limpiar filtros
           </button>
         )}

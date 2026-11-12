@@ -1,41 +1,42 @@
-import { NavLink, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import RutaProtegida from './components/RutaProtegida.jsx';
+import LayoutPrincipal from './components/LayoutPrincipal.jsx';
+import InicioSesion from './pages/InicioSesion.jsx';
 import PaginaInicio from './pages/PaginaInicio.jsx';
 import PaginaFicha from './pages/PaginaFicha.jsx';
 import PaginaFormulario from './pages/PaginaFormulario.jsx';
 import PaginaColores from './pages/PaginaColores.jsx';
-import PaginaNoEncontrada from './pages/PaginaNoEncontrada.jsx';
 
+/**
+ * Rutas:
+ *   /login                 -> InicioSesion (publica)
+ *   /                      -> busqueda e inventario      (protegida)
+ *   /cuellos/nuevo         -> alta de cuello             (protegida)
+ *   /cuellos/:id           -> ficha del cuello           (protegida)
+ *   /cuellos/:id/editar    -> edicion del cuello         (protegida)
+ *   /colores               -> catalogo de colores        (protegida)
+ *   *                      -> redirige a /
+ */
 export default function App() {
   return (
-    <>
-      <header className="encabezado">
-        <div className="contenedor encabezado-contenido">
-          <NavLink to="/" className="marca" end>
-            <img src="/icono.svg" alt="" width="28" height="28" />
-            Inventario de cuellos
-          </NavLink>
-          <nav className="navegacion">
-            <NavLink to="/" end>
-              Buscar
-            </NavLink>
-            <NavLink to="/colores">Colores</NavLink>
-            <NavLink to="/cuellos/nuevo" className="boton boton-primario">
-              + Nuevo cuello
-            </NavLink>
-          </nav>
-        </div>
-      </header>
+    <Routes>
+      <Route path="/login" element={<InicioSesion />} />
 
-      <main className="contenedor principal">
-        <Routes>
-          <Route path="/" element={<PaginaInicio />} />
-          <Route path="/cuellos/nuevo" element={<PaginaFormulario />} />
-          <Route path="/cuellos/:id" element={<PaginaFicha />} />
-          <Route path="/cuellos/:id/editar" element={<PaginaFormulario />} />
-          <Route path="/colores" element={<PaginaColores />} />
-          <Route path="*" element={<PaginaNoEncontrada />} />
-        </Routes>
-      </main>
-    </>
+      <Route
+        element={
+          <RutaProtegida>
+            <LayoutPrincipal />
+          </RutaProtegida>
+        }
+      >
+        <Route index element={<PaginaInicio />} />
+        <Route path="cuellos/nuevo" element={<PaginaFormulario />} />
+        <Route path="cuellos/:id" element={<PaginaFicha />} />
+        <Route path="cuellos/:id/editar" element={<PaginaFormulario />} />
+        <Route path="colores" element={<PaginaColores />} />
+      </Route>
+
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }

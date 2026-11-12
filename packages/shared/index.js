@@ -4,6 +4,8 @@
 export { configurarCliente, obtenerCliente } from './api/cliente.js';
 export { ErrorNormalizado, normalizarError, verificarRespuesta } from './api/errores.js';
 
+export * from './auth/sesion.js';
+
 export * from './cuellos/constantes.js';
 export * from './cuellos/validaciones.js';
 export * from './cuellos/campos.js';

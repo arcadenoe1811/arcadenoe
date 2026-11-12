@@ -1,7 +1,7 @@
 # Alternativa minima a `npx supabase start` (que es la opcion recomendada).
-# Levanta solo lo que la app necesita: el PostgreSQL de Supabase + PostgREST
-# detras de un proxy que imita la ruta /rest/v1 de Supabase.
-# Studio y Auth (GoTrue) vienen con la CLI (ver README).
+# Levanta lo que la app necesita: el PostgreSQL de Supabase, PostgREST,
+# GoTrue (Auth) y un proxy en :54321 que imita las rutas /rest/v1 y
+# /auth/v1 de Supabase. Studio viene con la CLI (ver README).
 #
 # Las migraciones solo se aplican la primera vez (volumen vacio).
 # Para reaplicarlas: docker compose down -v && docker compose up -d
@@ -18,7 +18,8 @@ services:
       JWT_EXP: 3600
     volumes:
       - ./supabase/docker/roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:ro
-      - ./supabase/migrations/00001_esquema_inicial.sql:/docker-entrypoint-initdb.d/migrations/90-esquema-inicial.sql:ro
+      - ./supabase/migrations/00001_esquema_inicial.sql:/docker-entrypoint-initdb.d/migrations/90-00001.sql:ro
+      - ./supabase/migrations/00002_acceso_autenticado.sql:/docker-entrypoint-initdb.d/migrations/90-00002.sql:ro
       - ./supabase/seed.sql:/docker-entrypoint-initdb.d/migrations/99-seed.sql:ro
       - datos-db:/var/lib/postgresql/data
     healthcheck:
@@ -41,11 +42,52 @@ services:
       PGRST_JWT_SECRET: ${JWT_SECRET}
       PGRST_DB_MAX_ROWS: 1000
 
+  auth:
+    image: supabase/gotrue:v2.177.0
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: http://localhost:54321
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@db:5432/postgres
+      GOTRUE_SITE_URL: http://localhost:5173
+      GOTRUE_URI_ALLOW_LIST: http://localhost:5173,http://127.0.0.1:5173
+      GOTRUE_DISABLE_SIGNUP: "true"
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_MAILER_AUTOCONFIRM: "true"
+      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+
+  # Crea el usuario unico cuando GoTrue ya creo sus tablas (una sola vez).
+  semilla-usuario:
+    image: supabase/postgres:15.8.1.060
+    restart: "no"
+    depends_on:
+      - auth
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./supabase/seed_usuario.sql:/semilla/seed_usuario.sql:ro
+    entrypoint: ["sh", "-c"]
+    command:
+      - >
+        until psql -h db -U postgres -tAc "select to_regclass('auth.identities')" | grep -q identities;
+        do echo "esperando a GoTrue..."; sleep 2; done;
+        psql -h db -U postgres -v ON_ERROR_STOP=1 -f /semilla/seed_usuario.sql
+
   api:
     image: nginx:1.27-alpine
     restart: unless-stopped
     depends_on:
       - rest
+      - auth
     ports:
       - "54321:80"
     volumes:

@@ -1,0 +1,35 @@
+.spinner {
+  display: inline-block;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: spinner-giro 0.7s linear infinite;
+  vertical-align: middle;
+}
+.spinner-sm {
+  width: 1em;
+  height: 1em;
+}
+.spinner-md {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.spinner-lg {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-width: 3px;
+  color: var(--color-primario);
+}
+
+@keyframes spinner-giro {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 2s;
+  }
+}

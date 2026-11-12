@@ -62,7 +62,7 @@ export default function PaginaFicha() {
       <nav className="migas">
         <button
           type="button"
-          className="boton boton-enlace"
+          className="boton boton-fantasma"
           // vuelve a la busqueda anterior (con sus filtros) si se llego desde la app
           onClick={() => (window.history.state?.idx > 0 ? navegar(-1) : navegar('/'))}
         >

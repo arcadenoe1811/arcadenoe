@@ -1,0 +1,65 @@
+/*
+ * Tokens de diseno. Unica fuente de colores, espacios, tipografia y forma.
+ * Todo el CSS usa var(--...). Desde JS se leen con leerToken() de theme.js.
+ */
+:root {
+  /* Colores */
+  --color-fondo: #f6f7f9;
+  --color-superficie: #ffffff;
+  --color-superficie-suave: #f0f2f5;
+  --color-borde: #dde1e7;
+  --color-borde-fuerte: #c3c9d2;
+  --color-texto: #1d2430;
+  --color-texto-suave: #5b6575;
+  --color-primario: #2f5d8a;
+  --color-primario-hover: #244a6e;
+  --color-primario-suave: #e6eef6;
+  --color-peligro: #b3261e;
+  --color-peligro-hover: #8f1e18;
+  --color-peligro-suave: #fbeceb;
+  --color-exito: #1f7a4d;
+  --color-exito-suave: #e7f4ed;
+  --color-fondo-acceso: #1b2a3a;
+  --color-fondo-acceso-2: #2f5d8a;
+
+  /* Colores por tipo de cuello */
+  --tipo-liso: #5b6575;
+  --tipo-tubular: #2f5d8a;
+  --tipo-gaspeado: #8a4f2f;
+  --tipo-otro: #6b4f8a;
+
+  /* Tipografia */
+  --fuente-base: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fuente-mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --texto-pequeno: 0.8125rem;
+  --texto-base: 0.9375rem;
+  --texto-grande: 1.25rem;
+  --texto-titulo: 1.625rem;
+  --texto-entrada-movil: 16px; /* minimo para que iOS no haga zoom */
+
+  /* Espaciado */
+  --espacio-1: 0.25rem;
+  --espacio-2: 0.5rem;
+  --espacio-3: 0.75rem;
+  --espacio-4: 1rem;
+  --espacio-6: 1.5rem;
+  --espacio-8: 2rem;
+
+  /* Forma y sombras */
+  --radio-pequeno: 6px;
+  --radio: 8px;
+  --radio-grande: 12px;
+  --sombra: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.08);
+  --sombra-elevada: 0 4px 12px rgba(16, 24, 40, 0.12);
+  --sombra-grande: 0 12px 32px rgba(16, 24, 40, 0.18);
+
+  /* Medidas */
+  --ancho-maximo: 1200px;
+  --altura-encabezado: 60px;
+  --objetivo-tactil: 44px; /* tamano minimo de toque en movil */
+
+  /* Breakpoints (solo referencia para JS; las media queries usan los valores literales) */
+  --bp-sm: 640px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+}

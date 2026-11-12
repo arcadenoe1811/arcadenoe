@@ -1,0 +1,123 @@
+/* Mobile-first: toque minimo de 44px; en pantallas grandes se compacta. */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-2);
+  min-height: var(--objetivo-tactil);
+  padding: 0 var(--espacio-4);
+  border: 1px solid transparent;
+  border-radius: var(--radio);
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.boton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Tamanos */
+.boton-sm {
+  padding: 0 var(--espacio-3);
+  font-size: var(--texto-pequeno);
+}
+.boton-lg {
+  padding: var(--espacio-3) var(--espacio-6);
+  font-size: 1rem;
+}
+.boton-ancho-completo {
+  width: 100%;
+}
+
+/* Variantes */
+.boton-primario {
+  background: var(--color-primario);
+  color: #fff;
+}
+.boton-primario:hover:not(:disabled) {
+  background: var(--color-primario-hover);
+}
+
+.boton-secundario {
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  border-color: var(--color-borde-fuerte);
+}
+.boton-secundario:hover:not(:disabled) {
+  background: var(--color-superficie-suave);
+}
+
+.boton-peligro {
+  background: var(--color-peligro);
+  color: #fff;
+}
+.boton-peligro:hover:not(:disabled) {
+  background: var(--color-peligro-hover);
+}
+
+.boton-fantasma {
+  background: transparent;
+  color: var(--color-primario);
+  padding: 0 var(--espacio-2);
+  font-weight: 500;
+}
+.boton-fantasma:hover:not(:disabled) {
+  background: var(--color-primario-suave);
+}
+.boton-fantasma-peligro {
+  color: var(--color-peligro);
+}
+.boton-fantasma-peligro:hover:not(:disabled) {
+  background: var(--color-peligro-suave);
+}
+
+/* Boton cuadrado de icono */
+.boton-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--objetivo-tactil);
+  height: var(--objetivo-tactil);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+  color: var(--color-texto-suave);
+  cursor: pointer;
+}
+.boton-icono:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.boton-icono-peligro:hover {
+  color: var(--color-peligro);
+  border-color: var(--color-peligro);
+}
+
+/* En movil los botones principales ocupan todo el ancho */
+@media (max-width: 639px) {
+  .boton-primario:not(.boton-compacto) {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .boton {
+    min-height: 38px;
+  }
+  .boton-sm {
+    min-height: 32px;
+  }
+  .boton-lg {
+    min-height: 46px;
+  }
+  .boton-icono {
+    width: 34px;
+    height: 34px;
+  }
+}

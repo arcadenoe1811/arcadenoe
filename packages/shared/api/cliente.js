@@ -17,7 +17,8 @@ export function configurarCliente({ url, llaveAnonima }) {
     });
   }
   cliente = createClient(url, llaveAnonima, {
-    auth: { persistSession: false, autoRefreshToken: false },
+    // La sesion se guarda en el navegador y se renueva sola: sobrevive a recargas.
+    auth: { persistSession: true, autoRefreshToken: true, storageKey: 'inventario-cuellos-sesion' },
   });
   return cliente;
 }
