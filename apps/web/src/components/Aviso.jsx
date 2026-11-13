@@ -7,5 +7,5 @@ export default function Aviso({ tipo = 'info', children, accion = null }) {
       <div>{children}</div>
       {accion}
     </div>
-  );
+  )
 }

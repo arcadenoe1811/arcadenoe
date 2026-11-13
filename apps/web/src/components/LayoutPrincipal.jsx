@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { usarAuth } from '../hooks/usarAuth.js';
-import { IconoCerrar, IconoMenu, IconoSalir } from './Iconos.jsx';
-import Spinner from './ui/Spinner.jsx';
-import './LayoutPrincipal.css';
+import { useCallback, useEffect, useState } from 'react'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth.js'
+import { IconoCerrar, IconoMenu, IconoSalir } from './Iconos.jsx'
+import Spinner from './ui/Spinner.jsx'
+import './LayoutPrincipal.css'
 
 const ENLACES = [
   { a: '/', texto: 'Buscar', fin: true },
   { a: '/colores', texto: 'Colores' },
-];
+]
 
 /**
  * Layout de las pantallas protegidas: barra superior fija + contenido.
@@ -16,38 +16,48 @@ const ENLACES = [
  * "Cerrar sesion" visibles.
  */
 export default function LayoutPrincipal() {
-  const { usuario, cerrarSesion } = usarAuth();
-  const navegar = useNavigate();
-  const ubicacion = useLocation();
-  const [menuAbierto, setMenuAbierto] = useState(false);
-  const [saliendo, setSaliendo] = useState(false);
-
-  // Cerrar el menu al cambiar de pantalla
-  useEffect(() => setMenuAbierto(false), [ubicacion.pathname]);
+  const { usuario, cerrarSesion } = useAuth()
+  const navegar = useNavigate()
+  const ubicacion = useLocation()
+  // El menu se abre "para" una ruta: al navegar a otra queda cerrado solo,
+  // sin un efecto que haga setState.
+  const [rutaMenu, setRutaMenu] = useState(/** @type {string|null} */ (null))
+  const menuAbierto = rutaMenu === ubicacion.pathname
+  const cerrarMenu = useCallback(() => setRutaMenu(null), [])
+  const [saliendo, setSaliendo] = useState(false)
 
   // Cerrar el menu con Escape
   useEffect(() => {
-    if (!menuAbierto) return undefined;
-    const alPresionar = (evento) => evento.key === 'Escape' && setMenuAbierto(false);
-    document.addEventListener('keydown', alPresionar);
-    return () => document.removeEventListener('keydown', alPresionar);
-  }, [menuAbierto]);
+    if (!menuAbierto) return undefined
+    const alPresionar = (evento) => evento.key === 'Escape' && cerrarMenu()
+    document.addEventListener('keydown', alPresionar)
+    return () => document.removeEventListener('keydown', alPresionar)
+  }, [menuAbierto, cerrarMenu])
 
   const salir = async () => {
-    setSaliendo(true);
-    await cerrarSesion();
+    setSaliendo(true)
+    await cerrarSesion()
     // Al perder la sesion RutaProtegida tambien redirige; esto lo hace explicito.
-    navegar('/login', { replace: true });
-  };
+    navegar('/login', { replace: true })
+  }
 
-  const nombre = usuario?.user_metadata?.nombre ?? usuario?.email ?? '';
+  const nombre = usuario?.user_metadata?.nombre ?? usuario?.email ?? ''
 
   const botonSalir = (
-    <button type="button" className="boton boton-secundario boton-sm" onClick={salir} disabled={saliendo}>
-      {saliendo ? <Spinner tamano="sm" etiqueta="Cerrando sesión" /> : <IconoSalir width="16" height="16" />}
+    <button
+      type="button"
+      className="boton boton-secundario boton-sm"
+      onClick={salir}
+      disabled={saliendo}
+    >
+      {saliendo ? (
+        <Spinner tamano="sm" etiqueta="Cerrando sesión" />
+      ) : (
+        <IconoSalir width="16" height="16" />
+      )}
       Cerrar sesión
     </button>
-  );
+  )
 
   return (
     <div className="layout">
@@ -62,11 +72,19 @@ export default function LayoutPrincipal() {
           {/* Escritorio */}
           <nav className="navegacion-escritorio" aria-label="Principal">
             {ENLACES.map((enlace) => (
-              <NavLink key={enlace.a} to={enlace.a} end={enlace.fin} className="enlace-navegacion">
+              <NavLink
+                key={enlace.a}
+                to={enlace.a}
+                end={enlace.fin}
+                className="enlace-navegacion"
+              >
                 {enlace.texto}
               </NavLink>
             ))}
-            <NavLink to="/cuellos/nuevo" className="boton boton-primario boton-sm boton-compacto">
+            <NavLink
+              to="/cuellos/nuevo"
+              className="boton boton-primario boton-sm boton-compacto"
+            >
               + Nuevo cuello
             </NavLink>
             <span className="separador" aria-hidden="true" />
@@ -83,9 +101,13 @@ export default function LayoutPrincipal() {
             aria-expanded={menuAbierto}
             aria-controls="menu-movil"
             aria-label={menuAbierto ? 'Cerrar menú' : 'Abrir menú'}
-            onClick={() => setMenuAbierto((abierto) => !abierto)}
+            onClick={() => setRutaMenu(menuAbierto ? null : ubicacion.pathname)}
           >
-            {menuAbierto ? <IconoCerrar width="24" height="24" /> : <IconoMenu width="24" height="24" />}
+            {menuAbierto ? (
+              <IconoCerrar width="24" height="24" />
+            ) : (
+              <IconoMenu width="24" height="24" />
+            )}
           </button>
         </div>
 
@@ -93,7 +115,12 @@ export default function LayoutPrincipal() {
           <nav id="menu-movil" className="menu-movil" aria-label="Principal">
             <div className="contenedor menu-movil-contenido">
               {ENLACES.map((enlace) => (
-                <NavLink key={enlace.a} to={enlace.a} end={enlace.fin} className="enlace-menu">
+                <NavLink
+                  key={enlace.a}
+                  to={enlace.a}
+                  end={enlace.fin}
+                  className="enlace-menu"
+                >
                   {enlace.texto}
                 </NavLink>
               ))}
@@ -109,11 +136,13 @@ export default function LayoutPrincipal() {
         )}
       </header>
 
-      {menuAbierto && <div className="velo-menu" onClick={() => setMenuAbierto(false)} aria-hidden="true" />}
+      {menuAbierto && (
+        <div className="velo-menu" onClick={cerrarMenu} aria-hidden="true" />
+      )}
 
       <main className="contenedor principal">
         <Outlet />
       </main>
     </div>
-  );
+  )
 }

@@ -15,10 +15,24 @@
     "db:detener": "supabase stop",
     "db:estado": "supabase status",
     "db:reiniciar": "supabase db reset",
-    "db:compose": "docker compose up -d",
-    "db:compose:bajar": "docker compose down"
+    "lint": "npm run lint --workspaces",
+    "format:check": "prettier --check \"**/*.{js,jsx,mjs,css,json,md}\" --ignore-path .gitignore --ignore-path .prettierignore",
+    "format": "prettier --write \"**/*.{js,jsx,mjs,css,json,md}\" --ignore-path .gitignore --ignore-path .prettierignore",
+    "test": "npm run test --workspaces",
+    "ci": "npm run lint && npm run format:check && npm run build --workspace=apps/web && npm run test --workspaces -- --run",
+    "verificar": "bash scripts/verificar.sh",
+    "docker:iniciar": "docker compose up -d --build",
+    "docker:detener": "docker compose down",
+    "docker:estado": "docker compose ps",
+    "docker:logs": "docker compose logs -f"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1",
     "supabase": "^2.0.0"
   }
 }

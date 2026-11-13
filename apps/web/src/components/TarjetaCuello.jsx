@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
-import { formatearMedidas } from '@inventario/shared';
-import ImagenCuello from './ImagenCuello.jsx';
-import EtiquetaTipo from './EtiquetaTipo.jsx';
+import { Link } from 'react-router-dom'
+import { formatearMedidas } from '@inventario/shared'
+import ImagenCuello from './ImagenCuello.jsx'
+import EtiquetaTipo from './EtiquetaTipo.jsx'
 
 export default function TarjetaCuello({ cuello }) {
   return (
@@ -16,5 +16,5 @@ export default function TarjetaCuello({ cuello }) {
         <div className="tarjeta-medidas">Medidas: {formatearMedidas(cuello.medidas)}</div>
       </div>
     </Link>
-  );
+  )
 }

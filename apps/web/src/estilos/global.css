@@ -60,7 +60,7 @@ h3 {
   font-size: var(--texto-pequeno);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--color-texto-suave);
+  color: var(--color-texto-secundario);
 }
 @media (min-width: 640px) {
   h1 {
@@ -106,7 +106,7 @@ code {
 }
 
 .texto-suave {
-  color: var(--color-texto-suave);
+  color: var(--color-texto-secundario);
 }
 .texto-pequeno {
   font-size: var(--texto-pequeno);

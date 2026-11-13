@@ -2,7 +2,7 @@
  * Tipos del dominio (solo JSDoc, sin codigo en tiempo de ejecucion).
  */
 
-/** @typedef {'liso' | 'tubular' | 'gaspeado' | 'otro'} TipoCuello */
+/** Nombre de un tipo de la tabla tipos_cuello ('liso', 'tubular', ...). @typedef {string} TipoCuello */
 /** @typedef {'tubular' | 'cuerpo' | 'borde' | 'otro'} ZonaColor */
 
 /**
@@ -13,7 +13,7 @@
  * @property {string|null} nombre
  * @property {TipoCuello} tipo
  * @property {number|null} cantidad_hilos
- * @property {number|null} posicion_cuerpo
+ * @property {PosicionCuerpo[]} posiciones_cuerpo
  * @property {number|null} posicion_tubular
  * @property {number|null} pasadas_tubular
  * @property {number[]|null} medidas
@@ -25,12 +25,22 @@
  */
 
 /**
+ * Posicion de un color del cuerpo; `letra` marca que ese color forma letras.
+ * @typedef {Object} PosicionCuerpo
+ * @property {number|null} posicion
+ * @property {boolean} letra
+ */
+
+/**
  * Fila de la tabla `colores_cuello`.
  * @typedef {Object} ColorCuello
  * @property {string} [id]
  * @property {string} [cuello_id]
  * @property {ZonaColor} zona
+ * @property {number|null} [posicion]  color N de posiciones_cuerpo (desde 1)
  * @property {string} color
+ * @property {string|null} [codigo]    codigo del color segun el cono
+ * @property {string|null} [hex]       tono de referencia (#rrggbb)
  * @property {number|null} cantidad_hilos
  * @property {number|null} orden
  */
@@ -63,4 +73,4 @@
  * @property {Record<string, string>} errores   Mensaje por nombre de campo
  */
 
-export {};
+export {}

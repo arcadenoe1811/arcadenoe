@@ -4,7 +4,8 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--color-superficie);
+  background: var(--header-fondo);
+  border-bottom: 1px solid var(--header-borde);
   box-shadow: var(--sombra);
 }
 
@@ -23,7 +24,7 @@
   min-height: var(--objetivo-tactil);
   font-weight: 700;
   font-size: 1.0625rem;
-  color: var(--color-texto);
+  color: var(--header-texto);
   text-decoration: none;
 }
 .marca-larga {
@@ -40,11 +41,11 @@
   background: none;
   border: 0;
   border-radius: var(--radio);
-  color: var(--color-texto);
+  color: var(--header-texto);
   cursor: pointer;
 }
 .boton-menu:hover {
-  background: var(--color-superficie-suave);
+  background: var(--color-bosque-claro);
 }
 
 .navegacion-escritorio {
@@ -78,11 +79,11 @@
   text-decoration: none;
 }
 .enlace-menu:hover {
-  background: var(--color-superficie-suave);
+  background: var(--color-fondo-alt);
 }
 .enlace-menu.active {
   color: var(--color-primario);
-  background: var(--color-primario-suave);
+  background: var(--color-info-fondo);
 }
 .menu-movil-pie {
   display: flex;
@@ -98,11 +99,11 @@
   position: fixed;
   inset: 0;
   z-index: 90;
-  background: rgba(16, 24, 40, 0.25);
+  background: rgba(8, 42, 32, 0.3);
 }
 
 .usuario {
-  color: var(--color-texto-suave);
+  color: var(--color-texto-secundario);
   font-size: var(--texto-pequeno);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -141,24 +142,37 @@
   }
 
   .enlace-navegacion {
-    color: var(--color-texto-suave);
+    color: rgba(255, 255, 255, 0.75);
     font-weight: 500;
     text-decoration: none;
     padding: var(--espacio-1) 0;
     border-bottom: 2px solid transparent;
   }
   .enlace-navegacion:hover {
-    color: var(--color-texto);
+    color: var(--header-texto);
   }
   .enlace-navegacion.active {
-    color: var(--color-texto);
-    border-bottom-color: var(--color-primario);
+    color: var(--header-texto);
+    border-bottom-color: var(--color-ambar);
+  }
+
+  /* Sobre el header oscuro el CTA usa el ámbar de la paleta */
+  .navegacion-escritorio .boton-primario {
+    background: var(--color-alerta);
+    color: var(--color-alerta-texto);
+  }
+  .navegacion-escritorio .boton-primario:hover {
+    background: var(--color-alerta-hover);
+  }
+
+  .navegacion-escritorio .usuario {
+    color: rgba(255, 255, 255, 0.75);
   }
 
   .separador {
     width: 1px;
     height: 24px;
-    background: var(--color-borde);
+    background: rgba(255, 255, 255, 0.2);
   }
 
   .principal {

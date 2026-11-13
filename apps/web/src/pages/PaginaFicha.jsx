@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   DATOS_FICHA,
   agruparColoresPorZona,
@@ -7,55 +7,67 @@ import {
   formatearFecha,
   formatearZona,
   normalizarError,
-  obtenerCuello,
   reactivarCuello,
-} from '@inventario/shared';
-import { usarConsulta } from '../hooks/usarConsulta.js';
-import { usarCatalogoColores } from '../hooks/usarCatalogoColores.js';
-import ImagenCuello from '../components/ImagenCuello.jsx';
-import EtiquetaTipo from '../components/EtiquetaTipo.jsx';
-import MuestraColor from '../components/MuestraColor.jsx';
-import Cargando from '../components/Cargando.jsx';
-import Aviso from '../components/Aviso.jsx';
+} from '@inventario/shared'
+import { useCuello } from '../hooks/useCuello.js'
+import { useCatalogoColores } from '../hooks/useCatalogoColores.js'
+import ImagenCuello from '../components/ImagenCuello.jsx'
+import EtiquetaTipo from '../components/EtiquetaTipo.jsx'
+import MuestraColor from '../components/MuestraColor.jsx'
+import Cargando from '../components/Cargando.jsx'
+import Aviso from '../components/Aviso.jsx'
 
 export default function PaginaFicha() {
-  const { id } = useParams();
-  const navegar = useNavigate();
-  const { datos: cuello, cargando, error, recargar } = usarConsulta(() => obtenerCuello(id), [id]);
-  const { colores: catalogo } = usarCatalogoColores();
-  const [errorAccion, setErrorAccion] = useState(null);
-  const [procesando, setProcesando] = useState(false);
+  const { id } = useParams()
+  const navegar = useNavigate()
+  const { cuello, cargando, error, recargar } = useCuello(id)
+  const { colores: catalogo } = useCatalogoColores()
+  const [errorAccion, setErrorAccion] = useState(null)
+  const [procesando, setProcesando] = useState(false)
 
-  if (cargando && !cuello) return <Cargando />;
+  if (cargando && !cuello) return <Cargando />
   if (error && !cuello) {
     return (
-      <Aviso tipo="error" accion={<Link to="/" className="boton boton-secundario">Volver</Link>}>
+      <Aviso
+        tipo="error"
+        accion={
+          <Link to="/" className="boton boton-secundario">
+            Volver
+          </Link>
+        }
+      >
         {error.mensaje}
       </Aviso>
-    );
+    )
   }
 
-  const hexPorNombre = Object.fromEntries(catalogo.map((c) => [c.nombre, c.hex]));
-  const grupos = agruparColoresPorZona(cuello.colores);
+  const hexPorNombre = Object.fromEntries(catalogo.map((c) => [c.nombre, c.hex]))
+  const grupos = agruparColoresPorZona(cuello.colores)
 
   const cambiarEstado = async () => {
-    if (cuello.activo && !window.confirm(`¿Dar de baja el cuello “${cuello.codigo}”? Dejará de aparecer en la búsqueda.`)) return;
-    setProcesando(true);
-    setErrorAccion(null);
+    if (
+      cuello.activo &&
+      !window.confirm(
+        `¿Dar de baja el cuello “${cuello.codigo}”? Dejará de aparecer en la búsqueda.`,
+      )
+    )
+      return
+    setProcesando(true)
+    setErrorAccion(null)
     try {
       if (cuello.activo) {
-        await desactivarCuello(cuello.id);
-        navegar('/');
+        await desactivarCuello(cuello.id)
+        navegar('/')
       } else {
-        await reactivarCuello(cuello.id);
-        recargar();
+        await reactivarCuello(cuello.id)
+        recargar()
       }
     } catch (e) {
-      setErrorAccion(normalizarError(e));
+      setErrorAccion(normalizarError(e))
     } finally {
-      setProcesando(false);
+      setProcesando(false)
     }
-  };
+  }
 
   return (
     <article className="ficha">
@@ -70,7 +82,11 @@ export default function PaginaFicha() {
         </button>
       </nav>
 
-      {!cuello.activo && <Aviso tipo="info">Este cuello está dado de baja y no aparece en la búsqueda.</Aviso>}
+      {!cuello.activo && (
+        <Aviso tipo="info">
+          Este cuello está dado de baja y no aparece en la búsqueda.
+        </Aviso>
+      )}
       {errorAccion && <Aviso tipo="error">{errorAccion.mensaje}</Aviso>}
 
       <header className="ficha-encabezado">
@@ -83,7 +99,12 @@ export default function PaginaFicha() {
           <Link to={`/cuellos/${cuello.id}/editar`} className="boton boton-primario">
             Editar
           </Link>
-          <button type="button" className="boton boton-secundario" onClick={cambiarEstado} disabled={procesando}>
+          <button
+            type="button"
+            className="boton boton-secundario"
+            onClick={cambiarEstado}
+            disabled={procesando}
+          >
             {cuello.activo ? 'Dar de baja' : 'Reactivar'}
           </button>
         </div>
@@ -91,9 +112,18 @@ export default function PaginaFicha() {
 
       <div className="ficha-cuerpo">
         <div className="ficha-imagen">
-          <ImagenCuello url={cuello.imagen_url} alt={`Cuello ${cuello.codigo}`} tamano="grande" />
+          <ImagenCuello
+            url={cuello.imagen_url}
+            alt={`Cuello ${cuello.codigo}`}
+            tamano="grande"
+          />
           {cuello.imagen_url && (
-            <a href={cuello.imagen_url} target="_blank" rel="noreferrer" className="texto-pequeno">
+            <a
+              href={cuello.imagen_url}
+              target="_blank"
+              rel="noreferrer"
+              className="texto-pequeno"
+            >
               Abrir imagen original ↗
             </a>
           )}
@@ -123,11 +153,25 @@ export default function PaginaFicha() {
                   <ul>
                     {grupo.colores.map((color) => (
                       <li key={color.id}>
-                        <MuestraColor hex={hexPorNombre[color.color?.toLowerCase()]} />
+                        <MuestraColor
+                          hex={color.hex ?? hexPorNombre[color.color?.toLowerCase()]}
+                        />
+                        {color.posicion && (
+                          <span className="insignia-posicion">
+                            Color {color.posicion}
+                            {cuello.posiciones_cuerpo?.[color.posicion - 1]?.letra
+                              ? ' · letra'
+                              : ''}
+                          </span>
+                        )}
                         <span>{color.color}</span>
+                        {color.codigo && (
+                          <span className="codigo-cono">#{color.codigo}</span>
+                        )}
                         {color.cantidad_hilos !== null && (
                           <span className="texto-suave">
-                            {color.cantidad_hilos} {color.cantidad_hilos === 1 ? 'hilo' : 'hilos'}
+                            {color.cantidad_hilos}{' '}
+                            {color.cantidad_hilos === 1 ? 'hilo' : 'hilos'}
                           </span>
                         )}
                       </li>
@@ -140,7 +184,11 @@ export default function PaginaFicha() {
 
           <section className="tarjeta">
             <h2>Notas</h2>
-            {cuello.notas ? <p className="notas">{cuello.notas}</p> : <p className="texto-suave">Sin notas.</p>}
+            {cuello.notas ? (
+              <p className="notas">{cuello.notas}</p>
+            ) : (
+              <p className="texto-suave">Sin notas.</p>
+            )}
           </section>
 
           <p className="texto-pequeno texto-suave">
@@ -150,5 +198,5 @@ export default function PaginaFicha() {
         </div>
       </div>
     </article>
-  );
+  )
 }

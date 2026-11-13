@@ -1,7 +1,7 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { usarAuth } from '../hooks/usarAuth.js';
-import Spinner from './ui/Spinner.jsx';
-import './RutaProtegida.css';
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth.js'
+import Spinner from './ui/Spinner.jsx'
+import './RutaProtegida.css'
 
 /**
  * Wrapper de ruta que verifica autenticacion.
@@ -10,20 +10,20 @@ import './RutaProtegida.css';
  * - Con usuario -> children (o las rutas hijas)
  */
 export default function RutaProtegida({ children }) {
-  const { usuario, cargando } = usarAuth();
-  const ubicacion = useLocation();
+  const { usuario, cargando } = useAuth()
+  const ubicacion = useLocation()
 
   if (cargando) {
     return (
       <div className="pantalla-carga">
         <Spinner tamano="lg" etiqueta="Verificando sesión" />
       </div>
-    );
+    )
   }
 
   if (!usuario) {
-    return <Navigate to="/login" replace state={{ desde: ubicacion }} />;
+    return <Navigate to="/login" replace state={{ desde: ubicacion }} />
   }
 
-  return children ?? <Outlet />;
+  return children ?? <Outlet />
 }

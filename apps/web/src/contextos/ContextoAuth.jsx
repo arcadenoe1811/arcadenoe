@@ -1,11 +1,11 @@
-import { createContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useEffect, useMemo, useState } from 'react'
 import {
   cerrarSesion as cerrarSesionSupabase,
   escucharCambiosSesion,
   iniciarSesion as iniciarSesionSupabase,
   obtenerCliente,
   obtenerSesion,
-} from '@inventario/shared';
+} from '@inventario/shared'
 
 /**
  * @typedef {Object} ValorAuth
@@ -17,7 +17,7 @@ import {
  */
 
 /** @type {import('react').Context<ValorAuth|null>} */
-export const ContextoAuth = createContext(null);
+export const ContextoAuth = createContext(null)
 
 /**
  * Provider de autenticacion. Recupera la sesion guardada al arrancar y
@@ -25,41 +25,44 @@ export const ContextoAuth = createContext(null);
  * otra pestana) y expiracion del token.
  */
 export function ProveedorAuth({ children }) {
-  const [sesion, setSesion] = useState(/** @type {import('@supabase/supabase-js').Session|null} */ (null));
-  const [cargando, setCargando] = useState(true);
+  const [sesion, setSesion] = useState(
+    /** @type {import('@supabase/supabase-js').Session|null} */ (null),
+  )
+  const [cargando, setCargando] = useState(true)
 
   useEffect(() => {
-    const cliente = obtenerCliente();
-    let vigente = true;
+    const cliente = obtenerCliente()
+    let vigente = true
 
     obtenerSesion(cliente).then(({ sesion: guardada }) => {
-      if (!vigente) return;
-      setSesion(guardada);
-      setCargando(false);
-    });
+      if (!vigente) return
+      setSesion(guardada)
+      setCargando(false)
+    })
 
     const dejarDeEscuchar = escucharCambiosSesion(cliente, (nueva) => {
-      if (!vigente) return;
-      setSesion(nueva);
-      setCargando(false);
-    });
+      if (!vigente) return
+      setSesion(nueva)
+      setCargando(false)
+    })
 
     return () => {
-      vigente = false;
-      dejarDeEscuchar();
-    };
-  }, []);
+      vigente = false
+      dejarDeEscuchar()
+    }
+  }, [])
 
   const valor = useMemo(
     () => ({
       usuario: sesion?.user ?? null,
       sesion,
       cargando,
-      iniciarSesion: (email, contrasena) => iniciarSesionSupabase(obtenerCliente(), email, contrasena),
+      iniciarSesion: (email, contrasena) =>
+        iniciarSesionSupabase(obtenerCliente(), email, contrasena),
       cerrarSesion: () => cerrarSesionSupabase(obtenerCliente()),
     }),
     [sesion, cargando],
-  );
+  )
 
-  return <ContextoAuth.Provider value={valor}>{children}</ContextoAuth.Provider>;
+  return <ContextoAuth.Provider value={valor}>{children}</ContextoAuth.Provider>
 }

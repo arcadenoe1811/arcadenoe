@@ -8,12 +8,12 @@ export const breakpoints = {
   sm: 640,
   md: 768,
   lg: 1024,
-};
+}
 
 /**
- * Lee un token CSS, p. ej. leerToken('color-primario') -> '#2f5d8a'.
+ * Lee un token CSS, p. ej. leerToken('color-primario') -> '#0c3b2e'.
  * @param {string} nombre sin el prefijo --
  */
 export function leerToken(nombre) {
-  return getComputedStyle(document.documentElement).getPropertyValue(`--${nombre}`).trim();
+  return getComputedStyle(document.documentElement).getPropertyValue(`--${nombre}`).trim()
 }

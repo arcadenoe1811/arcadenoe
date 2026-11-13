@@ -1,5 +1,5 @@
-import Spinner from './Spinner.jsx';
-import './Boton.css';
+import Spinner from './Spinner.jsx'
+import './Boton.css'
 
 /**
  * Boton base. Las mismas clases (.boton, .boton-primario...) sirven para
@@ -36,12 +36,18 @@ export default function Boton({
     className,
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(' ')
 
   return (
-    <button type={type} className={clases} disabled={deshabilitado || cargando} aria-busy={cargando || undefined} {...resto}>
+    <button
+      type={type}
+      className={clases}
+      disabled={deshabilitado || cargando}
+      aria-busy={cargando || undefined}
+      {...resto}
+    >
       {cargando && <Spinner tamano="sm" etiqueta="Procesando" />}
       {children}
     </button>
-  );
+  )
 }
