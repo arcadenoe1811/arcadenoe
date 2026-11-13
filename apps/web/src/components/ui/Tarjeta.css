@@ -19,7 +19,9 @@
   }
 }
 .tarjeta-ui-hoverable {
-  transition: box-shadow 0.15s, transform 0.15s;
+  transition:
+    box-shadow 0.15s,
+    transform 0.15s;
 }
 .tarjeta-ui-hoverable:hover {
   box-shadow: var(--sombra-elevada);

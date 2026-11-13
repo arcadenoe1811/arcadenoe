@@ -1,5 +1,5 @@
-import { OPCIONES_TIPO } from './campos.js';
-import { LIMITES } from './constantes.js';
+import { OPCIONES_TIPO } from './campos.js'
+import { LIMITES } from './constantes.js'
 
 /**
  * Filtros de la pantalla de busqueda (ademas del termino de texto).
@@ -19,11 +19,11 @@ export const FILTROS_CUELLO = [
     minimo: LIMITES.medida.minimo,
     maximo: LIMITES.medida.maximo,
   },
-];
+]
 
 /** @returns {import('../tipos/index.js').FiltrosCuellos} */
 export function filtrosVacios() {
-  return { termino: '', tipo: '', medida: '' };
+  return { termino: '', tipo: '', medida: '' }
 }
 
 /**
@@ -31,11 +31,11 @@ export function filtrosVacios() {
  * @param {import('../tipos/index.js').FiltrosCuellos} filtros
  */
 export function normalizarFiltros(filtros = {}) {
-  const termino = String(filtros.termino ?? '').trim();
-  const tipo = filtros.tipo || null;
-  const medidaTexto = String(filtros.medida ?? '').trim();
-  const medida = /^\d+$/.test(medidaTexto) ? Number(medidaTexto) : null;
-  return { termino, tipo, medida };
+  const termino = String(filtros.termino ?? '').trim()
+  const tipo = filtros.tipo || null
+  const medidaTexto = String(filtros.medida ?? '').trim()
+  const medida = /^\d+$/.test(medidaTexto) ? Number(medidaTexto) : null
+  return { termino, tipo, medida }
 }
 
 /**
@@ -47,14 +47,14 @@ export function normalizarFiltros(filtros = {}) {
  */
 export function aplicarFiltros(consulta, { tipo, medida }) {
   /** @type {any} */
-  let q = consulta;
-  if (tipo) q = q.eq('tipo', tipo);
-  if (medida !== null && medida !== undefined) q = q.contains('medidas', [medida]);
-  return q;
+  let q = consulta
+  if (tipo) q = q.eq('tipo', tipo)
+  if (medida !== null && medida !== undefined) q = q.contains('medidas', [medida])
+  return q
 }
 
 /** Indica si hay algun filtro activo (para mostrar "limpiar filtros"). */
 export function hayFiltrosActivos(filtros = {}) {
-  const { termino, tipo, medida } = normalizarFiltros(filtros);
-  return Boolean(termino || tipo || medida !== null);
+  const { termino, tipo, medida } = normalizarFiltros(filtros)
+  return Boolean(termino || tipo || medida !== null)
 }

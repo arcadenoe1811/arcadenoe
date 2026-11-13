@@ -6,5 +6,5 @@ export default function MuestraColor({ hex }) {
       style={hex ? { background: hex } : undefined}
       aria-hidden="true"
     />
-  );
+  )
 }

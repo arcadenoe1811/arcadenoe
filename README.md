@@ -4,14 +4,33 @@ Sistema personal para registrar, buscar y consultar los cuellos de una tejedora 
 
 - **Frontend:** React + Vite (SPA), JavaScript con JSDoc
 - **Base de datos:** Supabase (PostgreSQL + PostgREST + Auth)
-- **Local:** Supabase CLI sobre Docker (o un `docker-compose.yml` mínimo)
+- **Local:** todo en Docker con `docker-compose.yml` (frontend + backend + BD), o Supabase CLI + `npm run dev`
 
 ## Requisitos
 
 - Node.js 20 o superior
-- Docker Desktop **en ejecución** s
+- Docker Desktop **en ejecución**
 
 ## Puesta en marcha
+
+### Opción A — Todo en Docker (frontend, backend y BD)
+
+```bash
+cp .env.example .env        # en Windows: copy .env.example .env
+npm run docker:iniciar      # = docker compose up -d --build
+```
+
+| Capa     | Servicio                   | URL / puerto           |
+| -------- | -------------------------- | ---------------------- |
+| Frontend | `web` (Vite + React)       | http://localhost:5173  |
+| Backend  | `api` → `rest` + `auth`    | http://localhost:54321 |
+| BD       | `db` (PostgreSQL Supabase) | `localhost:54322`      |
+
+El código se monta como volumen: los cambios en `apps/web` y `packages/shared` se recargan solos. Si cambias dependencias (`package.json`), reconstruye con `npm run docker:iniciar`. Detalles en [Alternativa: `docker-compose.yml`](#alternativa-docker-composeyml).
+
+> No uses la opción A y la B al mismo tiempo: comparten los puertos 54321, 54322 y 5173.
+
+### Opción B — Supabase CLI + Vite en tu máquina
 
 ```bash
 # 1. Dependencias (incluye la CLI de Supabase como dependencia de desarrollo)
@@ -37,10 +56,10 @@ npm run dev                 # http://localhost:5173
 
 Es un sistema de **un solo usuario**: no hay registro ni recuperación de contraseña. Todas las pantallas exigen sesión; sin ella se redirige a `/login`. La sesión se guarda en el navegador y sobrevive a recargas.
 
-| Usuario de desarrollo | |
-| --- | --- |
-| Correo | `admin@inventario.local` |
-| Contraseña | `admin1234` |
+| Usuario de desarrollo |                          |
+| --------------------- | ------------------------ |
+| Correo                | `admin@inventario.local` |
+| Contraseña            | `admin1234`              |
 
 > ⚠️ **Esta contraseña es solo para desarrollo local. Cámbiala** en cualquier entorno que no sea tu máquina.
 
@@ -48,7 +67,7 @@ En desarrollo, el formulario se pre-llena con `VITE_DEFAULT_EMAIL` y `VITE_DEFAU
 
 ### Cambiar la contraseña
 
-Desde Supabase Studio (http://localhost:54323 → *Authentication* → *Users* → el usuario → *Reset password*), o por SQL:
+Desde Supabase Studio (http://localhost:54323 → _Authentication_ → _Users_ → el usuario → _Reset password_), o por SQL:
 
 ```sql
 update auth.users
@@ -58,27 +77,31 @@ where email = 'admin@inventario.local';
 
 Para cambiar también el correo, edita `supabase/seed_usuario.sql` antes del primer `supabase start` (o haz `npm run db:reiniciar`).
 
-| Servicio | URL |
-| --- | --- |
-| Web | http://localhost:5173 |
-| API (PostgREST) | http://localhost:54321 |
-| Supabase Studio | http://localhost:54323 |
-| PostgreSQL | `postgresql://postgres:postgres@localhost:54322/postgres` |
+| Servicio        | URL                                                       |
+| --------------- | --------------------------------------------------------- |
+| Web             | http://localhost:5173                                     |
+| API (PostgREST) | http://localhost:54321                                    |
+| Supabase Studio | http://localhost:54323                                    |
+| PostgreSQL      | `postgresql://postgres:postgres@localhost:54322/postgres` |
 
 ### Comandos útiles
 
-| Comando | Qué hace |
-| --- | --- |
-| `npm run dev` | Servidor de desarrollo de la web |
-| `npm run build` | Build de producción en `apps/web/dist` |
-| `npm run db:iniciar` | Levanta Supabase local |
-| `npm run db:detener` | Detiene Supabase local |
-| `npm run db:estado` | URLs y llaves locales |
-| `npm run db:reiniciar` | Borra la base, reaplica migraciones y semilla |
+| Comando                  | Qué hace                                      |
+| ------------------------ | --------------------------------------------- |
+| `npm run dev`            | Servidor de desarrollo de la web              |
+| `npm run build`          | Build de producción en `apps/web/dist`        |
+| `npm run db:iniciar`     | Levanta Supabase local                        |
+| `npm run db:detener`     | Detiene Supabase local                        |
+| `npm run db:estado`      | URLs y llaves locales                         |
+| `npm run db:reiniciar`   | Borra la base, reaplica migraciones y semilla |
+| `npm run docker:iniciar` | Opción A: construye y levanta web + API + BD  |
+| `npm run docker:detener` | Opción A: detiene el stack (conserva datos)   |
+| `npm run docker:estado`  | Opción A: estado de los contenedores          |
+| `npm run docker:logs`    | Opción A: logs en vivo                        |
 
 ### Alternativa: `docker-compose.yml`
 
-Si no quieres usar la CLI, `docker compose up -d` (o `npm run db:compose`) levanta PostgreSQL de Supabase, PostgREST, GoTrue (Auth) y un proxy en `:54321` que imita las rutas `/rest/v1` y `/auth/v1`. El servicio `semilla-usuario` espera a que GoTrue cree sus tablas y luego inserta el usuario. No incluye Studio. Usa `POSTGRES_PASSWORD` y `JWT_SECRET` del `.env`; la llave anónima debe ser un JWT con `role: anon` firmado con ese `JWT_SECRET` (los valores por defecto del `.env` ya son compatibles entre sí). Las migraciones se aplican solo con el volumen vacío: `docker compose down -v` para empezar de cero.
+`docker compose up -d --build` (o `npm run docker:iniciar`) levanta el frontend (`web`, servidor de Vite), PostgreSQL de Supabase, PostgREST, GoTrue (Auth) y un proxy en `:54321` que imita las rutas `/rest/v1` y `/auth/v1`. El proyecto se llama `inventario-cuellos` en Docker. El servicio `semilla-usuario` espera a que GoTrue cree sus tablas y luego inserta el usuario. No incluye Studio. Usa `POSTGRES_PASSWORD` y `JWT_SECRET` del `.env`; la llave anónima debe ser un JWT con `role: anon` firmado con ese `JWT_SECRET` (los valores por defecto del `.env` ya son compatibles entre sí). Las migraciones se aplican solo con el volumen vacío: `docker compose down -v` para empezar de cero.
 
 ## Estructura
 

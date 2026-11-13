@@ -1,11 +1,11 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
-import RutaProtegida from './components/RutaProtegida.jsx';
-import LayoutPrincipal from './components/LayoutPrincipal.jsx';
-import InicioSesion from './pages/InicioSesion.jsx';
-import PaginaInicio from './pages/PaginaInicio.jsx';
-import PaginaFicha from './pages/PaginaFicha.jsx';
-import PaginaFormulario from './pages/PaginaFormulario.jsx';
-import PaginaColores from './pages/PaginaColores.jsx';
+import { Navigate, Route, Routes } from 'react-router-dom'
+import RutaProtegida from './components/RutaProtegida.jsx'
+import LayoutPrincipal from './components/LayoutPrincipal.jsx'
+import InicioSesion from './pages/InicioSesion.jsx'
+import PaginaInicio from './pages/PaginaInicio.jsx'
+import PaginaFicha from './pages/PaginaFicha.jsx'
+import PaginaFormulario from './pages/PaginaFormulario.jsx'
+import PaginaColores from './pages/PaginaColores.jsx'
 
 /**
  * Rutas:
@@ -38,5 +38,5 @@ export default function App() {
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
-  );
+  )
 }

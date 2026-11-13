@@ -3,30 +3,139 @@
  * Todo el CSS usa var(--...). Desde JS se leen con leerToken() de theme.js.
  */
 :root {
-  /* Colores */
-  --color-fondo: #f6f7f9;
-  --color-superficie: #ffffff;
-  --color-superficie-suave: #f0f2f5;
-  --color-borde: #dde1e7;
-  --color-borde-fuerte: #c3c9d2;
-  --color-texto: #1d2430;
-  --color-texto-suave: #5b6575;
-  --color-primario: #2f5d8a;
-  --color-primario-hover: #244a6e;
-  --color-primario-suave: #e6eef6;
-  --color-peligro: #b3261e;
-  --color-peligro-hover: #8f1e18;
-  --color-peligro-suave: #fbeceb;
-  --color-exito: #1f7a4d;
-  --color-exito-suave: #e7f4ed;
-  --color-fondo-acceso: #1b2a3a;
-  --color-fondo-acceso-2: #2f5d8a;
+  /* ═══════════════════════════════════════════
+     PALETA PRINCIPAL (Colour Palette 07)
+     ═══════════════════════════════════════════ */
 
-  /* Colores por tipo de cuello */
-  --tipo-liso: #5b6575;
-  --tipo-tubular: #2f5d8a;
-  --tipo-gaspeado: #8a4f2f;
-  --tipo-otro: #6b4f8a;
+  /* Verde salvia — backgrounds suaves, estados de éxito, acentos naturales */
+  --color-salvia: #6d9773;
+  --color-salvia-claro: #8ab390;
+  --color-salvia-oscuro: #5a7e60;
+
+  /* Verde bosque — header, sidebar, elementos principales, botones primarios */
+  --color-bosque: #0c3b2e;
+  --color-bosque-claro: #1a5c47;
+  --color-bosque-oscuro: #082a20;
+
+  /* Dorado tierra — badges, etiquetas, acentos cálidos, bordes activos */
+  --color-tierra: #bb8a52;
+  --color-tierra-claro: #d4a672;
+  --color-tierra-oscuro: #9a6f3d;
+
+  /* Amarillo ámbar — alertas, highlights, llamadas a la acción secundarias */
+  --color-ambar: #ffba00;
+  --color-ambar-claro: #ffcc40;
+  --color-ambar-oscuro: #cc9500;
+
+  /* ═══════════════════════════════════════════
+     COLORES SEMÁNTICOS (derivados de la paleta)
+     ═══════════════════════════════════════════ */
+
+  /* Primario — acciones principales */
+  --color-primario: var(--color-bosque);
+  --color-primario-hover: var(--color-bosque-claro);
+  --color-primario-activo: var(--color-bosque-oscuro);
+  --color-primario-texto: #ffffff;
+
+  /* Secundario — acciones secundarias */
+  --color-secundario: var(--color-salvia);
+  --color-secundario-hover: var(--color-salvia-claro);
+  --color-secundario-activo: var(--color-salvia-oscuro);
+  --color-secundario-texto: #ffffff;
+
+  /* Acento — highlights, badges */
+  --color-acento: var(--color-tierra);
+  --color-acento-hover: var(--color-tierra-claro);
+  --color-acento-texto: #ffffff;
+
+  /* Alerta — notificaciones, warnings */
+  --color-alerta: var(--color-ambar);
+  --color-alerta-hover: var(--color-ambar-claro);
+  --color-alerta-texto: #1e293b;
+
+  /* ═══════════════════════════════════════════
+     SUPERFICIES Y TEXTO
+     ═══════════════════════════════════════════ */
+
+  /* Fondos */
+  --color-fondo: #f5f5f0; /* crema suave, armoniza con la paleta */
+  --color-fondo-alt: #eae8e0; /* fondo alternativo para secciones */
+  --color-superficie: #ffffff; /* tarjetas, modales */
+  --color-superficie-hover: #f9f8f5; /* hover en filas/tarjetas */
+  --color-superficie-elevada: #ffffff; /* elementos flotantes */
+
+  /* Texto */
+  --color-texto: #1a2e1a; /* texto principal, tono verdoso oscuro */
+  --color-texto-secundario: #5c6b5c; /* texto secundario */
+  --color-texto-terciario: #8a968a; /* placeholders, hints */
+  --color-texto-invertido: #ffffff; /* texto sobre fondos oscuros */
+
+  /* Bordes */
+  --color-borde: #d4d1c7; /* bordes generales */
+  --color-borde-fuerte: #b0ad9e; /* bordes más visibles */
+  --color-borde-focus: var(--color-salvia); /* focus de inputs */
+
+  /* Estados */
+  --color-error: #c0392b;
+  --color-error-hover: #a03024;
+  --color-error-fondo: #fdf0ef;
+  --color-error-borde: #e6a19a;
+  --color-exito: var(--color-salvia);
+  --color-exito-fondo: #f0f7f2;
+  --color-info: var(--color-bosque);
+  --color-info-fondo: #eef5f2;
+  --color-advertencia: var(--color-ambar);
+  --color-advertencia-fondo: #fff9e6;
+
+  /* ═══════════════════════════════════════════
+     COMPONENTES ESPECÍFICOS
+     ═══════════════════════════════════════════ */
+
+  /* Header */
+  --header-fondo: var(--color-bosque);
+  --header-texto: #ffffff;
+  --header-borde: var(--color-bosque-oscuro);
+
+  /* Botones */
+  --boton-radio: 8px;
+  --boton-padding-sm: 0.4rem 0.8rem;
+  --boton-padding-md: 0.6rem 1.2rem;
+  --boton-padding-lg: 0.75rem 1.5rem;
+
+  /* Inputs */
+  --input-fondo: #ffffff;
+  --input-borde: var(--color-borde);
+  --input-borde-focus: var(--color-salvia);
+  --input-sombra-focus: 0 0 0 3px rgba(109, 151, 115, 0.2);
+
+  /* Tarjetas */
+  --tarjeta-fondo: var(--color-superficie);
+  --tarjeta-borde: var(--color-borde);
+  --tarjeta-sombra: 0 2px 8px rgba(12, 59, 46, 0.06);
+  --tarjeta-sombra-hover: 0 4px 16px rgba(12, 59, 46, 0.1);
+
+  /* Login */
+  --login-fondo: var(--color-bosque);
+  --login-tarjeta-fondo: var(--color-superficie);
+  --login-titulo-color: #ffffff;
+
+  /* Badges / etiquetas de tipo de cuello */
+  --badge-liso-fondo: #f0f7f2;
+  --badge-liso-texto: var(--color-bosque);
+  --badge-liso-borde: var(--color-salvia);
+  --badge-tubular-fondo: #fff9e6;
+  --badge-tubular-texto: #7a5d1a;
+  --badge-tubular-borde: var(--color-tierra);
+  --badge-gaspeado-fondo: #f7efe5;
+  --badge-gaspeado-texto: #6e4d28;
+  --badge-gaspeado-borde: var(--color-tierra-oscuro);
+  --badge-otro-fondo: var(--color-fondo-alt);
+  --badge-otro-texto: var(--color-texto-secundario);
+  --badge-otro-borde: var(--color-borde-fuerte);
+
+  /* ═══════════════════════════════════════════
+     TIPOGRAFÍA, ESPACIADO, FORMA (sin cambios)
+     ═══════════════════════════════════════════ */
 
   /* Tipografia */
   --fuente-base: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -45,13 +154,13 @@
   --espacio-6: 1.5rem;
   --espacio-8: 2rem;
 
-  /* Forma y sombras */
+  /* Forma y sombras (tono bosque en vez de gris azulado) */
   --radio-pequeno: 6px;
   --radio: 8px;
   --radio-grande: 12px;
-  --sombra: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.08);
-  --sombra-elevada: 0 4px 12px rgba(16, 24, 40, 0.12);
-  --sombra-grande: 0 12px 32px rgba(16, 24, 40, 0.18);
+  --sombra: 0 1px 2px rgba(12, 59, 46, 0.06), 0 1px 3px rgba(12, 59, 46, 0.08);
+  --sombra-elevada: 0 4px 12px rgba(12, 59, 46, 0.12);
+  --sombra-grande: 0 12px 32px rgba(8, 42, 32, 0.35);
 
   /* Medidas */
   --ancho-maximo: 1200px;
