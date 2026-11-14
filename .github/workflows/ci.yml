@@ -79,6 +79,14 @@ jobs:
       # Levanta un Postgres temporal dentro del runner y aplica todas las
       # migraciones de supabase/migrations + los seeds de config.toml.
       # Si alguna migración o seed tiene un error, este paso falla.
+      # En el runner de GitHub el puerto 54322 ya está ocupado, así que solo
+      # en la CI se mueve la BD a otro puerto. El config.toml del repo no cambia.
+      - name: Usar puerto libre para la BD
+        run: |
+          sudo ss -ltnp | grep -E ':5432[0-9]' || echo "Nada escuchando en 5432x"
+          sed -i 's/^port = 54322$/port = 64322/' supabase/config.toml
+          grep -n '^port = 64322$' supabase/config.toml
+
       - name: Aplicar migraciones y seeds
         run: supabase db start
 
