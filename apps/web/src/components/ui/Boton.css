@@ -67,6 +67,21 @@
   background: var(--color-fondo-alt);
 }
 
+/* Contorno — atajos y acciones de apoyo que deben verse como boton
+   sin competir con el primario. */
+.boton-contorno {
+  background: transparent;
+  color: var(--color-primario);
+  border-color: var(--color-secundario);
+}
+.boton-contorno:hover:not(:disabled) {
+  background: var(--color-exito-fondo);
+  border-color: var(--color-primario);
+}
+.boton-contorno:active:not(:disabled) {
+  background: var(--color-info-fondo);
+}
+
 .boton-peligro {
   background: var(--color-error);
   color: var(--color-texto-invertido);

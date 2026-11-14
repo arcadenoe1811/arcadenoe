@@ -142,10 +142,17 @@
 .tarjeta-cuerpo {
   padding: var(--espacio-3);
   display: grid;
+  /* minmax(0, 1fr): sin esto la columna crece con el contenido y una
+     etiqueta larga empuja la tarjeta fuera de su celda. */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--espacio-1);
 }
 .tarjeta-fila .codigo {
-  flex-shrink: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .tarjeta-fila {
   display: flex;
@@ -174,13 +181,15 @@
   margin: 0;
 }
 
-/* Una sola linea y ancho acotado: los tipos largos se cortan con "…"
-   (el nombre completo queda en el title) y todas las etiquetas miden igual de alto. */
+/* Tamano estandar: todas las etiquetas miden lo mismo y el texto va
+   centrado. Los tipos largos se cortan con "…" (el nombre completo queda
+   en el title). */
 .etiqueta-tipo {
   display: inline-block;
-  flex: 0 1 auto;
-  min-width: 0;
-  max-width: 60%;
+  box-sizing: border-box;
+  flex: none;
+  width: 6.25rem;
+  text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -300,6 +309,30 @@
 .lista-datos dd {
   margin: 0;
   font-weight: 600;
+}
+.lista-datos .dato-ancho {
+  grid-column: 1 / -1;
+}
+/* "Posiciones del cuerpo" en la ficha: posicion = color. */
+.lista-posiciones {
+  list-style: none;
+  margin: var(--espacio-1) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--espacio-1);
+}
+.lista-posiciones li {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+.lista-posiciones-numero {
+  min-width: 3ch;
+  text-align: right;
+  font-family: var(--fuente-mono);
+}
+.lista-posiciones li > span[aria-hidden='true'] {
+  color: var(--color-texto-terciario);
 }
 
 .zona-colores + .zona-colores {
@@ -552,18 +585,43 @@
   box-shadow: var(--input-sombra-focus);
   border-color: var(--input-borde-focus);
 }
+.medidas-encabezado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--espacio-2);
+}
+.medidas-contador {
+  font-size: var(--texto-pequeno);
+  color: var(--color-texto-secundario);
+}
+/* Atajos separados de las casillas por una linea suave. */
 .medidas-acciones {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--espacio-2);
+  gap: var(--espacio-3);
   flex-wrap: wrap;
-  margin-top: var(--espacio-1);
+  margin-top: var(--espacio-2);
+  padding-top: var(--espacio-3);
+  border-top: 1px solid var(--color-borde);
 }
 .medidas-otra {
   display: flex;
   align-items: center;
-  gap: var(--espacio-1);
+  gap: var(--espacio-2);
+}
+/* Con una medida escrita, el campo toma el verde de la paleta. */
+.campo .medidas-otra input.con-valor {
+  border-color: var(--color-secundario);
+  background: var(--color-exito-fondo);
+  color: var(--color-primario);
+  font-weight: 600;
+}
+.medidas-otra-etiqueta {
+  font-size: var(--texto-pequeno);
+  color: var(--color-texto-secundario);
+  white-space: nowrap;
 }
 .campo .medidas-otra input {
   width: 88px;
@@ -621,7 +679,7 @@
   display: grid;
   /* Columna de acciones con ancho fijo: si fuera auto, el encabezado
      (sin botones) quedaria desalineado respecto a las filas. */
-  grid-template-columns: minmax(150px, 1.1fr) minmax(120px, 1.4fr) 44px 72px 72px 112px;
+  grid-template-columns: minmax(150px, 1.1fr) minmax(120px, 1.4fr) 104px 72px 72px 112px;
   gap: var(--espacio-2);
   width: 100%;
   align-items: start;
@@ -672,14 +730,26 @@
   max-width: 720px;
 }
 
+/* Tres filas compartidas (etiqueta / campo / mensaje) via subgrid: los
+   campos y el boton quedan siempre en la misma linea aunque aparezca un
+   error debajo de alguno. */
 .formulario-color {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 200px auto;
-  gap: var(--espacio-3);
-  align-items: end;
+  grid-template-rows: auto auto auto;
+  column-gap: var(--espacio-3);
+  row-gap: var(--espacio-1);
+  align-items: start;
   margin: var(--espacio-4) 0;
 }
+.formulario-color > .campo {
+  display: grid;
+  grid-row: 1 / span 3;
+  grid-template-rows: subgrid;
+  gap: inherit;
+}
 .formulario-color-acciones {
+  grid-row: 2;
   display: flex;
   gap: var(--espacio-2);
 }
@@ -687,10 +757,10 @@
   display: flex;
   gap: var(--espacio-2);
 }
-.entrada-hex input[type='color'] {
+.entrada-hex .muestra-hex {
   width: 44px;
+  height: 38px;
   flex-shrink: 0;
-  padding: 2px;
 }
 
 .lista-colores {
@@ -741,6 +811,16 @@
   }
   .formulario-color {
     grid-template-columns: 1fr;
+    grid-template-rows: none;
+    row-gap: var(--espacio-3);
+  }
+  .formulario-color > .campo {
+    display: flex;
+    grid-row: auto;
+    gap: var(--espacio-1);
+  }
+  .formulario-color-acciones {
+    grid-row: auto;
   }
   .rejilla-cuellos {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -765,38 +845,9 @@
 
 /* ---------- Tono de un color ---------- */
 
-.selector-tono {
-  position: relative;
-  display: block;
-  width: 44px;
+.campo-tono .muestra-hex {
+  width: 40px;
   height: 38px;
-  border: 1px solid var(--color-borde-fuerte);
-  border-radius: var(--radio);
-  cursor: pointer;
-  overflow: hidden;
-}
-.selector-tono input[type='color'] {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-  border: 0;
-  padding: 0;
-}
-.selector-tono:focus-within {
-  border-color: var(--input-borde-focus);
-  box-shadow: var(--input-sombra-focus);
-}
-.selector-tono.sin-tono {
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--color-superficie),
-    var(--color-superficie) 4px,
-    var(--color-fondo-alt) 4px,
-    var(--color-fondo-alt) 8px
-  );
 }
 .campo-tono .boton-quitar-tono {
   border: 0;

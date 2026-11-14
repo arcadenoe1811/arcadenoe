@@ -49,6 +49,7 @@ const MENSAJES_POR_CODIGO = {
   '42P01': 'La tabla no existe en la base. ¿Se aplicaron las migraciones?',
   PGRST205: 'La tabla no existe en la base. ¿Se aplicaron las migraciones?',
   PGRST204: 'Falta una columna en la base. ¿Se aplicaron las migraciones?',
+  42703: 'Falta una columna en la base. ¿Se aplicaron las migraciones?',
 }
 
 /**

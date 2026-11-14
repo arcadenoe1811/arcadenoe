@@ -1,6 +1,7 @@
 import { LIMITES, ZONAS_COLOR } from './constantes.js'
 import { normalizarNombreTipo } from './tipos.js'
 import { leerZonaColor } from './campos.js'
+import { validarDiseno } from './diseno.js'
 
 /**
  * Reglas de validacion de cuellos y sus colores. Reciben los valores tal
@@ -139,6 +140,11 @@ export function validarCuello(formulario) {
   }
   datos.imagen_url = imagen
 
+  // diseno Jacquard (reemplaza la imagen; null = sin diseno)
+  const diseno = validarDiseno(formulario.diseno)
+  if (!diseno.valido) errores.diseno = diseno.error ?? 'El diseño no es válido.'
+  datos.diseno = diseno.datos
+
   if (typeof formulario.activo === 'boolean') datos.activo = formulario.activo
 
   return { valido: Object.keys(errores).length === 0, errores, datos }
@@ -202,11 +208,15 @@ export function validarColoresCuello(colores = [], opciones = {}) {
     const codigo = textoOpcional(String(fila.codigo ?? '').replace(/^\s*#/, ''))
     const hilos = enteroOpcional(fila.hilos_auto ? hilosPorDefecto : fila.cantidad_hilos)
 
+    const { zona, posicion } = leerZonaColor(/** @type {string} */ (fila.zona))
+
+    // Las filas vacias se descartan, salvo las de un color del cuerpo
+    // (Color N): esas estan vinculadas a "Cantidad de colores" y deben
+    // llenarse, para que un error en la cantidad salte a la vista.
     const sinHilosPropios =
       Boolean(fila.hilos_auto) || (hilos.numero === null && !hilos.invalido)
-    if (!color && !codigo && sinHilosPropios) return
-
-    const { zona, posicion } = leerZonaColor(/** @type {string} */ (fila.zona))
+    const vinculada = posicion !== null && posicion <= cantidadPosiciones
+    if (!color && !codigo && sinHilosPropios && !vinculada) return
     if (!ZONAS_COLOR.includes(/** @type {any} */ (zona))) {
       errores[`${indice}.zona`] = 'Elige la zona.'
     } else if (posicion !== null && posicion > cantidadPosiciones) {

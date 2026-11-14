@@ -19,6 +19,7 @@
  * @property {number[]|null} medidas
  * @property {string|null} notas
  * @property {string|null} imagen_url
+ * @property {import('../cuellos/diseno.js').DisenoCuello|null} [diseno]  diseno Jacquard (JSON pequeno)
  * @property {boolean} activo
  * @property {string} created_at
  * @property {string|null} updated_at

@@ -1,0 +1,318 @@
+/* ---------- Muestra que abre el dialogo ---------- */
+
+.muestra-hex {
+  display: block;
+  width: 36px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: var(--radio-pequeno);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+.muestra-hex:focus-visible {
+  outline: none;
+  box-shadow: var(--input-sombra-focus);
+}
+
+/* ---------- Dialogo "Colores" ---------- */
+
+/* Si el dialogo no cabe (pantallas bajas, colores guardados), el fondo
+   se desplaza en vez de cortar la parte de abajo. */
+.dialogo-color-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  /* flex + margin:auto en el dialogo: centra, y si no cabe se puede
+     desplazar hasta arriba (place-items:center cortaria la parte superior). */
+  display: flex;
+  padding: var(--espacio-4);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: rgba(8, 42, 32, 0.35);
+}
+
+/* Modo escaneo: barra flotante abajo; la pagina queda libre para desplazarse. */
+.barra-escaneo {
+  position: fixed;
+  left: 50%;
+  bottom: var(--espacio-4);
+  z-index: 1000;
+  transform: translateX(-50%);
+  width: min(560px, calc(100% - 2 * var(--espacio-4)));
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--espacio-2) var(--espacio-3);
+  padding: var(--espacio-3);
+  background: var(--color-superficie-elevada);
+  border: 1px solid var(--color-secundario);
+  border-radius: var(--radio-grande);
+  box-shadow: var(--sombra-grande);
+  font-size: var(--texto-pequeno);
+  color: var(--color-texto);
+}
+.barra-escaneo-texto {
+  flex: 1 1 220px;
+}
+.barra-escaneo-muestra {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: var(--radio-pequeno);
+}
+.dialogo-color {
+  margin: auto;
+  flex-shrink: 0;
+  width: min(340px, 100%);
+  background: var(--color-superficie-elevada);
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-grande);
+  overflow: hidden;
+  font-size: var(--texto-pequeno);
+  color: var(--color-texto);
+}
+.dialogo-color-barra-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--espacio-2) var(--espacio-3);
+  border-bottom: 1px solid var(--color-borde);
+  font-weight: 600;
+}
+.dialogo-color-cerrar {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--color-texto-secundario);
+  background: none;
+  border: none;
+  border-radius: var(--radio-pequeno);
+  cursor: pointer;
+}
+.dialogo-color-cerrar:hover {
+  color: #fff;
+  background: var(--color-error);
+}
+
+.dialogo-color-cuerpo {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3);
+}
+.dialogo-color-izquierda {
+  display: grid;
+  gap: var(--espacio-2);
+  min-width: 0;
+}
+.dialogo-color-rotulo {
+  font-weight: 600;
+}
+
+.dialogo-color-selectores {
+  display: flex;
+  gap: var(--espacio-3);
+}
+.dialogo-color-espectro {
+  position: relative;
+  flex: 1;
+  aspect-ratio: 1;
+  min-width: 0;
+  border: 1px solid var(--color-borde-fuerte);
+  /* matiz de izquierda a derecha; saturacion de arriba (100%) a abajo (gris) */
+  background:
+    linear-gradient(to bottom, rgba(128, 128, 128, 0), #808080),
+    linear-gradient(
+      to right,
+      #f00 0%,
+      #ff0 16.66%,
+      #0f0 33.33%,
+      #0ff 50%,
+      #00f 66.66%,
+      #f0f 83.33%,
+      #f00 100%
+    );
+  cursor: crosshair;
+  touch-action: none;
+}
+.dialogo-color-cruz {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background:
+    linear-gradient(#000, #000) center / 2px 100% no-repeat,
+    linear-gradient(#000, #000) center / 100% 2px no-repeat;
+  /* hueco en el centro, como la cruz del dialogo de Windows */
+  mask: radial-gradient(circle, transparent 2.5px, #000 3px);
+}
+.dialogo-color-luminosidad {
+  position: relative;
+  width: 16px;
+  margin-right: 12px;
+  border: 1px solid var(--color-borde-fuerte);
+  cursor: ns-resize;
+  touch-action: none;
+}
+.dialogo-color-flecha {
+  position: absolute;
+  left: calc(100% + 3px);
+  width: 0;
+  height: 0;
+  transform: translateY(-50%);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 7px solid var(--color-texto);
+  pointer-events: none;
+}
+.dialogo-color-espectro:focus-visible,
+.dialogo-color-luminosidad:focus-visible {
+  outline: 2px solid var(--color-borde-focus);
+  outline-offset: 2px;
+}
+
+.dialogo-color-campos {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--espacio-2) var(--espacio-3);
+  margin-top: var(--espacio-1);
+}
+.dialogo-color-modelo {
+  padding: 3px var(--espacio-2);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-pequeno);
+  background: var(--color-fondo);
+}
+.dialogo-color-campos input {
+  width: 100%;
+  min-width: 0;
+  font-family: var(--fuente-mono);
+  font-size: var(--texto-pequeno);
+  padding: 3px var(--espacio-2);
+  color: var(--color-texto);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: var(--radio-pequeno);
+}
+.dialogo-color-campos input:focus {
+  outline: none;
+  border-color: var(--input-borde-focus);
+  box-shadow: var(--input-sombra-focus);
+}
+.dialogo-color-campos input[aria-invalid='true'] {
+  border-color: var(--color-error);
+}
+
+.dialogo-color-derecha {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  width: 92px;
+}
+.dialogo-color-botones {
+  display: grid;
+  gap: var(--espacio-2);
+}
+.dialogo-color-comparar {
+  display: grid;
+  justify-items: center;
+  gap: var(--espacio-1);
+  color: var(--color-texto-secundario);
+}
+.dialogo-color-muestras {
+  display: grid;
+  width: 64px;
+  border: 1px solid var(--color-borde-fuerte);
+}
+.dialogo-color-muestras > span {
+  height: 32px;
+}
+
+/* ---------- Muestra + codigo, cuentagotas y colores guardados ---------- */
+
+.selector-color-hex {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-1);
+}
+.codigo-hex {
+  font-family: var(--fuente-mono);
+  font-size: 0.75rem;
+  color: var(--color-texto-secundario);
+  min-width: 7ch;
+}
+.muestra-hex.sin-color,
+.dialogo-color-muestras > .sin-color {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-superficie),
+    var(--color-superficie) 4px,
+    var(--color-fondo-alt) 4px,
+    var(--color-fondo-alt) 8px
+  );
+}
+.dialogo-color {
+  width: min(380px, 100%);
+}
+.dialogo-color-cuentagotas {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-1);
+}
+.dialogo-color-cuentagotas svg {
+  width: 16px;
+  height: 16px;
+}
+.dialogo-color-guardados {
+  display: grid;
+  gap: var(--espacio-2);
+  padding: var(--espacio-3);
+  border-top: 1px solid var(--color-borde);
+  background: var(--color-fondo);
+}
+.dialogo-color-guardados > .boton {
+  justify-self: start;
+}
+.dialogo-color-paleta {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 22px);
+  gap: 4px;
+  max-height: 104px;
+  overflow-y: auto;
+}
+.dialogo-color-paleta button {
+  width: 22px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.dialogo-color-paleta button:hover,
+.dialogo-color-paleta button.activo {
+  outline: 2px solid var(--color-texto);
+  outline-offset: 1px;
+}
+.dialogo-color-nombre {
+  display: flex;
+  gap: var(--espacio-2);
+}
+.dialogo-color-nombre input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  padding: 3px var(--espacio-2);
+  color: var(--color-texto);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: var(--radio-pequeno);
+}

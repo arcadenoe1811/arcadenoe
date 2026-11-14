@@ -4,6 +4,7 @@ import { useCatalogoColores } from '../hooks/useCatalogoColores.js'
 import Cargando from '../components/Cargando.jsx'
 import Aviso from '../components/Aviso.jsx'
 import MuestraColor from '../components/MuestraColor.jsx'
+import SelectorColorHex from '../components/SelectorColorHex.jsx'
 
 const FORMULARIO_VACIO = { id: '', nombre: '', hex: '' }
 
@@ -83,11 +84,12 @@ export default function PaginaColores() {
         <div className={`campo${errores.hex ? ' campo-con-error' : ''}`}>
           <label htmlFor="color-hex">Hex (opcional)</label>
           <div className="entrada-hex">
-            <input
-              type="color"
-              aria-label="Elegir color"
-              value={hexValido ?? '#cccccc'}
-              onChange={(e) => cambiar('hex', e.target.value)}
+            <SelectorColorHex
+              valor={hexValido ?? ''}
+              etiqueta="Color del catálogo"
+              mostrarHex={false}
+              conCatalogo={false}
+              alCambiar={(hex) => cambiar('hex', hex)}
             />
             <input
               id="color-hex"

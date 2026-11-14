@@ -1,4 +1,5 @@
 import { useId } from 'react'
+import { soloEnteros } from '../utils/soloEnteros.js'
 
 /**
  * Pinta un campo a partir de un descriptor de @inventario/shared.
@@ -9,6 +10,7 @@ import { useId } from 'react'
  *   alCambiar: (nombre: string, valor: string) => void,
  *   listaSugerencias?: string,
  *   ocultarEtiqueta?: boolean,
+ *   deshabilitado?: boolean,
  * }} props
  */
 export default function CampoFormulario({
@@ -18,6 +20,7 @@ export default function CampoFormulario({
   alCambiar,
   listaSugerencias,
   ocultarEtiqueta = false,
+  deshabilitado = false,
 }) {
   const id = useId()
   const {
@@ -27,7 +30,6 @@ export default function CampoFormulario({
     requerido,
     placeholder,
     ayuda,
-    minimo,
     maximo,
     filas,
     opciones,
@@ -41,6 +43,7 @@ export default function CampoFormulario({
     value: valor ?? '',
     placeholder,
     required: requerido,
+    disabled: deshabilitado || undefined,
     'aria-invalid': error ? true : undefined,
     'aria-describedby':
       [ayuda && idAyuda, error && idError].filter(Boolean).join(' ') || undefined,
@@ -61,14 +64,17 @@ export default function CampoFormulario({
   } else if (tipo === 'area_texto') {
     control = <textarea {...comunes} rows={filas ?? 4} />
   } else if (tipo === 'numero') {
+    // Solo enteros sin signo: type="number" deja escribir "e", "." y "-".
+    const largo = maximo ? String(maximo).length : undefined
     control = (
       <input
         {...comunes}
-        type="number"
+        type="text"
         inputMode="numeric"
-        step="1"
-        min={minimo}
-        max={maximo}
+        pattern="[0-9]*"
+        autoComplete="off"
+        maxLength={largo}
+        onChange={(evento) => alCambiar(nombre, soloEnteros(evento.target.value, largo))}
       />
     )
   } else if (tipo === 'url') {

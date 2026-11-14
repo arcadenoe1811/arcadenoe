@@ -1,25 +1,15 @@
+import SelectorColorHex from './SelectorColorHex.jsx'
+
 /**
- * Muestra del tono de un color; al hacer clic abre el selector del sistema.
+ * Tono de un color: muestra con su codigo hex que abre el dialogo "Colores".
  * Sin tono se ve rayada. "quitar" deja el color sin tono.
  * @param {{ valor: string, error?: string, alCambiar: (hex: string) => void }} props
  */
 export default function SelectorTono({ valor, error, alCambiar }) {
-  const hex = /^#[0-9a-f]{6}$/i.test(valor ?? '') ? valor : ''
   return (
     <div className={`campo campo-tono${error ? ' campo-con-error' : ''}`}>
-      <label
-        className={`selector-tono${hex ? '' : ' sin-tono'}`}
-        style={hex ? { background: hex } : undefined}
-        title={hex ? `Tono ${hex}` : 'Elegir tono'}
-      >
-        <span className="solo-lector">Tono</span>
-        <input
-          type="color"
-          value={hex || '#cccccc'}
-          onChange={(evento) => alCambiar(evento.target.value)}
-        />
-      </label>
-      {hex && (
+      <SelectorColorHex valor={valor ?? ''} etiqueta="Tono" alCambiar={alCambiar} />
+      {valor && (
         <button
           type="button"
           className="boton-quitar-tono"

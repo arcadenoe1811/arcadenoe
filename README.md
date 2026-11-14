@@ -50,7 +50,7 @@ npm run db:estado           # muestra API URL y "anon key"
 npm run dev                 # http://localhost:5173
 ```
 
-`supabase start` aplica las migraciones de `supabase/migrations/` y carga las semillas: `seed_usuario.sql` (el usuario del sistema) y `seed.sql` (tres cuellos de ejemplo: `maza4`, `maz4t5`, `cous`).
+`supabase start` aplica las migraciones de `supabase/migrations/` y carga las semillas: `seed_usuario.sql` (el usuario del sistema) y `seed.sql` (tres cuellos de ejemplo: `maza4`, `maz4t5`, `cous`) y `seed_disenos.sql` (50 cuellos `dsn-01` a `dsn-50` con diseño Jacquard y todos los datos técnicos).
 
 ## Inicio de sesión
 
