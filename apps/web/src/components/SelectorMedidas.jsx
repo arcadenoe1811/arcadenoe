@@ -1,5 +1,6 @@
 import { useId, useState } from 'react'
 import { MEDIDAS_COMUNES } from '@inventario/shared'
+import { soloEnteros } from '../utils/soloEnteros.js'
 
 /**
  * Medidas como casillas (12–20) mas un campo para agregar otra suelta.
@@ -48,6 +49,7 @@ export default function SelectorMedidas({ descriptor, valor, error, alCambiar })
   }
 
   const todasComunes = MEDIDAS_COMUNES.every((m) => seleccionadas.includes(m))
+  const rangoComunes = `${Math.min(...MEDIDAS_COMUNES)}–${Math.max(...MEDIDAS_COMUNES)}`
   const mensajeError = errorOtra ?? error
 
   return (
@@ -56,9 +58,17 @@ export default function SelectorMedidas({ descriptor, valor, error, alCambiar })
       role="group"
       aria-labelledby={`${id}-titulo`}
     >
-      <span id={`${id}-titulo`} className="campo-titulo">
-        {etiqueta}
-      </span>
+      <div className="medidas-encabezado">
+        <span id={`${id}-titulo`} className="campo-titulo">
+          {etiqueta}
+        </span>
+        <span className="medidas-contador" aria-live="polite">
+          {seleccionadas.length === 0
+            ? 'Ninguna marcada'
+            : `${seleccionadas.length} ${seleccionadas.length === 1 ? 'marcada' : 'marcadas'}`}
+        </span>
+      </div>
+      <small className="campo-ayuda">Toca cada medida que le queda a este cuello.</small>
 
       <div className="medidas-opciones">
         {visibles.map((medida) => (
@@ -76,7 +86,8 @@ export default function SelectorMedidas({ descriptor, valor, error, alCambiar })
       <div className="medidas-acciones">
         <button
           type="button"
-          className="boton boton-fantasma boton-sm"
+          className="boton boton-contorno boton-sm"
+          aria-pressed={todasComunes}
           onClick={() =>
             fijar(
               todasComunes
@@ -85,22 +96,31 @@ export default function SelectorMedidas({ descriptor, valor, error, alCambiar })
             )
           }
         >
-          {todasComunes ? 'Quitar 12–20' : 'Marcar 12–20'}
+          <span aria-hidden="true">{todasComunes ? '✕' : '✓'}</span>
+          {todasComunes
+            ? `Desmarcar todas (${rangoComunes})`
+            : `Marcar todas (${rangoComunes})`}
         </button>
         <div className="medidas-otra">
-          <label htmlFor={`${id}-otra`} className="solo-lector">
-            Otra medida
+          <label htmlFor={`${id}-otra`} className="medidas-otra-etiqueta">
+            ¿Otra medida?
           </label>
+          {/* type="text" + filtro: type="number" deja escribir "e", ".", "-"
+              y la medida solo admite enteros. */}
           <input
             id={`${id}-otra`}
-            type="number"
+            type="text"
             inputMode="numeric"
-            min={minimo}
-            max={maximo}
-            step="1"
-            placeholder="Otra"
+            pattern="[0-9]*"
+            autoComplete="off"
+            maxLength={String(maximo).length}
+            placeholder="Ej. 22"
+            className={otra ? 'con-valor' : undefined}
             value={otra}
-            onChange={(evento) => setOtra(evento.target.value)}
+            onChange={(evento) => {
+              setOtra(soloEnteros(evento.target.value, String(maximo).length))
+              setErrorOtra(null)
+            }}
             onKeyDown={(evento) => {
               // Enter agrega la medida en vez de enviar el formulario.
               if (evento.key === 'Enter') {
@@ -111,9 +131,10 @@ export default function SelectorMedidas({ descriptor, valor, error, alCambiar })
           />
           <button
             type="button"
-            className="boton boton-secundario boton-sm"
+            // Verde (primario) en cuanto hay una medida lista para agregar.
+            className={`boton boton-sm ${otra ? 'boton-primario boton-compacto' : 'boton-secundario'}`}
             onClick={agregarOtra}
-            disabled={!otra.trim()}
+            disabled={!otra}
           >
             Agregar
           </button>

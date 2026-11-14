@@ -21,13 +21,38 @@ export function formatearMedidas(medidas) {
 }
 
 /**
- * "12 · 14 (letra) · 16". Las posiciones vacias se muestran con "?".
+ * Une cada posicion del cuerpo con su color de "Colores por zona"
+ * (la fila con zona cuerpo y posicion = numero del color, 1..N).
  * @param {import('../tipos/index.js').PosicionCuerpo[]|null|undefined} posiciones
+ * @param {Array<{ zona?: string, posicion?: number|null, color?: string|null, hex?: string|null }>} [colores]
+ * @returns {{ numero: number, posicion: number|null, letra: boolean, color: string|null, hex: string|null }[]}
  */
-export function formatearPosicionesCuerpo(posiciones) {
+export function posicionesConColor(posiciones, colores = []) {
+  return (posiciones ?? []).map((p, i) => {
+    const fila = colores.find((c) => c.zona === 'cuerpo' && c.posicion === i + 1)
+    return {
+      numero: i + 1,
+      posicion: p.posicion ?? null,
+      letra: Boolean(p.letra),
+      color: fila?.color || null,
+      hex: fila?.hex || null,
+    }
+  })
+}
+
+/**
+ * "4 = rojo · 3 = blanco (letra) · 2". Sin color asignado se muestra solo
+ * la posicion; las posiciones vacias se muestran con "?".
+ * @param {import('../tipos/index.js').PosicionCuerpo[]|null|undefined} posiciones
+ * @param {Parameters<typeof posicionesConColor>[1]} [colores]
+ */
+export function formatearPosicionesCuerpo(posiciones, colores = []) {
   if (!posiciones || !posiciones.length) return '—'
-  return posiciones
-    .map((p) => `${p.posicion ?? '?'}${p.letra ? ' (letra)' : ''}`)
+  return posicionesConColor(posiciones, colores)
+    .map(
+      (p) =>
+        `${p.posicion ?? '?'}${p.color ? ` = ${p.color}` : ''}${p.letra ? ' (letra)' : ''}`,
+    )
     .join(' · ')
 }
 

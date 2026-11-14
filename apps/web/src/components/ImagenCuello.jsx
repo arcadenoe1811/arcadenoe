@@ -1,15 +1,29 @@
 import { useState } from 'react'
 import { normalizarUrlImagen } from '@inventario/shared'
+import LienzoDiseno from './LienzoDiseno.jsx'
 
 /**
- * Imagen externa del cuello con respaldo si no hay URL o no carga.
+ * Imagen del cuello. Si tiene diseno Jacquard se dibuja el diseno (no hace
+ * falta descargar nada); si no, la imagen externa con respaldo si no hay
+ * URL o no carga.
  * tamano: 'miniatura' | 'grande'
  */
-export default function ImagenCuello({ url, alt, tamano = 'miniatura' }) {
+export default function ImagenCuello({ url, alt, tamano = 'miniatura', diseno = null }) {
   // Se recuerda QUE url fallo: al cambiar la url el error se "resetea" solo,
   // sin necesidad de un efecto.
   const [urlFallida, setUrlFallida] = useState(null)
   const fallo = urlFallida !== null && urlFallida === url
+
+  if (diseno) {
+    return (
+      <LienzoDiseno
+        diseno={diseno}
+        modo="tejido"
+        className={`imagen-cuello imagen-${tamano}`}
+        etiqueta={alt}
+      />
+    )
+  }
 
   const fuente = normalizarUrlImagen(url, tamano === 'grande' ? 1200 : 400)
 

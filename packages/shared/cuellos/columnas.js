@@ -34,7 +34,7 @@ export const COLUMNAS_CUELLO = [
 
 /** Columnas que pide el listado a la base (evita traer notas largas). */
 export const COLUMNAS_LISTADO =
-  'id, codigo, nombre, tipo, cantidad_hilos, medidas, imagen_url'
+  'id, codigo, nombre, tipo, cantidad_hilos, medidas, imagen_url, diseno'
 
 /** Datos tecnicos que se muestran en la ficha. */
 export const DATOS_FICHA = [
@@ -47,7 +47,7 @@ export const DATOS_FICHA = [
   {
     clave: 'posiciones_cuerpo',
     etiqueta: 'Posiciones del cuerpo',
-    obtener: (c) => formatearPosicionesCuerpo(c.posiciones_cuerpo),
+    obtener: (c) => formatearPosicionesCuerpo(c.posiciones_cuerpo, c.colores),
   },
   { clave: 'medidas', etiqueta: 'Medidas', obtener: (c) => formatearMedidas(c.medidas) },
 ]

@@ -7,6 +7,7 @@ import {
   formatearFecha,
   formatearZona,
   normalizarError,
+  posicionesConColor,
   reactivarCuello,
 } from '@inventario/shared'
 import { useCuello } from '../hooks/useCuello.js'
@@ -41,7 +42,9 @@ export default function PaginaFicha() {
     )
   }
 
-  const hexPorNombre = Object.fromEntries(catalogo.map((c) => [c.nombre, c.hex]))
+  const hexPorNombre = Object.fromEntries(
+    catalogo.map((c) => [c.nombre.toLowerCase(), c.hex]),
+  )
   const grupos = agruparColoresPorZona(cuello.colores)
 
   const cambiarEstado = async () => {
@@ -114,10 +117,11 @@ export default function PaginaFicha() {
         <div className="ficha-imagen">
           <ImagenCuello
             url={cuello.imagen_url}
+            diseno={cuello.diseno}
             alt={`Cuello ${cuello.codigo}`}
             tamano="grande"
           />
-          {cuello.imagen_url && (
+          {cuello.imagen_url && !cuello.diseno && (
             <a
               href={cuello.imagen_url}
               target="_blank"
@@ -133,12 +137,42 @@ export default function PaginaFicha() {
           <section className="tarjeta">
             <h2>Datos técnicos</h2>
             <dl className="lista-datos">
-              {DATOS_FICHA.map((dato) => (
-                <div key={dato.clave}>
-                  <dt>{dato.etiqueta}</dt>
-                  <dd>{dato.obtener(cuello)}</dd>
-                </div>
-              ))}
+              {DATOS_FICHA.map((dato) =>
+                dato.clave === 'posiciones_cuerpo' && cuello.posiciones_cuerpo?.length ? (
+                  // Cada posicion con el color que lleva: "4 = rojo".
+                  <div key={dato.clave} className="dato-ancho">
+                    <dt>{dato.etiqueta}</dt>
+                    <dd>
+                      <ol className="lista-posiciones">
+                        {posicionesConColor(cuello.posiciones_cuerpo, cuello.colores).map(
+                          (p) => (
+                            <li key={p.numero}>
+                              <span className="lista-posiciones-numero">
+                                {p.posicion ?? '?'}
+                              </span>
+                              <span aria-hidden="true">=</span>
+                              <MuestraColor
+                                hex={p.hex ?? hexPorNombre[p.color?.toLowerCase()]}
+                              />
+                              <span className={p.color ? undefined : 'texto-suave'}>
+                                {p.color ?? 'sin color'}
+                              </span>
+                              {p.letra && (
+                                <span className="insignia-posicion">letra</span>
+                              )}
+                            </li>
+                          ),
+                        )}
+                      </ol>
+                    </dd>
+                  </div>
+                ) : (
+                  <div key={dato.clave}>
+                    <dt>{dato.etiqueta}</dt>
+                    <dd>{dato.obtener(cuello)}</dd>
+                  </div>
+                ),
+              )}
             </dl>
           </section>
 

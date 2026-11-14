@@ -1,5 +1,8 @@
 import { useId, useState } from 'react'
-import { valoresInicialesPosicion } from '@inventario/shared'
+import { LIMITES, valoresInicialesPosicion } from '@inventario/shared'
+import { soloEnteros } from '../utils/soloEnteros.js'
+
+const LARGO_POSICION = String(LIMITES.posicion_cuerpo.maximo).length
 
 /**
  * "Cantidad de colores" + una fila por color con su posicion y la marca
@@ -71,14 +74,16 @@ export default function PosicionesCuerpo({ descriptor, valor, errores = {}, alCa
           </button>
           <input
             id={`${id}-cantidad`}
-            type="number"
+            type="text"
             inputMode="numeric"
-            min={minimo}
-            max={maximo}
-            step="1"
+            pattern="[0-9]*"
+            autoComplete="off"
+            maxLength={String(maximo).length}
             placeholder="0"
             value={textoCantidad}
-            onChange={(evento) => cambiarCantidad(evento.target.value)}
+            onChange={(evento) =>
+              cambiarCantidad(soloEnteros(evento.target.value, String(maximo).length))
+            }
             onBlur={() => setTextoCantidad(String(filas.length || ''))}
           />
           <button
@@ -113,15 +118,19 @@ export default function PosicionesCuerpo({ descriptor, valor, errores = {}, alCa
                 </label>
                 <input
                   id={idPosicion}
-                  type="number"
+                  type="text"
                   inputMode="numeric"
-                  step="1"
+                  pattern="[0-9]*"
+                  autoComplete="off"
+                  maxLength={LARGO_POSICION}
                   placeholder="Posición"
                   value={fila.posicion}
                   aria-invalid={error ? true : undefined}
                   aria-describedby={error ? `${idPosicion}-error` : undefined}
                   onChange={(evento) =>
-                    cambiarFila(indice, { posicion: evento.target.value })
+                    cambiarFila(indice, {
+                      posicion: soloEnteros(evento.target.value, LARGO_POSICION),
+                    })
                   }
                 />
                 <label className="casilla">

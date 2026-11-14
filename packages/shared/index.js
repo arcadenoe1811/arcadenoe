@@ -13,6 +13,7 @@ export * from './cuellos/columnas.js'
 export * from './cuellos/filtros.js'
 export * from './cuellos/api.js'
 export * from './cuellos/tipos.js'
+export * from './cuellos/diseno.js'
 
 export * from './colores/validaciones.js'
 export * from './colores/api.js'

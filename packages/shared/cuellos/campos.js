@@ -95,10 +95,10 @@ export const CAMPOS_CUELLO = [
   },
   {
     nombre: 'imagen_url',
-    etiqueta: 'URL de la imagen',
+    etiqueta: 'URL de la imagen (opcional)',
     tipo: 'url',
     placeholder: 'https://i.ibb.co/...',
-    ayuda: 'Pega un enlace público (ImgBB, Cloudinary, Google Drive compartido...).',
+    ayuda: 'Solo si no usas el diseño de arriba: si hay diseño, se muestra el diseño.',
     grupo: 'detalle',
   },
   {
@@ -234,6 +234,7 @@ export function valoresInicialesCuello(cuello = {}) {
     ),
     medidas: [...(cuello.medidas ?? [])].sort((a, b) => a - b),
     imagen_url: aTexto(cuello.imagen_url),
+    diseno: cuello.diseno ?? null,
     notas: aTexto(cuello.notas),
   }
 }

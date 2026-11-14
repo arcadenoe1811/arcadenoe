@@ -6,7 +6,11 @@ import EtiquetaTipo from './EtiquetaTipo.jsx'
 export default function TarjetaCuello({ cuello }) {
   return (
     <Link to={`/cuellos/${cuello.id}`} className="tarjeta-cuello">
-      <ImagenCuello url={cuello.imagen_url} alt={`Cuello ${cuello.codigo}`} />
+      <ImagenCuello
+        url={cuello.imagen_url}
+        diseno={cuello.diseno}
+        alt={`Cuello ${cuello.codigo}`}
+      />
       <div className="tarjeta-cuerpo">
         <div className="tarjeta-fila">
           <span className="codigo">{cuello.codigo}</span>

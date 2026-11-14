@@ -146,4 +146,13 @@ describe('validarColoresCuello', () => {
     )
     expect(errores['0.zona']).toBeDefined()
   })
+
+  it('exige el color en las filas vinculadas a un color del cuerpo', () => {
+    const { valido, errores } = validarColoresCuello(
+      [{ zona: 'cuerpo@2', color: '', codigo: '', cantidad_hilos: '', hilos_auto: true }],
+      { cantidadPosiciones: 2 },
+    )
+    expect(valido).toBe(false)
+    expect(errores['0.color']).toBeDefined()
+  })
 })

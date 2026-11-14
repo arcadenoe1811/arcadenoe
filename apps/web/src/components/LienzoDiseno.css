@@ -1,0 +1,16 @@
+/* ---------- Lienzo ---------- */
+
+.lienzo-diseno {
+  display: block;
+}
+.lienzo-grilla {
+  /* ancho y alto logicos los pone el componente (sin devicePixelRatio) */
+  color: #8a8a8a;
+  --diseno-regla: #1a1a1a;
+}
+.lienzo-tejido {
+  height: auto;
+}
+canvas.imagen-cuello {
+  object-fit: contain;
+}
