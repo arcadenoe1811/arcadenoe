@@ -68,10 +68,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Misma versión que el devDependency "supabase" de package-lock.json,
+      # para que la CI pruebe con el mismo CLI que se usa en local.
+      # Si actualizas el CLI en package.json, actualiza también esta versión.
       - name: Setup Supabase CLI
         uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.122.1
 
       # Levanta un Postgres temporal dentro del runner y aplica todas las
       # migraciones de supabase/migrations + los seeds de config.toml.
