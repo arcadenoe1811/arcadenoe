@@ -1,3 +1,4 @@
+import { formatearTallas, normalizarPieza } from './piezas.js'
 import {
   formatearMedidas,
   formatearPosicionesCuerpo,
@@ -29,12 +30,20 @@ export const COLUMNAS_CUELLO = [
     obtener: (c) => guion(c.cantidad_hilos),
     alineacion: 'derecha',
   },
-  { clave: 'medidas', etiqueta: 'Medidas', obtener: (c) => formatearMedidas(c.medidas) },
+  { clave: 'medidas', etiqueta: 'Medidas', obtener: formatearTamanos },
 ]
+
+/** Medidas del cuello o tallas del puno. @param {any} c */
+export function formatearTamanos(c) {
+  return normalizarPieza(c.pieza) === 'puno'
+    ? formatearTallas(c.tallas)
+    : formatearMedidas(c.medidas)
+}
 
 /** Columnas que pide el listado a la base (evita traer notas largas). */
 export const COLUMNAS_LISTADO =
-  'id, codigo, nombre, tipo, cantidad_hilos, medidas, imagen_url, diseno'
+  'id, pieza, codigo, nombre, tipo, cantidad_hilos, medidas, tallas, imagen_url, diseno, ' +
+  'padre_id, overrides, colores:colores_cuello(zona, posicion, orden, hex)'
 
 /** Datos tecnicos que se muestran en la ficha. */
 export const DATOS_FICHA = [
@@ -49,5 +58,5 @@ export const DATOS_FICHA = [
     etiqueta: 'Posiciones del cuerpo',
     obtener: (c) => formatearPosicionesCuerpo(c.posiciones_cuerpo, c.colores),
   },
-  { clave: 'medidas', etiqueta: 'Medidas', obtener: (c) => formatearMedidas(c.medidas) },
+  { clave: 'medidas', etiqueta: 'Medidas', obtener: formatearTamanos },
 ]

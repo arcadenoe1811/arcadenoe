@@ -5,6 +5,7 @@ import {
   TIPOS_CUELLO,
   ZONAS_COLOR,
 } from './constantes.js'
+import { normalizarPieza } from './piezas.js'
 
 /**
  * Descriptores de formulario. La UI los recorre para pintar los campos;
@@ -18,7 +19,7 @@ import {
  * @typedef {Object} DescriptorCampo
  * @property {string} nombre
  * @property {string} etiqueta
- * @property {'texto'|'numero'|'seleccion'|'area_texto'|'url'|'lista_numeros'|'tipo_cuello'|'posiciones_cuerpo'|'medidas'} tipo
+ * @property {'texto'|'numero'|'seleccion'|'area_texto'|'url'|'lista_numeros'|'tipo_cuello'|'posiciones_cuerpo'|'medidas'|'tallas'} tipo
  * @property {boolean} [requerido]
  * @property {string} [placeholder]
  * @property {string} [ayuda]
@@ -209,6 +210,28 @@ export function opcionesZonaColor(posiciones = [], actual) {
   return opciones
 }
 
+/** Campo de tallas que reemplaza a "medidas" en los punos. */
+export const CAMPO_TALLAS = {
+  nombre: 'tallas',
+  etiqueta: 'Tallas compatibles',
+  tipo: 'tallas',
+  ayuda: 'pp = 12–13 · pg = 14–16 · pee (o pe) = 17 · pex = 18',
+  grupo: 'tecnico',
+}
+
+/**
+ * Campos del formulario segun la pieza: el puno usa tallas en vez de
+ * medidas; todo lo demas es igual.
+ * @param {string} pieza
+ * @returns {DescriptorCampo[]}
+ */
+export function camposPieza(pieza) {
+  if (normalizarPieza(pieza) !== 'puno') return CAMPOS_CUELLO
+  return CAMPOS_CUELLO.map((campo) =>
+    campo.nombre === 'medidas' ? /** @type {DescriptorCampo} */ (CAMPO_TALLAS) : campo,
+  )
+}
+
 /** @param {keyof typeof LIMITES} clave */
 function rango(clave) {
   return { minimo: LIMITES[clave].minimo, maximo: LIMITES[clave].maximo }
@@ -225,6 +248,7 @@ const aTexto = (valor) => (valor === null || valor === undefined ? '' : String(v
 export function valoresInicialesCuello(cuello = {}) {
   return {
     id: cuello.id ?? '',
+    pieza: normalizarPieza(cuello.pieza),
     codigo: aTexto(cuello.codigo),
     nombre: aTexto(cuello.nombre),
     tipo: cuello.tipo ?? 'liso',
@@ -233,8 +257,11 @@ export function valoresInicialesCuello(cuello = {}) {
       valoresInicialesPosicion(p),
     ),
     medidas: [...(cuello.medidas ?? [])].sort((a, b) => a - b),
+    tallas: [...(cuello.tallas ?? [])],
     imagen_url: aTexto(cuello.imagen_url),
     diseno: cuello.diseno ?? null,
+    padre_id: cuello.padre_id ?? '',
+    overrides: cuello.overrides ?? {},
     notas: aTexto(cuello.notas),
   }
 }

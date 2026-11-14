@@ -33,6 +33,9 @@ services:
       - ./supabase/migrations/00004_colores_codigo_posicion.sql:/docker-entrypoint-initdb.d/migrations/90-00004.sql:ro
       - ./supabase/migrations/00005_colores_tono.sql:/docker-entrypoint-initdb.d/migrations/90-00005.sql:ro
       - ./supabase/migrations/00006_diseno_cuello.sql:/docker-entrypoint-initdb.d/migrations/90-00006.sql:ro
+      - ./supabase/migrations/00007_piezas_herencia.sql:/docker-entrypoint-initdb.d/migrations/90-00007.sql:ro
+      - ./supabase/migrations/00008_herencia_cruzada.sql:/docker-entrypoint-initdb.d/migrations/90-00008.sql:ro
+      - ./supabase/migrations/00009_puno_del_cuello.sql:/docker-entrypoint-initdb.d/migrations/90-00009.sql:ro
       - ./supabase/seed.sql:/docker-entrypoint-initdb.d/migrations/99-seed.sql:ro
       - ./supabase/seed_disenos.sql:/docker-entrypoint-initdb.d/migrations/99-zz-seed-disenos.sql:ro
       - datos-db:/var/lib/postgresql/data

@@ -51,10 +51,18 @@ function Mover({ valor, etiqueta, alCambiar }) {
  *   alCambiar: (diseno: import('@inventario/shared').DisenoCuello) => void,
  *   colores: import('./SelectorColorCuello.jsx').OpcionColorCuello[],
  *   error?: string,
+ *   etiquetaPieza?: string,
  * }} props
  * Los colores salen SOLO de "Colores por zona" (no se mezclan tonos sueltos).
+ * Sirve igual para cuellos y punos: `etiquetaPieza` solo cambia los textos.
  */
-export default function DisenadorCuello({ valor, alCambiar, colores = [], error }) {
+export default function DisenadorCuello({
+  valor,
+  alCambiar,
+  colores = [],
+  error,
+  etiquetaPieza = 'cuello',
+}) {
   const id = useId()
   const cambiar = (cambios) => alCambiar({ ...valor, ...cambios })
 
@@ -220,7 +228,9 @@ export default function DisenadorCuello({ valor, alCambiar, colores = [], error 
       </div>
 
       <div className="disenador-vista">
-        <span className="texto-pequeno texto-suave">Vista previa del cuello</span>
+        <span className="texto-pequeno texto-suave">
+          Vista previa del {etiquetaPieza}
+        </span>
         <LienzoDiseno diseno={valor} modo="tejido" />
       </div>
     </div>

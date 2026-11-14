@@ -87,6 +87,12 @@ export default function LayoutPrincipal() {
             >
               + Nuevo cuello
             </NavLink>
+            <NavLink
+              to="/punos/nuevo"
+              className="boton boton-secundario boton-sm boton-compacto"
+            >
+              + Nuevo puño
+            </NavLink>
             <span className="separador" aria-hidden="true" />
             <span className="usuario" title={usuario?.email}>
               {nombre}
@@ -126,6 +132,9 @@ export default function LayoutPrincipal() {
               ))}
               <NavLink to="/cuellos/nuevo" className="enlace-menu">
                 + Nuevo cuello
+              </NavLink>
+              <NavLink to="/punos/nuevo" className="enlace-menu">
+                + Nuevo puño
               </NavLink>
               <div className="menu-movil-pie">
                 <span className="usuario">{nombre}</span>

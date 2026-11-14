@@ -27,6 +27,10 @@ export class ErrorNormalizado extends Error {
 /** Restricciones UNIQUE conocidas -> campo y mensaje legible. */
 const RESTRICCIONES_UNICAS = {
   cuellos_codigo_key: { campo: 'codigo', mensaje: 'Ya existe un cuello con ese código.' },
+  cuellos_pieza_codigo_key: {
+    campo: 'codigo',
+    mensaje: 'Ya existe una pieza de este tipo con ese código.',
+  },
   catalogo_colores_nombre_key: {
     campo: 'nombre',
     mensaje: 'Ese color ya está en el catálogo.',
@@ -83,6 +87,16 @@ export function normalizarError(error) {
       codigo: 'duplicado',
       campo: conocido?.campo ?? null,
       detalle: e.details ?? texto,
+    })
+  }
+
+  // Ciclos de herencia (trigger fn_validar_padre): el mensaje ya es legible.
+  if (e.code === '23514' && /hereda|herencia|puño/i.test(texto)) {
+    return new ErrorNormalizado({
+      mensaje: texto,
+      codigo: String(e.code),
+      campo: 'padre_id',
+      detalle: e.details ?? null,
     })
   }
 
