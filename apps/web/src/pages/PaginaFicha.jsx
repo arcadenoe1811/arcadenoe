@@ -2,8 +2,11 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   DATOS_FICHA,
+  ETIQUETAS_HEREDABLES,
   agruparColoresPorZona,
+  codigosMaquina,
   desactivarCuello,
+  formatearPieza,
   formatearFecha,
   formatearZona,
   normalizarError,
@@ -12,6 +15,9 @@ import {
 } from '@inventario/shared'
 import { useCuello } from '../hooks/useCuello.js'
 import { useCatalogoColores } from '../hooks/useCatalogoColores.js'
+import { useHijos } from '../hooks/useHijos.js'
+import SeccionPiezaHermana from '../components/SeccionPiezaHermana.jsx'
+import { rutaPieza } from '../utils/rutas.js'
 import ImagenCuello from '../components/ImagenCuello.jsx'
 import EtiquetaTipo from '../components/EtiquetaTipo.jsx'
 import MuestraColor from '../components/MuestraColor.jsx'
@@ -23,6 +29,7 @@ export default function PaginaFicha() {
   const navegar = useNavigate()
   const { cuello, cargando, error, recargar } = useCuello(id)
   const { colores: catalogo } = useCatalogoColores()
+  const { hijos } = useHijos(id)
   const [errorAccion, setErrorAccion] = useState(null)
   const [procesando, setProcesando] = useState(false)
 
@@ -46,12 +53,22 @@ export default function PaginaFicha() {
     catalogo.map((c) => [c.nombre.toLowerCase(), c.hex]),
   )
   const grupos = agruparColoresPorZona(cuello.colores)
+  const pieza = formatearPieza(cuello.pieza)
+  const nombrePieza = pieza.toLowerCase()
+  const codigos = codigosMaquina(cuello)
+  const cambiosPadre = Object.keys(cuello.overrides ?? {})
+    .map((campo) => ETIQUETAS_HEREDABLES[campo])
+    .filter(Boolean)
 
   const cambiarEstado = async () => {
     if (
       cuello.activo &&
       !window.confirm(
-        `¿Dar de baja el cuello “${cuello.codigo}”? Dejará de aparecer en la búsqueda.`,
+        `¿Dar de baja el ${nombrePieza} “${cuello.codigo}”? Dejará de aparecer en la búsqueda.${
+          hijos.length
+            ? ` Tiene ${hijos.length} ${hijos.length === 1 ? 'pieza que hereda' : 'piezas que heredan'} su diseño: lo seguirán usando.`
+            : ''
+        }`,
       )
     )
       return
@@ -87,19 +104,28 @@ export default function PaginaFicha() {
 
       {!cuello.activo && (
         <Aviso tipo="info">
-          Este cuello está dado de baja y no aparece en la búsqueda.
+          Este {nombrePieza} está dado de baja y no aparece en la búsqueda.
         </Aviso>
       )}
       {errorAccion && <Aviso tipo="error">{errorAccion.mensaje}</Aviso>}
 
       <header className="ficha-encabezado">
         <div>
+          <span className="insignia-posicion">{pieza}</span>
           <h1 className="codigo codigo-grande">{cuello.codigo}</h1>
           {cuello.nombre && <p className="ficha-nombre">{cuello.nombre}</p>}
+          {codigos.length > 0 && (
+            <p className="texto-pequeno texto-suave">
+              Códigos de máquina: <span className="codigo">{codigos.join(' · ')}</span>
+            </p>
+          )}
         </div>
         <EtiquetaTipo tipo={cuello.tipo} />
         <div className="ficha-acciones">
-          <Link to={`/cuellos/${cuello.id}/editar`} className="boton boton-primario">
+          <Link
+            to={rutaPieza(cuello.pieza, cuello.id, 'editar')}
+            className="boton boton-primario"
+          >
             Editar
           </Link>
           <button
@@ -117,11 +143,11 @@ export default function PaginaFicha() {
         <div className="ficha-imagen">
           <ImagenCuello
             url={cuello.imagen_url}
-            diseno={cuello.diseno}
-            alt={`Cuello ${cuello.codigo}`}
+            diseno={cuello.diseno_efectivo ?? cuello.diseno}
+            alt={`${pieza} ${cuello.codigo}`}
             tamano="grande"
           />
-          {cuello.imagen_url && !cuello.diseno && (
+          {cuello.imagen_url && !cuello.diseno_efectivo && (
             <a
               href={cuello.imagen_url}
               target="_blank"
@@ -215,6 +241,55 @@ export default function PaginaFicha() {
               ))
             )}
           </section>
+
+          <SeccionPiezaHermana key={cuello.id} pieza={cuello} alCambiar={recargar} />
+
+          {(cuello.padre || hijos.length > 0) && (
+            <section className="tarjeta">
+              <h2>Diseño</h2>
+              {cuello.padre && (
+                <p>
+                  Hereda de{' '}
+                  <Link to={rutaPieza(cuello.padre.pieza, cuello.padre.id)}>
+                    {formatearPieza(cuello.padre.pieza).toLowerCase()}{' '}
+                    <span className="codigo">{cuello.padre.codigo}</span>
+                  </Link>
+                  {cambiosPadre.length > 0 ? (
+                    <span className="texto-suave">
+                      {' '}
+                      · cambia: {cambiosPadre.join(', ')}
+                    </span>
+                  ) : (
+                    <span className="texto-suave"> · igual al padre</span>
+                  )}
+                </p>
+              )}
+              {hijos.length > 0 && (
+                <>
+                  <p className="texto-pequeno texto-suave">Heredan este diseño:</p>
+                  <ul className="lista-hijos">
+                    {hijos.map((hijo) => (
+                      <li key={hijo.id}>
+                        <Link to={rutaPieza(hijo.pieza, hijo.id)}>
+                          <span className="insignia-posicion">
+                            {formatearPieza(hijo.pieza)}
+                          </span>{' '}
+                          <span className="codigo">{hijo.codigo}</span>
+                          {hijo.nombre && ` · ${hijo.nombre}`}
+                        </Link>
+                        {Object.keys(hijo.overrides ?? {}).length > 0 && (
+                          <span className="texto-suave texto-pequeno">
+                            {' '}
+                            (con cambios)
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </section>
+          )}
 
           <section className="tarjeta">
             <h2>Notas</h2>

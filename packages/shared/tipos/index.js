@@ -9,17 +9,22 @@
  * Fila de la tabla `cuellos`.
  * @typedef {Object} Cuello
  * @property {string} id
- * @property {string} codigo
+ * @property {import('../cuellos/piezas.js').Pieza} pieza   cuello | puno
+ * @property {string} codigo   codigo del diseno (ej: maz4t5), unico por pieza
  * @property {string|null} nombre
  * @property {TipoCuello} tipo
  * @property {number|null} cantidad_hilos
  * @property {PosicionCuerpo[]} posiciones_cuerpo
  * @property {number|null} posicion_tubular
  * @property {number|null} pasadas_tubular
- * @property {number[]|null} medidas
+ * @property {number[]|null} medidas   medidas del cuello
+ * @property {import('../cuellos/piezas.js').TallaPuno[]|null} [tallas]  tallas del puno
  * @property {string|null} notas
  * @property {string|null} imagen_url
- * @property {import('../cuellos/diseno.js').DisenoCuello|null} [diseno]  diseno Jacquard (JSON pequeno)
+ * @property {import('../cuellos/diseno.js').DisenoCuello|null} [diseno]  diseno Jacquard propio (null si hereda)
+ * @property {string|null} [padre_id]   pieza de la que hereda el diseno
+ * @property {Record<string, any>} [overrides]  campos del diseno que cambia respecto al padre
+ * @property {import('../cuellos/diseno.js').DisenoCuello|null} [diseno_efectivo]  calculado en la app (propio o heredado)
  * @property {boolean} activo
  * @property {string} created_at
  * @property {string|null} updated_at
@@ -65,6 +70,7 @@
  * @property {string} [termino]
  * @property {TipoCuello|''} [tipo]
  * @property {number|string|null} [medida]
+ * @property {import('../cuellos/piezas.js').Pieza|''} [pieza]
  */
 
 /**

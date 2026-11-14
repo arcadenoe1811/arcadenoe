@@ -1,5 +1,6 @@
 import { Link, useSearchParams } from 'react-router-dom'
-import { hayFiltrosActivos } from '@inventario/shared'
+import { formatearPieza, hayFiltrosActivos } from '@inventario/shared'
+import { rutaPieza } from '../utils/rutas.js'
 import { useCuellos } from '../hooks/useCuellos.js'
 import { useDebounce } from '../hooks/useDebounce.js'
 import FiltrosCuellos from '../components/FiltrosCuellos.jsx'
@@ -8,7 +9,7 @@ import Cargando from '../components/Cargando.jsx'
 import Aviso from '../components/Aviso.jsx'
 
 /** Nombre del parametro de URL para cada filtro. */
-const PARAMETROS = { termino: 'q', tipo: 'tipo', medida: 'medida' }
+const PARAMETROS = { termino: 'q', pieza: 'pieza', tipo: 'tipo', medida: 'medida' }
 
 /** @param {URLSearchParams} parametros */
 function leerFiltros(parametros) {
@@ -62,12 +63,12 @@ export default function PaginaInicio() {
         </Aviso>
       )}
 
-      {cargando && !cuellos && <Cargando texto="Buscando cuellos…" />}
+      {cargando && !cuellos && <Cargando texto="Buscando…" />}
 
       {cuellos && (
         <>
           <p className="resumen-resultados" aria-live="polite">
-            {cuellos.length === 1 ? '1 cuello' : `${cuellos.length} cuellos`}
+            {cuellos.length === 1 ? '1 pieza' : `${cuellos.length} piezas`}
             {cargando && ' · actualizando…'}
           </p>
 
@@ -75,20 +76,20 @@ export default function PaginaInicio() {
             <div className="vacio">
               <p>
                 {hayFiltros
-                  ? 'Ningún cuello coincide con la búsqueda.'
-                  : 'Todavía no hay cuellos registrados.'}
+                  ? 'Ninguna pieza coincide con la búsqueda.'
+                  : 'Todavía no hay piezas registradas.'}
               </p>
               <Link
                 to={
                   filtros.termino
-                    ? `/cuellos/nuevo?codigo=${encodeURIComponent(filtros.termino)}`
-                    : '/cuellos/nuevo'
+                    ? `${rutaPieza(filtros.pieza)}?codigo=${encodeURIComponent(filtros.termino)}`
+                    : rutaPieza(filtros.pieza)
                 }
                 className="boton boton-primario"
               >
                 {filtros.termino
-                  ? `Registrar “${filtros.termino}”`
-                  : 'Registrar un cuello'}
+                  ? `Registrar ${formatearPieza(filtros.pieza).toLowerCase()} “${filtros.termino}”`
+                  : `Registrar un ${formatearPieza(filtros.pieza).toLowerCase()}`}
               </Link>
             </div>
           ) : (

@@ -858,3 +858,80 @@
   cursor: pointer;
   text-decoration: underline;
 }
+
+/* ---------- Ficha: piezas que heredan el diseno ---------- */
+
+.lista-hijos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+  margin: var(--espacio-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.tarjeta-medidas .insignia-posicion {
+  margin-right: var(--espacio-1);
+}
+
+/* ---------- Ficha: puno / cuello del mismo codigo ---------- */
+
+.pieza-hermana {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-4);
+  padding: var(--espacio-3);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+.pieza-hermana:hover {
+  background: var(--color-superficie-hover);
+  border-color: var(--color-borde-fuerte);
+}
+.pieza-hermana:focus-visible {
+  outline: 2px solid var(--color-borde-focus);
+  outline-offset: 2px;
+}
+.pieza-hermana .imagen-cuello {
+  flex: none;
+  width: 96px;
+  height: auto;
+  border-radius: var(--radio-pequeno);
+  overflow: hidden;
+}
+.pieza-hermana-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  min-width: 0;
+  line-height: 1.35;
+}
+.pieza-hermana:hover .codigo {
+  text-decoration: underline;
+}
+.acciones-pieza-hermana {
+  margin-top: var(--espacio-3);
+}
+
+/* Puno que usa un cuello: con sus colores y el original */
+.vista-puno {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--espacio-3);
+  margin-bottom: var(--espacio-2);
+}
+.vista-puno figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+}
+.vista-puno .imagen-cuello {
+  width: 100%;
+  height: auto;
+}

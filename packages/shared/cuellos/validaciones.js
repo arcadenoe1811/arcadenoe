@@ -2,6 +2,8 @@ import { LIMITES, ZONAS_COLOR } from './constantes.js'
 import { normalizarNombreTipo } from './tipos.js'
 import { leerZonaColor } from './campos.js'
 import { validarDiseno } from './diseno.js'
+import { validarOverrides } from './herencia.js'
+import { interpretarTallas, normalizarPieza, TALLAS_PUNO } from './piezas.js'
 
 /**
  * Reglas de validacion de cuellos y sus colores. Reciben los valores tal
@@ -12,6 +14,7 @@ import { validarDiseno } from './diseno.js'
 const PATRON_CODIGO = /^[a-z0-9][a-z0-9._#\-/]*$/
 const PATRON_URL = /^https?:\/\/\S+$/i
 const PATRON_HEX = /^#[0-9a-f]{6}$/i
+const PATRON_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 /** @param {unknown} valor */
 function textoOpcional(valor) {
@@ -85,6 +88,10 @@ export function validarCuello(formulario) {
 
   if (formulario.id) datos.id = formulario.id
 
+  // pieza (cuello | puno)
+  const pieza = normalizarPieza(formulario.pieza)
+  datos.pieza = pieza
+
   // codigo
   const codigo = normalizarCodigo(formulario.codigo)
   if (!codigo) {
@@ -126,12 +133,22 @@ export function validarCuello(formulario) {
   Object.assign(errores, posiciones.errores)
   datos.posiciones_cuerpo = posiciones.datos
 
-  // medidas
-  const { medidas, invalidas } = interpretarMedidas(formulario.medidas)
-  if (invalidas.length) {
-    errores.medidas = `Medidas inválidas: ${invalidas.join(', ')}. Usa enteros entre ${LIMITES.medida.minimo} y ${LIMITES.medida.maximo}.`
+  // medidas (cuello) o tallas (puno)
+  if (pieza === 'puno') {
+    const { tallas, invalidas } = interpretarTallas(formulario.tallas)
+    if (invalidas.length) {
+      errores.tallas = `Tallas inválidas: ${invalidas.join(', ')}. Usa ${TALLAS_PUNO.map((t) => t.valor).join(', ')}.`
+    }
+    datos.tallas = tallas
+    datos.medidas = null
+  } else {
+    const { medidas, invalidas } = interpretarMedidas(formulario.medidas)
+    if (invalidas.length) {
+      errores.medidas = `Medidas inválidas: ${invalidas.join(', ')}. Usa enteros entre ${LIMITES.medida.minimo} y ${LIMITES.medida.maximo}.`
+    }
+    datos.medidas = medidas
+    datos.tallas = null
   }
-  datos.medidas = medidas
 
   // imagen
   const imagen = textoOpcional(formulario.imagen_url)
@@ -140,10 +157,28 @@ export function validarCuello(formulario) {
   }
   datos.imagen_url = imagen
 
-  // diseno Jacquard (reemplaza la imagen; null = sin diseno)
-  const diseno = validarDiseno(formulario.diseno)
-  if (!diseno.valido) errores.diseno = diseno.error ?? 'El diseño no es válido.'
-  datos.diseno = diseno.datos
+  // Herencia: un hijo guarda padre + overrides y NO tiene diseno propio;
+  // una pieza independiente guarda su diseno y no tiene overrides.
+  const padreId = String(formulario.padre_id ?? '').trim()
+  if (padreId) {
+    if (!PATRON_UUID.test(padreId)) {
+      errores.padre_id = 'El diseño padre no es válido.'
+    } else if (formulario.id && padreId === formulario.id) {
+      errores.padre_id = 'Una pieza no puede heredar de sí misma.'
+    }
+    const overrides = validarOverrides(formulario.overrides)
+    if (!overrides.valido) errores.diseno = overrides.error ?? 'El diseño no es válido.'
+    datos.padre_id = padreId
+    datos.overrides = overrides.datos
+    datos.diseno = null
+  } else {
+    // diseno Jacquard (reemplaza la imagen; null = sin diseno)
+    const diseno = validarDiseno(formulario.diseno)
+    if (!diseno.valido) errores.diseno = diseno.error ?? 'El diseño no es válido.'
+    datos.diseno = diseno.datos
+    datos.padre_id = null
+    datos.overrides = {}
+  }
 
   if (typeof formulario.activo === 'boolean') datos.activo = formulario.activo
 
