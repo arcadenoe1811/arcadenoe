@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   verificar:
@@ -59,3 +59,26 @@ jobs:
 
       - name: Ejecutar pruebas shared
         run: npm run test --workspace=packages/shared -- --run
+
+  migraciones:
+    name: Migraciones de base de datos
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      # Levanta un Postgres temporal dentro del runner y aplica todas las
+      # migraciones de supabase/migrations + los seeds de config.toml.
+      # Si alguna migración o seed tiene un error, este paso falla.
+      - name: Aplicar migraciones y seeds
+        run: supabase db start
+
+      - name: Detener base de datos
+        if: always()
+        run: supabase stop --no-backup
