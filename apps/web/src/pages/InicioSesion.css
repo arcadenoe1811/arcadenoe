@@ -2,38 +2,48 @@
 
 .acceso {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   min-height: 100dvh;
   padding: var(--espacio-4);
-  background: linear-gradient(160deg, var(--color-fondo-acceso) 0%, var(--color-fondo-acceso-2) 100%);
+  background: var(--login-fondo);
 }
 
 .acceso-spinner {
-  color: #fff;
-}
-
-.acceso-tarjeta {
-  width: 100%;
-  border: 0;
-  box-shadow: var(--sombra-grande);
+  color: var(--color-ambar);
 }
 
 .acceso-encabezado {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--espacio-3);
+  gap: var(--espacio-2);
   margin-bottom: var(--espacio-6);
   text-align: center;
 }
 .acceso-encabezado h1 {
   margin: 0;
   font-size: var(--texto-grande);
+  color: var(--login-titulo-color);
+}
+.acceso-subtitulo {
+  margin: 0;
+  font-size: var(--texto-pequeno);
+  font-weight: 500;
+  color: var(--color-ambar);
 }
 .acceso-logo {
+  margin-bottom: var(--espacio-1);
   border-radius: var(--radio-grande);
+}
+
+.acceso-tarjeta {
+  width: 100%;
+  background: var(--login-tarjeta-fondo);
+  border: 0;
+  box-shadow: var(--sombra-grande);
 }
 
 .acceso-formulario {
@@ -55,7 +65,7 @@
   background: none;
   border: 0;
   border-radius: var(--radio);
-  color: var(--color-texto-suave);
+  color: var(--color-texto-secundario);
   cursor: pointer;
 }
 .boton-ver-contrasena:hover {
@@ -70,15 +80,22 @@
   .acceso-encabezado h1 {
     font-size: var(--texto-titulo);
   }
+  .acceso-subtitulo {
+    font-size: var(--texto-base);
+  }
 }
 
-/* Escritorio: fondo decorativo sutil */
+/* Escritorio: textura sutil sobre el verde bosque */
 @media (min-width: 1024px) {
   .acceso {
     background:
-      radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.08) 0, transparent 35%),
-      radial-gradient(circle at 85% 80%, rgba(255, 255, 255, 0.06) 0, transparent 40%),
-      repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0 2px, transparent 2px 14px),
-      linear-gradient(160deg, var(--color-fondo-acceso) 0%, var(--color-fondo-acceso-2) 100%);
+      radial-gradient(circle at 15% 20%, rgba(109, 151, 115, 0.16) 0, transparent 35%),
+      radial-gradient(circle at 85% 80%, rgba(187, 138, 82, 0.12) 0, transparent 40%),
+      repeating-linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.025) 0 2px,
+        transparent 2px 14px
+      ),
+      var(--login-fondo);
   }
 }

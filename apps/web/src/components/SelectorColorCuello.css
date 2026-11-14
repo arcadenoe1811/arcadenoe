@@ -1,0 +1,100 @@
+/* ---------- Selector de color limitado a "Colores por zona" ---------- */
+
+.selector-color-cuello {
+  position: relative;
+  display: inline-block;
+}
+
+.selector-color-cuello-boton,
+.selector-color-cuello-lista button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  font: inherit;
+  font-size: var(--texto-pequeno);
+  color: var(--color-texto);
+  cursor: pointer;
+}
+
+.selector-color-cuello-boton {
+  min-height: 30px;
+  max-width: 13rem;
+  padding: 2px var(--espacio-2) 2px 3px;
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: var(--radio-pequeno);
+}
+.selector-color-cuello-boton:hover {
+  border-color: var(--color-secundario);
+}
+.selector-color-cuello-boton:focus-visible {
+  outline: none;
+  border-color: var(--input-borde-focus);
+  box-shadow: var(--input-sombra-focus);
+}
+/* Color que ya no esta en "Colores por zona": se avisa con el rojo de error. */
+.selector-color-cuello-boton.fuera-de-lista {
+  border-color: var(--color-error);
+  background: var(--color-error-fondo);
+  color: var(--color-error);
+}
+
+.selector-color-cuello-muestra {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: 4px;
+}
+.selector-color-cuello-nombre {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.selector-color-cuello-flecha {
+  margin-left: auto;
+  color: var(--color-texto-terciario);
+}
+
+.selector-color-cuello-lista {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 50;
+  min-width: 100%;
+  width: max-content;
+  max-width: 18rem;
+  max-height: 260px;
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--espacio-1);
+  list-style: none;
+  background: var(--color-superficie-elevada);
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-elevada);
+}
+.selector-color-cuello-lista button {
+  width: 100%;
+  padding: var(--espacio-1) var(--espacio-2);
+  background: none;
+  border: none;
+  border-radius: var(--radio-pequeno);
+  text-align: left;
+}
+.selector-color-cuello-lista button:hover,
+.selector-color-cuello-lista button:focus-visible {
+  outline: none;
+  background: var(--color-exito-fondo);
+}
+.selector-color-cuello-lista button.elegido {
+  background: var(--color-info-fondo);
+  font-weight: 600;
+}
+.selector-color-cuello-detalle {
+  margin-left: auto;
+  padding-left: var(--espacio-2);
+  color: var(--color-texto-secundario);
+  white-space: nowrap;
+}

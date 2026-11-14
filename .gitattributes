@@ -1,0 +1,7 @@
+# Prettier exige LF ("endOfLine": "lf"). Sin esto, core.autocrlf en Windows
+# convierte a CRLF al hacer checkout y `npm run format:check` falla.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary

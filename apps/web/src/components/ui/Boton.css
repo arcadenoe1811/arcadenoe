@@ -14,7 +14,10 @@
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
-  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s;
 }
 
 .boton:disabled {
@@ -38,10 +41,21 @@
 /* Variantes */
 .boton-primario {
   background: var(--color-primario);
-  color: #fff;
+  color: var(--color-primario-texto);
 }
 .boton-primario:hover:not(:disabled) {
   background: var(--color-primario-hover);
+}
+.boton-primario:active:not(:disabled) {
+  background: var(--color-primario-activo);
+}
+/* Spinner ámbar sobre el fondo oscuro del botón primario */
+.boton-primario .spinner {
+  color: var(--color-ambar);
+}
+/* Mientras carga se mantiene el fondo pleno (no se atenúa como disabled) */
+.boton-primario.boton-cargando:disabled {
+  opacity: 1;
 }
 
 .boton-secundario {
@@ -50,15 +64,30 @@
   border-color: var(--color-borde-fuerte);
 }
 .boton-secundario:hover:not(:disabled) {
-  background: var(--color-superficie-suave);
+  background: var(--color-fondo-alt);
+}
+
+/* Contorno — atajos y acciones de apoyo que deben verse como boton
+   sin competir con el primario. */
+.boton-contorno {
+  background: transparent;
+  color: var(--color-primario);
+  border-color: var(--color-secundario);
+}
+.boton-contorno:hover:not(:disabled) {
+  background: var(--color-exito-fondo);
+  border-color: var(--color-primario);
+}
+.boton-contorno:active:not(:disabled) {
+  background: var(--color-info-fondo);
 }
 
 .boton-peligro {
-  background: var(--color-peligro);
-  color: #fff;
+  background: var(--color-error);
+  color: var(--color-texto-invertido);
 }
 .boton-peligro:hover:not(:disabled) {
-  background: var(--color-peligro-hover);
+  background: var(--color-error-hover);
 }
 
 .boton-fantasma {
@@ -68,13 +97,13 @@
   font-weight: 500;
 }
 .boton-fantasma:hover:not(:disabled) {
-  background: var(--color-primario-suave);
+  background: var(--color-info-fondo);
 }
 .boton-fantasma-peligro {
-  color: var(--color-peligro);
+  color: var(--color-error);
 }
 .boton-fantasma-peligro:hover:not(:disabled) {
-  background: var(--color-peligro-suave);
+  background: var(--color-error-fondo);
 }
 
 /* Boton cuadrado de icono */
@@ -87,7 +116,7 @@
   border: 1px solid var(--color-borde);
   border-radius: var(--radio);
   background: var(--color-superficie);
-  color: var(--color-texto-suave);
+  color: var(--color-texto-secundario);
   cursor: pointer;
 }
 .boton-icono:disabled {
@@ -95,8 +124,8 @@
   cursor: default;
 }
 .boton-icono-peligro:hover {
-  color: var(--color-peligro);
-  border-color: var(--color-peligro);
+  color: var(--color-error);
+  border-color: var(--color-error);
 }
 
 /* En movil los botones principales ocupan todo el ancho */

@@ -1,4 +1,4 @@
-import Spinner from './ui/Spinner.jsx';
+import Spinner from './ui/Spinner.jsx'
 
 export default function Cargando({ texto = 'Cargando…' }) {
   return (
@@ -6,5 +6,5 @@ export default function Cargando({ texto = 'Cargando…' }) {
       <Spinner tamano="sm" etiqueta={texto} />
       {texto}
     </div>
-  );
+  )
 }

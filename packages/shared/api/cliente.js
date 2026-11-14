@@ -1,8 +1,8 @@
-import { createClient } from '@supabase/supabase-js';
-import { ErrorNormalizado } from './errores.js';
+import { createClient } from '@supabase/supabase-js'
+import { ErrorNormalizado } from './errores.js'
 
 /** @type {import('@supabase/supabase-js').SupabaseClient | null} */
-let cliente = null;
+let cliente = null
 
 /**
  * Crea la instancia unica de supabase-js. Se llama una sola vez al arrancar
@@ -14,13 +14,17 @@ export function configurarCliente({ url, llaveAnonima }) {
     throw new ErrorNormalizado({
       mensaje: 'Faltan VITE_SUPABASE_URL o VITE_SUPABASE_ANON_KEY en el archivo .env',
       codigo: 'configuracion',
-    });
+    })
   }
   cliente = createClient(url, llaveAnonima, {
     // La sesion se guarda en el navegador y se renueva sola: sobrevive a recargas.
-    auth: { persistSession: true, autoRefreshToken: true, storageKey: 'inventario-cuellos-sesion' },
-  });
-  return cliente;
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      storageKey: 'inventario-cuellos-sesion',
+    },
+  })
+  return cliente
 }
 
 /**
@@ -30,9 +34,10 @@ export function configurarCliente({ url, llaveAnonima }) {
 export function obtenerCliente() {
   if (!cliente) {
     throw new ErrorNormalizado({
-      mensaje: 'El cliente de Supabase no esta configurado. Llama a configurarCliente() al arrancar.',
+      mensaje:
+        'El cliente de Supabase no esta configurado. Llama a configurarCliente() al arrancar.',
       codigo: 'configuracion',
-    });
+    })
   }
-  return cliente;
+  return cliente
 }

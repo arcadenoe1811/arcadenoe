@@ -1,4 +1,5 @@
-import { useId } from 'react';
+import { useId } from 'react'
+import { soloEnteros } from '../utils/soloEnteros.js'
 
 /**
  * Pinta un campo a partir de un descriptor de @inventario/shared.
@@ -9,13 +10,32 @@ import { useId } from 'react';
  *   alCambiar: (nombre: string, valor: string) => void,
  *   listaSugerencias?: string,
  *   ocultarEtiqueta?: boolean,
+ *   deshabilitado?: boolean,
  * }} props
  */
-export default function CampoFormulario({ descriptor, valor, error, alCambiar, listaSugerencias, ocultarEtiqueta = false }) {
-  const id = useId();
-  const { nombre, etiqueta, tipo, requerido, placeholder, ayuda, minimo, maximo, filas, opciones } = descriptor;
-  const idAyuda = `${id}-ayuda`;
-  const idError = `${id}-error`;
+export default function CampoFormulario({
+  descriptor,
+  valor,
+  error,
+  alCambiar,
+  listaSugerencias,
+  ocultarEtiqueta = false,
+  deshabilitado = false,
+}) {
+  const id = useId()
+  const {
+    nombre,
+    etiqueta,
+    tipo,
+    requerido,
+    placeholder,
+    ayuda,
+    maximo,
+    filas,
+    opciones,
+  } = descriptor
+  const idAyuda = `${id}-ayuda`
+  const idError = `${id}-error`
 
   const comunes = {
     id,
@@ -23,12 +43,14 @@ export default function CampoFormulario({ descriptor, valor, error, alCambiar, l
     value: valor ?? '',
     placeholder,
     required: requerido,
+    disabled: deshabilitado || undefined,
     'aria-invalid': error ? true : undefined,
-    'aria-describedby': [ayuda && idAyuda, error && idError].filter(Boolean).join(' ') || undefined,
+    'aria-describedby':
+      [ayuda && idAyuda, error && idError].filter(Boolean).join(' ') || undefined,
     onChange: (evento) => alCambiar(nombre, evento.target.value),
-  };
+  }
 
-  let control;
+  let control
   if (tipo === 'seleccion') {
     control = (
       <select {...comunes}>
@@ -38,13 +60,25 @@ export default function CampoFormulario({ descriptor, valor, error, alCambiar, l
           </option>
         ))}
       </select>
-    );
+    )
   } else if (tipo === 'area_texto') {
-    control = <textarea {...comunes} rows={filas ?? 4} />;
+    control = <textarea {...comunes} rows={filas ?? 4} />
   } else if (tipo === 'numero') {
-    control = <input {...comunes} type="number" inputMode="numeric" step="1" min={minimo} max={maximo} />;
+    // Solo enteros sin signo: type="number" deja escribir "e", "." y "-".
+    const largo = maximo ? String(maximo).length : undefined
+    control = (
+      <input
+        {...comunes}
+        type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        autoComplete="off"
+        maxLength={largo}
+        onChange={(evento) => alCambiar(nombre, soloEnteros(evento.target.value, largo))}
+      />
+    )
   } else if (tipo === 'url') {
-    control = <input {...comunes} type="url" inputMode="url" />;
+    control = <input {...comunes} type="url" inputMode="url" />
   } else {
     control = (
       <input
@@ -54,14 +88,19 @@ export default function CampoFormulario({ descriptor, valor, error, alCambiar, l
         autoComplete="off"
         inputMode={tipo === 'lista_numeros' ? 'numeric' : undefined}
       />
-    );
+    )
   }
 
   return (
     <div className={`campo campo-${tipo}${error ? ' campo-con-error' : ''}`}>
       <label htmlFor={id} className={ocultarEtiqueta ? 'solo-lector' : undefined}>
         {etiqueta}
-        {requerido && <span className="requerido" aria-hidden="true"> *</span>}
+        {requerido && (
+          <span className="requerido" aria-hidden="true">
+            {' '}
+            *
+          </span>
+        )}
       </label>
       {control}
       {ayuda && !error && (
@@ -75,5 +114,5 @@ export default function CampoFormulario({ descriptor, valor, error, alCambiar, l
         </small>
       )}
     </div>
-  );
+  )
 }

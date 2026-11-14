@@ -1,39 +1,45 @@
-import { Link, useSearchParams } from 'react-router-dom';
-import { buscarCuellos, hayFiltrosActivos } from '@inventario/shared';
-import { usarConsulta } from '../hooks/usarConsulta.js';
-import { usarRetraso } from '../hooks/usarRetraso.js';
-import FiltrosCuellos from '../components/FiltrosCuellos.jsx';
-import TarjetaCuello from '../components/TarjetaCuello.jsx';
-import Cargando from '../components/Cargando.jsx';
-import Aviso from '../components/Aviso.jsx';
+import { Link, useSearchParams } from 'react-router-dom'
+import { formatearPieza, hayFiltrosActivos } from '@inventario/shared'
+import { rutaPieza } from '../utils/rutas.js'
+import { useCuellos } from '../hooks/useCuellos.js'
+import { useDebounce } from '../hooks/useDebounce.js'
+import FiltrosCuellos from '../components/FiltrosCuellos.jsx'
+import TarjetaCuello from '../components/TarjetaCuello.jsx'
+import Cargando from '../components/Cargando.jsx'
+import Aviso from '../components/Aviso.jsx'
 
 /** Nombre del parametro de URL para cada filtro. */
-const PARAMETROS = { termino: 'q', tipo: 'tipo', medida: 'medida' };
+const PARAMETROS = { termino: 'q', pieza: 'pieza', tipo: 'tipo', medida: 'medida' }
 
 /** @param {URLSearchParams} parametros */
 function leerFiltros(parametros) {
-  return Object.fromEntries(Object.entries(PARAMETROS).map(([filtro, parametro]) => [filtro, parametros.get(parametro) ?? '']));
+  return Object.fromEntries(
+    Object.entries(PARAMETROS).map(([filtro, parametro]) => [
+      filtro,
+      parametros.get(parametro) ?? '',
+    ]),
+  )
 }
 
 export default function PaginaInicio() {
   // Los filtros viven en la URL: al volver de una ficha se conserva la busqueda.
-  const [parametros, setParametros] = useSearchParams();
-  const filtros = leerFiltros(parametros);
+  const [parametros, setParametros] = useSearchParams()
+  const filtros = leerFiltros(parametros)
 
-  const claveRetrasada = usarRetraso(parametros.toString(), 250);
-  const { datos: cuellos, cargando, error, recargar } = usarConsulta(
-    () => buscarCuellos(leerFiltros(new URLSearchParams(claveRetrasada))),
-    [claveRetrasada],
-  );
+  // Se retrasa la cadena de la URL (primitivo estable) y luego se pasan
+  // los filtros como strings al hook.
+  const claveRetrasada = useDebounce(parametros.toString(), 250)
+  const filtrosRetrasados = leerFiltros(new URLSearchParams(claveRetrasada))
+  const { cuellos, cargando, error, recargar } = useCuellos(filtrosRetrasados)
 
   const cambiarFiltro = (nombre, valor) => {
-    const nuevos = new URLSearchParams(parametros);
-    if (valor) nuevos.set(PARAMETROS[nombre], valor);
-    else nuevos.delete(PARAMETROS[nombre]);
-    setParametros(nuevos, { replace: true });
-  };
+    const nuevos = new URLSearchParams(parametros)
+    if (valor) nuevos.set(PARAMETROS[nombre], valor)
+    else nuevos.delete(PARAMETROS[nombre])
+    setParametros(nuevos, { replace: true })
+  }
 
-  const hayFiltros = hayFiltrosActivos(filtros);
+  const hayFiltros = hayFiltrosActivos(filtros)
 
   return (
     <section>
@@ -57,23 +63,33 @@ export default function PaginaInicio() {
         </Aviso>
       )}
 
-      {cargando && !cuellos && <Cargando texto="Buscando cuellos…" />}
+      {cargando && !cuellos && <Cargando texto="Buscando…" />}
 
       {cuellos && (
         <>
           <p className="resumen-resultados" aria-live="polite">
-            {cuellos.length === 1 ? '1 cuello' : `${cuellos.length} cuellos`}
+            {cuellos.length === 1 ? '1 pieza' : `${cuellos.length} piezas`}
             {cargando && ' · actualizando…'}
           </p>
 
           {cuellos.length === 0 ? (
             <div className="vacio">
-              <p>{hayFiltros ? 'Ningún cuello coincide con la búsqueda.' : 'Todavía no hay cuellos registrados.'}</p>
+              <p>
+                {hayFiltros
+                  ? 'Ninguna pieza coincide con la búsqueda.'
+                  : 'Todavía no hay piezas registradas.'}
+              </p>
               <Link
-                to={filtros.termino ? `/cuellos/nuevo?codigo=${encodeURIComponent(filtros.termino)}` : '/cuellos/nuevo'}
+                to={
+                  filtros.termino
+                    ? `${rutaPieza(filtros.pieza)}?codigo=${encodeURIComponent(filtros.termino)}`
+                    : rutaPieza(filtros.pieza)
+                }
                 className="boton boton-primario"
               >
-                {filtros.termino ? `Registrar “${filtros.termino}”` : 'Registrar un cuello'}
+                {filtros.termino
+                  ? `Registrar ${formatearPieza(filtros.pieza).toLowerCase()} “${filtros.termino}”`
+                  : `Registrar un ${formatearPieza(filtros.pieza).toLowerCase()}`}
               </Link>
             </div>
           ) : (
@@ -86,5 +102,5 @@ export default function PaginaInicio() {
         </>
       )}
     </section>
-  );
+  )
 }
