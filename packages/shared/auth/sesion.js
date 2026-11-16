@@ -5,7 +5,8 @@ import { normalizarError } from '../api/errores.js'
  * No lanzan: devuelven `{ ..., error }` con un mensaje listo para mostrar.
  */
 
-const PATRON_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+/** Formato de correo; el mismo que valida la base (fn_validar_datos_usuario). */
+export const PATRON_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const MENSAJE_CREDENCIALES = 'Credenciales incorrectas'
 
@@ -44,7 +45,9 @@ function mensajeErrorAuth(error) {
     return MENSAJE_CREDENCIALES
   }
   if (estado === 429 || codigo === 'over_request_rate_limit') {
-    return 'Demasiados intentos. Espera un momento y vuelve a probar.'
+    // Limite por IP de GoTrue o bloqueo de la cuenta tras 5 fallos (hook
+    // fn_hook_intento_contrasena, 15 minutos).
+    return 'Demasiados intentos fallidos. Espera 15 minutos y vuelve a probar.'
   }
   const normalizado = normalizarError(error)
   return normalizado.codigo === 'red'
@@ -75,21 +78,57 @@ export async function iniciarSesion(supabase, email, contrasena) {
 }
 
 /**
- * Cerrar sesion. Si el servidor no responde, la sesion local se borra igual.
+ * Cerrar sesion: revoca los refresh tokens en el servidor (todas las
+ * sesiones del usuario) y borra la sesion guardada en el navegador. Si el
+ * servidor no responde, la sesion local se borra igual.
  * @param {import('@supabase/supabase-js').SupabaseClient} supabase
  * @returns {Promise<{ error: string|null }>}
  */
 export async function cerrarSesion(supabase) {
+  let fallo = null
   try {
-    const { error } = await supabase.auth.signOut()
-    if (error) {
-      await supabase.auth.signOut({ scope: 'local' })
-      return { error: null }
-    }
-    return { error: null }
+    const { error } = await supabase.auth.signOut({ scope: 'global' })
+    fallo = error
   } catch (error) {
-    return { error: normalizarError(error).mensaje }
+    fallo = error
   }
+  if (fallo) {
+    try {
+      await supabase.auth.signOut({ scope: 'local' })
+    } catch {
+      // Sin red y sin poder limpiar: quien llama borra el almacenamiento.
+    }
+  }
+  return { error: null }
+}
+
+/** Minutos de inactividad tras los que la sesion se cierra sola (8 horas). */
+export const MINUTOS_INACTIVIDAD_POR_DEFECTO = 480
+
+/**
+ * Lee el limite de inactividad configurado (minutos) y lo pasa a
+ * milisegundos. Valores invalidos usan el valor por defecto.
+ * @param {unknown} minutos
+ */
+export function limiteInactividadMs(minutos) {
+  const n = Number(minutos)
+  const validos = Number.isFinite(n) && n >= 1 && n <= 60 * 24 * 30
+  return (validos ? n : MINUTOS_INACTIVIDAD_POR_DEFECTO) * 60 * 1000
+}
+
+/**
+ * Indica si la sesion debe darse por vencida por inactividad. Sin registro
+ * de actividad (o con uno invalido o del futuro) se considera vencida:
+ * ante la duda, se pide iniciar sesion.
+ * @param {unknown} ultimaActividad  marca de tiempo en ms (o su texto)
+ * @param {number} ahora             Date.now()
+ * @param {number} limiteMs
+ */
+export function sesionInactiva(ultimaActividad, ahora, limiteMs) {
+  const ultima = Number(ultimaActividad)
+  if (!ultimaActividad || !Number.isFinite(ultima) || ultima <= 0) return true
+  if (ultima > ahora + 60 * 1000) return true
+  return ahora - ultima >= limiteMs
 }
 
 /**

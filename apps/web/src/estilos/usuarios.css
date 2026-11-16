@@ -1,0 +1,180 @@
+/* Gestion de usuarios. Mobile-first: cada usuario es una ficha; desde
+   1024px, una tabla. */
+
+.usuarios-encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  margin-bottom: var(--espacio-4);
+}
+.usuarios-encabezado h1 {
+  margin: 0;
+}
+.usuarios-encabezado p {
+  margin: var(--espacio-1) 0 0;
+}
+
+.tabla-usuarios-envoltura {
+  padding: 0;
+  overflow: hidden;
+}
+
+.tabla-usuarios {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tabla-usuarios thead {
+  /* En movil las etiquetas van junto a cada dato (data-etiqueta). */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.tabla-usuarios tr {
+  display: grid;
+  gap: var(--espacio-2);
+  padding: var(--espacio-4);
+  border-bottom: 1px solid var(--color-borde);
+}
+.tabla-usuarios tbody tr:last-child {
+  border-bottom: 0;
+}
+.tabla-usuarios td {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2);
+  padding: 0;
+  overflow-wrap: anywhere;
+}
+.tabla-usuarios td[data-etiqueta]::before {
+  content: attr(data-etiqueta);
+  flex: 0 0 7.5rem;
+  color: var(--color-texto-secundario);
+  font-size: var(--texto-pequeno);
+}
+
+.usuario-nombre {
+  font-weight: 600;
+}
+.usuario-correo {
+  font-family: var(--fuente-mono);
+  font-size: var(--texto-pequeno);
+}
+.usuario-nota {
+  flex-basis: 100%;
+}
+.usuario-acciones {
+  margin-top: var(--espacio-1);
+  padding-top: var(--espacio-2);
+  border-top: 1px dashed var(--color-borde);
+}
+
+/* Deshabilitados: siguen en la lista, en gris. Las acciones no se atenuan. */
+.usuario-inactivo {
+  background: var(--color-fondo-alt);
+}
+.usuario-inactivo td:not(.usuario-acciones) {
+  color: var(--color-texto-terciario);
+}
+.usuario-inactivo .usuario-nombre {
+  text-decoration: line-through;
+}
+.usuario-inactivo .insignia-rol {
+  filter: grayscale(1);
+  opacity: 0.7;
+}
+
+.insignia-rol {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--espacio-2);
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: 999px;
+  background: var(--color-fondo-alt);
+  color: var(--color-texto-secundario);
+  font-size: var(--texto-pequeno);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.insignia-rol-admin {
+  background: var(--color-info-fondo);
+  border-color: var(--color-bosque);
+  color: var(--color-bosque);
+}
+.insignia-rol-operador {
+  background: var(--badge-tubular-fondo);
+  border-color: var(--badge-tubular-borde);
+  color: var(--badge-tubular-texto);
+}
+
+/* Modal de usuario */
+.modal.modal-usuario {
+  width: min(460px, calc(100% - 32px));
+}
+.modal-usuario p {
+  margin: 0;
+}
+.entrada-contrasena {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+.entrada-contrasena input {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .tabla-usuarios thead {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+  }
+  .tabla-usuarios tr {
+    display: table-row;
+  }
+  .tabla-usuarios th,
+  .tabla-usuarios td {
+    display: table-cell;
+    padding: var(--espacio-3) var(--espacio-4);
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--color-borde);
+  }
+  .tabla-usuarios tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .tabla-usuarios th {
+    background: var(--color-fondo-alt);
+    color: var(--color-texto-secundario);
+    font-size: var(--texto-pequeno);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tabla-usuarios td[data-etiqueta]::before {
+    content: none;
+  }
+  .tabla-usuarios tbody tr:hover {
+    background: var(--color-superficie-hover);
+  }
+  .tabla-usuarios tbody tr.usuario-inactivo:hover {
+    background: var(--color-fondo-alt);
+  }
+  .tabla-usuarios td:first-child .insignia-rol {
+    margin-left: var(--espacio-2);
+  }
+  .tabla-usuarios td .usuario-nota {
+    display: block;
+  }
+  .usuario-acciones {
+    margin-top: 0;
+    border-top: 0;
+    white-space: nowrap;
+    text-align: right;
+  }
+}

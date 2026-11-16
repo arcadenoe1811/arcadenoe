@@ -20,7 +20,8 @@ services:
     image: supabase/postgres:15.8.1.060
     restart: unless-stopped
     ports:
-      - '54322:5432'
+      # Solo desde esta maquina: la base no se expone a la red local.
+      - '127.0.0.1:54322:5432'
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}
       JWT_SECRET: ${JWT_SECRET:?Define JWT_SECRET en .env}
@@ -36,8 +37,11 @@ services:
       - ./supabase/migrations/00007_piezas_herencia.sql:/docker-entrypoint-initdb.d/migrations/90-00007.sql:ro
       - ./supabase/migrations/00008_herencia_cruzada.sql:/docker-entrypoint-initdb.d/migrations/90-00008.sql:ro
       - ./supabase/migrations/00009_puno_del_cuello.sql:/docker-entrypoint-initdb.d/migrations/90-00009.sql:ro
+      - ./supabase/migrations/00010_inventario_conos.sql:/docker-entrypoint-initdb.d/migrations/90-00010.sql:ro
+      - ./supabase/migrations/00011_usuarios_roles_seguridad.sql:/docker-entrypoint-initdb.d/migrations/90-00011.sql:ro
       - ./supabase/seed.sql:/docker-entrypoint-initdb.d/migrations/99-seed.sql:ro
       - ./supabase/seed_disenos.sql:/docker-entrypoint-initdb.d/migrations/99-zz-seed-disenos.sql:ro
+      - ./supabase/seed_conos.sql:/docker-entrypoint-initdb.d/migrations/99-zz-seed-conos.sql:ro
       - datos-db:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD', 'pg_isready', '-U', 'postgres', '-h', 'localhost']
@@ -81,8 +85,17 @@ services:
       GOTRUE_JWT_AUD: authenticated
       GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
       GOTRUE_JWT_ADMIN_ROLES: service_role
+      # --- Seguridad (ver migracion 00011) ---
+      # Una sesion sin uso durante 8 horas no se puede renovar.
+      GOTRUE_SESSIONS_INACTIVITY_TIMEOUT: 8h
+      # Los refresh tokens rotan; reutilizar uno viejo revoca la sesion.
+      GOTRUE_SECURITY_REFRESH_TOKEN_ROTATION_ENABLED: 'true'
+      GOTRUE_PASSWORD_MIN_LENGTH: 8
+      # Bloqueo de la cuenta 15 minutos tras 5 contrasenas incorrectas.
+      GOTRUE_HOOK_PASSWORD_VERIFICATION_ATTEMPT_ENABLED: 'true'
+      GOTRUE_HOOK_PASSWORD_VERIFICATION_ATTEMPT_URI: pg-functions://postgres/public/fn_hook_intento_contrasena
 
-  # Crea el usuario unico cuando GoTrue ya creo sus tablas (una sola vez).
+  # Crea el primer usuario (admin) cuando GoTrue ya creo sus tablas (una sola vez).
   semilla-usuario:
     image: supabase/postgres:15.8.1.060
     restart: 'no'

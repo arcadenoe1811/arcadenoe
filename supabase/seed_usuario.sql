@@ -1,6 +1,10 @@
--- Usuario unico del sistema. SOLO PARA DESARROLLO LOCAL.
+-- Primer usuario del sistema. SOLO PARA DESARROLLO LOCAL.
 --   correo:     admin@inventario.local
---   contrasena: admin1234   <- cambiala (ver README)
+--   contrasena: admin1234   <- cambiala al entrar (clic en tu nombre)
+--
+-- Al ser el primer usuario, el trigger usuarios_crear_perfil (migracion
+-- 00011) lo registra como admin. Los demas usuarios se crean desde la app
+-- (pantalla Usuarios).
 --
 -- Se separa de seed.sql porque necesita las tablas de Supabase Auth, que
 -- crea GoTrue al arrancar. La CLI lo carga automaticamente (config.toml);
