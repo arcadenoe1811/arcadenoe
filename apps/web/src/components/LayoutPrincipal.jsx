@@ -1,13 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.js'
 import { IconoCerrar, IconoMenu, IconoSalir } from './Iconos.jsx'
 import Spinner from './ui/Spinner.jsx'
+import { RUTA_CAMBIAR_CONTRASENA } from './RutaProtegida.jsx'
 import './LayoutPrincipal.css'
 
+/** Cada enlace se muestra solo a quien tiene su permiso. */
 const ENLACES = [
-  { a: '/', texto: 'Buscar', fin: true },
-  { a: '/colores', texto: 'Colores' },
+  { a: '/', texto: 'Buscar', fin: true, permiso: 'cuellos.ver' },
+  { a: '/colores', texto: 'Colores', permiso: 'colores.ver' },
+  { a: '/conos', texto: 'Conos', permiso: 'conos.ver' },
+  { a: '/usuarios', texto: 'Usuarios', permiso: 'usuarios.gestionar' },
 ]
 
 /**
@@ -16,8 +20,9 @@ const ENLACES = [
  * "Cerrar sesion" visibles.
  */
 export default function LayoutPrincipal() {
-  const { usuario, cerrarSesion } = useAuth()
-  const navegar = useNavigate()
+  const { usuario, perfil, puede, cerrarSesion } = useAuth()
+  const enlaces = ENLACES.filter((enlace) => puede(enlace.permiso))
+  const editaCuellos = puede('cuellos.editar')
   const ubicacion = useLocation()
   // El menu se abre "para" una ruta: al navegar a otra queda cerrado solo,
   // sin un efecto que haga setState.
@@ -36,12 +41,11 @@ export default function LayoutPrincipal() {
 
   const salir = async () => {
     setSaliendo(true)
+    // Revoca la sesion, borra lo guardado en el navegador y recarga en /login.
     await cerrarSesion()
-    // Al perder la sesion RutaProtegida tambien redirige; esto lo hace explicito.
-    navegar('/login', { replace: true })
   }
 
-  const nombre = usuario?.user_metadata?.nombre ?? usuario?.email ?? ''
+  const nombre = perfil?.nombre ?? usuario?.email ?? ''
 
   const botonSalir = (
     <button
@@ -64,14 +68,22 @@ export default function LayoutPrincipal() {
       <header className="encabezado">
         <div className="contenedor encabezado-contenido">
           <NavLink to="/" className="marca" end>
-            <img src="/icono.svg" alt="" width="28" height="28" />
-            <span className="marca-corta">Inventario</span>
-            <span className="marca-larga">Inventario de cuellos</span>
+            <img
+              src="/logo-emblema-claro.png"
+              alt=""
+              width="34"
+              height="34"
+              className="marca-logo"
+            />
+            <span className="marca-corta">Arca de Noé</span>
+            <span className="marca-larga">
+              Arca de Noé <span className="marca-sub">· Inventario</span>
+            </span>
           </NavLink>
 
           {/* Escritorio */}
           <nav className="navegacion-escritorio" aria-label="Principal">
-            {ENLACES.map((enlace) => (
+            {enlaces.map((enlace) => (
               <NavLink
                 key={enlace.a}
                 to={enlace.a}
@@ -81,22 +93,30 @@ export default function LayoutPrincipal() {
                 {enlace.texto}
               </NavLink>
             ))}
-            <NavLink
-              to="/cuellos/nuevo"
-              className="boton boton-primario boton-sm boton-compacto"
-            >
-              + Nuevo cuello
-            </NavLink>
-            <NavLink
-              to="/punos/nuevo"
-              className="boton boton-secundario boton-sm boton-compacto"
-            >
-              + Nuevo puño
-            </NavLink>
+            {editaCuellos && (
+              <>
+                <NavLink
+                  to="/cuellos/nuevo"
+                  className="boton boton-primario boton-sm boton-compacto"
+                >
+                  + Nuevo cuello
+                </NavLink>
+                <NavLink
+                  to="/punos/nuevo"
+                  className="boton boton-secundario boton-sm boton-compacto"
+                >
+                  + Nuevo puño
+                </NavLink>
+              </>
+            )}
             <span className="separador" aria-hidden="true" />
-            <span className="usuario" title={usuario?.email}>
+            <NavLink
+              to={RUTA_CAMBIAR_CONTRASENA}
+              className="usuario"
+              title={`${usuario?.email ?? ''} · Cambiar contraseña`}
+            >
               {nombre}
-            </span>
+            </NavLink>
             {botonSalir}
           </nav>
 
@@ -120,7 +140,7 @@ export default function LayoutPrincipal() {
         {menuAbierto && (
           <nav id="menu-movil" className="menu-movil" aria-label="Principal">
             <div className="contenedor menu-movil-contenido">
-              {ENLACES.map((enlace) => (
+              {enlaces.map((enlace) => (
                 <NavLink
                   key={enlace.a}
                   to={enlace.a}
@@ -130,11 +150,18 @@ export default function LayoutPrincipal() {
                   {enlace.texto}
                 </NavLink>
               ))}
-              <NavLink to="/cuellos/nuevo" className="enlace-menu">
-                + Nuevo cuello
-              </NavLink>
-              <NavLink to="/punos/nuevo" className="enlace-menu">
-                + Nuevo puño
+              {editaCuellos && (
+                <>
+                  <NavLink to="/cuellos/nuevo" className="enlace-menu">
+                    + Nuevo cuello
+                  </NavLink>
+                  <NavLink to="/punos/nuevo" className="enlace-menu">
+                    + Nuevo puño
+                  </NavLink>
+                </>
+              )}
+              <NavLink to={RUTA_CAMBIAR_CONTRASENA} className="enlace-menu">
+                Cambiar contraseña
               </NavLink>
               <div className="menu-movil-pie">
                 <span className="usuario">{nombre}</span>

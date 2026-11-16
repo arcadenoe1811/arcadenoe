@@ -4,3 +4,12 @@
   min-height: 100vh;
   min-height: 100dvh;
 }
+.pantalla-carga .aviso {
+  max-width: 480px;
+  margin: var(--espacio-4);
+}
+.pantalla-carga-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+}

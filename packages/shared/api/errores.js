@@ -36,6 +36,7 @@ const RESTRICCIONES_UNICAS = {
     mensaje: 'Ese color ya está en el catálogo.',
   },
   tipos_cuello_pkey: { campo: 'nombre', mensaje: 'Ese tipo ya existe.' },
+  conos_codigo_key: { campo: 'codigo', mensaje: 'Ya existe un cono con ese código.' },
 }
 
 /** Codigos de PostgreSQL / PostgREST -> mensaje legible. */
@@ -44,7 +45,7 @@ const MENSAJES_POR_CODIGO = {
   23514: 'Algún dato no cumple las reglas de la base de datos.',
   '22P02': 'Algún dato tiene un formato inválido.',
   22003: 'Algún número está fuera de rango.',
-  42501: 'No hay permisos para esta operación. ¿Expiró la sesión?',
+  42501: 'No tienes permiso para esta operación.',
   PGRST301: 'La sesión expiró. Vuelve a iniciar sesión.',
   PGRST303: 'La sesión expiró. Vuelve a iniciar sesión.',
   P0002: 'No se encontró el registro.',
@@ -96,6 +97,27 @@ export function normalizarError(error) {
       mensaje: texto,
       codigo: String(e.code),
       campo: 'padre_id',
+      detalle: e.details ?? null,
+    })
+  }
+
+  // Reglas de negocio de las funciones SQL (raise ... errcode P0001): el
+  // mensaje ya es legible y `hint` trae el campo del formulario.
+  if (e.code === 'P0001' && texto) {
+    return new ErrorNormalizado({
+      mensaje: texto,
+      codigo: 'regla',
+      campo: /^[a-z_]{1,30}$/.test(e.hint ?? '') ? e.hint : null,
+      detalle: e.details ?? null,
+    })
+  }
+
+  // Stock insuficiente (trigger fn_aplicar_movimiento_cono): mensaje legible.
+  if (e.code === '23514' && /suficiente stock/i.test(texto)) {
+    return new ErrorNormalizado({
+      mensaje: texto,
+      codigo: String(e.code),
+      campo: 'cantidad',
       detalle: e.details ?? null,
     })
   }

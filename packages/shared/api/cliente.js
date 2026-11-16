@@ -1,6 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
 import { ErrorNormalizado } from './errores.js'
 
+/** Clave de localStorage donde supabase-js guarda la sesion. */
+export const CLAVE_SESION = 'inventario-cuellos-sesion'
+
 /** @type {import('@supabase/supabase-js').SupabaseClient | null} */
 let cliente = null
 
@@ -17,11 +20,15 @@ export function configurarCliente({ url, llaveAnonima }) {
     })
   }
   cliente = createClient(url, llaveAnonima, {
-    // La sesion se guarda en el navegador y se renueva sola: sobrevive a recargas.
+    // La sesion se guarda en el navegador y sobrevive a recargas, pero NO es
+    // eterna: ContextoAuth la cierra tras 8 horas de inactividad y GoTrue
+    // rechaza renovarla pasado ese tiempo (sessions.inactivity_timeout).
+    // Los tokens no viajan en la URL (detectSessionInUrl: false).
     auth: {
       persistSession: true,
       autoRefreshToken: true,
-      storageKey: 'inventario-cuellos-sesion',
+      detectSessionInUrl: false,
+      storageKey: CLAVE_SESION,
     },
   })
   return cliente

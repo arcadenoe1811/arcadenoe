@@ -10,6 +10,7 @@ import {
   vincularPuno,
 } from '@inventario/shared'
 import { usePiezaHermana } from '../hooks/usePiezaHermana.js'
+import { useAuth } from '../hooks/useAuth.js'
 import { useCuellosDelPuno, usePunoDelCuello } from '../hooks/usePunoDelCuello.js'
 import { rutaPieza } from '../utils/rutas.js'
 import ImagenCuello from './ImagenCuello.jsx'
@@ -54,6 +55,8 @@ export default function SeccionPiezaHermana({ pieza, alCambiar }) {
 function SeccionPunoDelCuello({ cuello, alCambiar }) {
   const id = useId()
   const navegar = useNavigate()
+  // Vincular, cambiar o crear el puno modifica el cuello: solo admin.
+  const puedeEditar = useAuth().puede('cuellos.editar')
   const { puno, vinculado, cargando } = usePunoDelCuello(
     cuello.id,
     cuello.codigo,
@@ -191,7 +194,7 @@ function SeccionPunoDelCuello({ cuello, alCambiar }) {
               {cuello.puno_nota || 'Sin nota.'}
             </p>
           )}
-          {!editandoNota && (
+          {puedeEditar && !editandoNota && (
             <div className="grupo-diseno-origen acciones-pieza-hermana">
               <button
                 type="button"
@@ -225,19 +228,25 @@ function SeccionPunoDelCuello({ cuello, alCambiar }) {
       {puno && !vinculado && (
         <>
           <TarjetaPieza pieza={puno} fichaId={cuello.id} />
-          <div className="grupo-diseno-origen acciones-pieza-hermana">
-            <button
-              type="button"
-              className="boton boton-contorno boton-sm"
-              onClick={() => setBuscando(true)}
-            >
-              Usar otro puño existente…
-            </button>
-          </div>
+          {puedeEditar && (
+            <div className="grupo-diseno-origen acciones-pieza-hermana">
+              <button
+                type="button"
+                className="boton boton-contorno boton-sm"
+                onClick={() => setBuscando(true)}
+              >
+                Usar otro puño existente…
+              </button>
+            </div>
+          )}
         </>
       )}
 
-      {!cargando && !puno && (
+      {!cargando && !puno && !puedeEditar && (
+        <p className="texto-pequeno texto-suave">Este cuello no tiene puño.</p>
+      )}
+
+      {!cargando && !puno && puedeEditar && (
         <>
           <p className="texto-pequeno texto-suave">
             Este cuello no tiene puño. Puedes usar un puño que ya existe (por ejemplo el

@@ -16,6 +16,7 @@ import {
 import { useCuello } from '../hooks/useCuello.js'
 import { useCatalogoColores } from '../hooks/useCatalogoColores.js'
 import { useHijos } from '../hooks/useHijos.js'
+import { useAuth } from '../hooks/useAuth.js'
 import SeccionPiezaHermana from '../components/SeccionPiezaHermana.jsx'
 import { rutaPieza } from '../utils/rutas.js'
 import ImagenCuello from '../components/ImagenCuello.jsx'
@@ -30,6 +31,8 @@ export default function PaginaFicha() {
   const { cuello, cargando, error, recargar } = useCuello(id)
   const { colores: catalogo } = useCatalogoColores()
   const { hijos } = useHijos(id)
+  // El operador solo consulta cuellos y punos (la base responde 403).
+  const puedeEditar = useAuth().puede('cuellos.editar')
   const [errorAccion, setErrorAccion] = useState(null)
   const [procesando, setProcesando] = useState(false)
 
@@ -121,22 +124,24 @@ export default function PaginaFicha() {
           )}
         </div>
         <EtiquetaTipo tipo={cuello.tipo} />
-        <div className="ficha-acciones">
-          <Link
-            to={rutaPieza(cuello.pieza, cuello.id, 'editar')}
-            className="boton boton-primario"
-          >
-            Editar
-          </Link>
-          <button
-            type="button"
-            className="boton boton-secundario"
-            onClick={cambiarEstado}
-            disabled={procesando}
-          >
-            {cuello.activo ? 'Dar de baja' : 'Reactivar'}
-          </button>
-        </div>
+        {puedeEditar && (
+          <div className="ficha-acciones">
+            <Link
+              to={rutaPieza(cuello.pieza, cuello.id, 'editar')}
+              className="boton boton-primario"
+            >
+              Editar
+            </Link>
+            <button
+              type="button"
+              className="boton boton-secundario"
+              onClick={cambiarEstado}
+              disabled={procesando}
+            >
+              {cuello.activo ? 'Dar de baja' : 'Reactivar'}
+            </button>
+          </div>
+        )}
       </header>
 
       <div className="ficha-cuerpo">

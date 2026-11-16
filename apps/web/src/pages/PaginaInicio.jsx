@@ -3,6 +3,7 @@ import { formatearPieza, hayFiltrosActivos } from '@inventario/shared'
 import { rutaPieza } from '../utils/rutas.js'
 import { useCuellos } from '../hooks/useCuellos.js'
 import { useDebounce } from '../hooks/useDebounce.js'
+import { useAuth } from '../hooks/useAuth.js'
 import FiltrosCuellos from '../components/FiltrosCuellos.jsx'
 import TarjetaCuello from '../components/TarjetaCuello.jsx'
 import Cargando from '../components/Cargando.jsx'
@@ -25,6 +26,8 @@ export default function PaginaInicio() {
   // Los filtros viven en la URL: al volver de una ficha se conserva la busqueda.
   const [parametros, setParametros] = useSearchParams()
   const filtros = leerFiltros(parametros)
+  // El operador solo consulta: no se le ofrece registrar piezas.
+  const puedeEditar = useAuth().puede('cuellos.editar')
 
   // Se retrasa la cadena de la URL (primitivo estable) y luego se pasan
   // los filtros como strings al hook.
@@ -79,18 +82,20 @@ export default function PaginaInicio() {
                   ? 'Ninguna pieza coincide con la búsqueda.'
                   : 'Todavía no hay piezas registradas.'}
               </p>
-              <Link
-                to={
-                  filtros.termino
-                    ? `${rutaPieza(filtros.pieza)}?codigo=${encodeURIComponent(filtros.termino)}`
-                    : rutaPieza(filtros.pieza)
-                }
-                className="boton boton-primario"
-              >
-                {filtros.termino
-                  ? `Registrar ${formatearPieza(filtros.pieza).toLowerCase()} “${filtros.termino}”`
-                  : `Registrar un ${formatearPieza(filtros.pieza).toLowerCase()}`}
-              </Link>
+              {puedeEditar && (
+                <Link
+                  to={
+                    filtros.termino
+                      ? `${rutaPieza(filtros.pieza)}?codigo=${encodeURIComponent(filtros.termino)}`
+                      : rutaPieza(filtros.pieza)
+                  }
+                  className="boton boton-primario"
+                >
+                  {filtros.termino
+                    ? `Registrar ${formatearPieza(filtros.pieza).toLowerCase()} “${filtros.termino}”`
+                    : `Registrar un ${formatearPieza(filtros.pieza).toLowerCase()}`}
+                </Link>
+              )}
             </div>
           ) : (
             <div className="rejilla-cuellos">

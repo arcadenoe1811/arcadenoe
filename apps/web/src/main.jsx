@@ -2,6 +2,7 @@
 import './estilos/variables.css'
 import './estilos/global.css'
 import './estilos/inventario.css'
+import './estilos/conos.css'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'

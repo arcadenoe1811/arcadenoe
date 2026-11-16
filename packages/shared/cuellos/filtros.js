@@ -63,7 +63,9 @@ export function aplicarFiltros(consulta, { tipo, medida, pieza = null }) {
   let q = consulta
   if (pieza) q = q.eq('pieza', pieza)
   if (tipo) q = q.eq('tipo', tipo)
-  if (medida !== null && medida !== undefined) {
+  // La medida se interpola en el filtro `or` de PostgREST: solo se acepta
+  // un entero, nunca texto libre.
+  if (Number.isInteger(medida) && medida >= 0) {
     const talla = tallaPunoDeMedida(medida)
     q = talla
       ? q.or(`medidas.cs.{${medida}},tallas.cs.{${talla}}`)

@@ -30,6 +30,14 @@
 .marca-larga {
   display: none;
 }
+.marca-logo {
+  flex-shrink: 0;
+  object-fit: contain;
+}
+.marca-sub {
+  font-weight: 500;
+  opacity: 0.8;
+}
 
 .boton-menu {
   display: inline-flex;
@@ -167,6 +175,11 @@
 
   .navegacion-escritorio .usuario {
     color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+  }
+  .navegacion-escritorio a.usuario:hover {
+    color: var(--header-texto);
+    text-decoration: underline;
   }
 
   .separador {

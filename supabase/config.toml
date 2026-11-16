@@ -16,7 +16,7 @@ major_version = 15
 
 [db.seed]
 enabled = true
-sql_paths = ["./seed_usuario.sql", "./seed.sql", "./seed_disenos.sql"]
+sql_paths = ["./seed_usuario.sql", "./seed.sql", "./seed_disenos.sql", "./seed_conos.sql"]
 
 [studio]
 enabled = true
@@ -45,6 +45,28 @@ site_url = "http://localhost:5173"
 additional_redirect_urls = ["http://127.0.0.1:5173"]
 jwt_expiry = 3600
 enable_signup = false
+# Los refresh tokens rotan y no se pueden reutilizar.
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+# Politica de contrasenas (las mismas reglas estan en fn_validar_contrasena).
+minimum_password_length = 8
+password_requirements = "lower_upper_letters_digits"
 
 [auth.email]
 enable_signup = false
+
+# Una sesion sin uso durante 8 horas deja de poder renovarse: hay que
+# volver a iniciar sesion. La app aplica el mismo limite en el navegador
+# (VITE_SESION_INACTIVIDAD_MINUTOS).
+[auth.sessions]
+inactivity_timeout = "8h"
+
+# Limite de peticiones de login por IP (cada 5 minutos).
+[auth.rate_limit]
+sign_in_sign_ups = 30
+
+# Bloqueo de la cuenta 15 minutos tras 5 contrasenas incorrectas
+# (ver migracion 00011).
+[auth.hook.password_verification_attempt]
+enabled = true
+uri = "pg-functions://postgres/public/fn_hook_intento_contrasena"

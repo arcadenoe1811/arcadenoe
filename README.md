@@ -50,32 +50,59 @@ npm run db:estado           # muestra API URL y "anon key"
 npm run dev                 # http://localhost:5173
 ```
 
-`supabase start` aplica las migraciones de `supabase/migrations/` y carga las semillas: `seed_usuario.sql` (el usuario del sistema) y `seed.sql` (tres cuellos de ejemplo: `maza4`, `maz4t5`, `cous`) y `seed_disenos.sql` (50 cuellos `dsn-01` a `dsn-50` con diseño Jacquard y todos los datos técnicos).
+`supabase start` aplica las migraciones de `supabase/migrations/` y carga las semillas: `seed_usuario.sql` (el primer usuario, admin) y `seed.sql` (tres cuellos de ejemplo: `maza4`, `maz4t5`, `cous`) y `seed_disenos.sql` (50 cuellos `dsn-01` a `dsn-50` con diseño Jacquard y todos los datos técnicos).
 
-## Inicio de sesión
+## Inicio de sesión, usuarios y roles
 
-Es un sistema de **un solo usuario**: no hay registro ni recuperación de contraseña. Todas las pantallas exigen sesión; sin ella se redirige a `/login`. La sesión se guarda en el navegador y sobrevive a recargas.
+Todas las pantallas exigen sesión; sin ella se redirige a `/login`. No hay registro público: los usuarios los crea un administrador desde la pantalla **Usuarios**.
 
-| Usuario de desarrollo |                          |
-| --------------------- | ------------------------ |
-| Correo                | `admin@inventario.local` |
-| Contraseña            | `admin1234`              |
+| Usuario inicial (solo desarrollo) |                          |
+| --------------------------------- | ------------------------ |
+| Correo                            | `admin@inventario.local` |
+| Contraseña                        | `admin1234`              |
 
-> ⚠️ **Esta contraseña es solo para desarrollo local. Cámbiala** en cualquier entorno que no sea tu máquina.
+> ⚠️ **Esta contraseña es solo para desarrollo local. Cámbiala** (clic en tu nombre → _Cambiar contraseña_) en cualquier entorno que no sea tu máquina. El formulario de login ya no se pre-llena con credenciales.
 
-En desarrollo, el formulario se pre-llena con `VITE_DEFAULT_EMAIL` y `VITE_DEFAULT_PASSWORD` del `.env`. Solo se usan con `npm run dev`; en un build de producción se ignoran, y aun así **no deben definirse** en producción (Vite incrusta en el bundle toda variable `VITE_*` que se lea).
+El primer usuario del sistema es **admin**. Hay dos roles:
 
-### Cambiar la contraseña
+| Módulo          | Administrador (`admin`)                         | Operador (`operador`)           |
+| --------------- | ----------------------------------------------- | ------------------------------- |
+| Usuarios        | Crear, editar, habilitar/deshabilitar, resetear | Sin acceso                      |
+| Conos           | Todo (incluye eliminar y desactivar)            | Crear, editar, entradas/salidas |
+| Colores         | Todo (incluye eliminar)                         | Crear y editar                  |
+| Cuellos / puños | Todo                                            | Solo consulta                   |
 
-Desde Supabase Studio (http://localhost:54323 → _Authentication_ → _Users_ → el usuario → _Reset password_), o por SQL:
+- Los usuarios **no se eliminan**: se deshabilitan (no pueden entrar y se cierran sus sesiones).
+- Siempre queda al menos un admin activo y un admin no puede deshabilitarse a sí mismo.
+- Un usuario nuevo (o con la contraseña reseteada) entra con una **contraseña temporal** y debe cambiarla antes de usar el sistema.
+- Contraseñas: mínimo 8 caracteres, con al menos un número y una mayúscula.
+
+### Sesión
+
+- La sesión se cierra sola tras **8 horas de inactividad** (`VITE_SESION_INACTIVIDAD_MINUTOS`), también si la app estuvo cerrada. El servidor aplica el mismo límite (`GOTRUE_SESSIONS_INACTIVITY_TIMEOUT` / `[auth.sessions]`).
+- _Cerrar sesión_ revoca los tokens en el servidor, borra lo guardado en el navegador y recarga la página.
+- Tras **5 contraseñas incorrectas** la cuenta queda bloqueada **15 minutos**.
+
+### Si olvidas la contraseña del único admin
+
+Por SQL (Supabase Studio, o `docker compose exec db psql -U postgres`):
 
 ```sql
 update auth.users
-set encrypted_password = extensions.crypt('nueva-contraseña-segura', extensions.gen_salt('bf'))
+set encrypted_password = extensions.crypt('Nueva-Contraseña-1', extensions.gen_salt('bf'))
 where email = 'admin@inventario.local';
+delete from public.intentos_acceso;  -- levanta un bloqueo por intentos fallidos
 ```
 
-Para cambiar también el correo, edita `supabase/seed_usuario.sql` antes del primer `supabase start` (o haz `npm run db:reiniciar`).
+### Aplicar una migración nueva a una base que ya tiene datos
+
+- **Supabase CLI:** `npx supabase migration up`.
+- **docker-compose:** las migraciones solo corren con el volumen vacío, así que se aplica a mano y se recrean los servicios:
+
+  ```bash
+  docker compose exec -T db sh -c 'PGPASSWORD="$POSTGRES_PASSWORD" psql -U supabase_admin -h localhost -d postgres -v ON_ERROR_STOP=1' < supabase/migrations/00011_usuarios_roles_seguridad.sql
+  docker compose up -d
+  ```
 
 | Servicio        | URL                                                       |
 | --------------- | --------------------------------------------------------- |
@@ -101,7 +128,7 @@ Para cambiar también el correo, edita `supabase/seed_usuario.sql` antes del pri
 
 ### Alternativa: `docker-compose.yml`
 
-`docker compose up -d --build` (o `npm run docker:iniciar`) levanta el frontend (`web`, servidor de Vite), PostgreSQL de Supabase, PostgREST, GoTrue (Auth) y un proxy en `:54321` que imita las rutas `/rest/v1` y `/auth/v1`. El proyecto se llama `inventario-cuellos` en Docker. El servicio `semilla-usuario` espera a que GoTrue cree sus tablas y luego inserta el usuario. No incluye Studio. Usa `POSTGRES_PASSWORD` y `JWT_SECRET` del `.env`; la llave anónima debe ser un JWT con `role: anon` firmado con ese `JWT_SECRET` (los valores por defecto del `.env` ya son compatibles entre sí). Las migraciones se aplican solo con el volumen vacío: `docker compose down -v` para empezar de cero.
+`docker compose up -d --build` (o `npm run docker:iniciar`) levanta el frontend (`web`, servidor de Vite), PostgreSQL de Supabase, PostgREST, GoTrue (Auth) y un proxy en `:54321` que imita las rutas `/rest/v1` y `/auth/v1`. El proyecto se llama `inventario-cuellos` en Docker. El servicio `semilla-usuario` espera a que GoTrue cree sus tablas y luego inserta el primer usuario (admin). No incluye Studio. Usa `POSTGRES_PASSWORD` y `JWT_SECRET` del `.env`; la llave anónima debe ser un JWT con `role: anon` firmado con ese `JWT_SECRET` (los valores por defecto del `.env` ya son compatibles entre sí). Las migraciones se aplican solo con el volumen vacío: `docker compose down -v` para empezar de cero.
 
 ## Estructura
 
@@ -118,13 +145,14 @@ packages/shared/          Lógica sin React DOM
   api/cliente.js          Instancia única de supabase-js
   api/errores.js          ErrorNormalizado + normalizarError
   auth/sesion.js          iniciarSesion, cerrarSesion, obtenerSesion, validarInicioSesion
+  usuarios/               permisos por rol, validaciones y API de gestión de usuarios
   cuellos/                api, validaciones, campos (formulario), columnas, filtros
   colores/                api y validaciones del catálogo
   formato/                Formato de tipos, medidas, fechas, URLs de imagen
   tipos/                  @typedef de cada tabla
 supabase/
   migrations/             Migraciones SQL numeradas
-  seed_usuario.sql        Usuario único (solo desarrollo)
+  seed_usuario.sql        Primer usuario, admin (solo desarrollo)
   seed.sql                Datos de ejemplo
   config.toml             Stack local de la CLI
   docker/                 Archivos de apoyo del docker-compose
@@ -149,12 +177,19 @@ Fase 2 posible: subir directamente a Cloudinary con su SDK.
 
 ## Seguridad
 
-- Desde la migración `00002_acceso_autenticado.sql`, solo el rol `authenticated` puede leer o escribir datos; la llave anónima por sí sola no da acceso.
-- El registro de usuarios está desactivado (`enable_signup = false`), así que nadie puede crearse una cuenta con la llave pública.
-- Cualquier usuario autenticado tiene acceso total. Si algún día se añaden más usuarios, habrá que afinar las políticas RLS.
-- Antes de desplegar: cambia la contraseña del usuario y no definas `VITE_DEFAULT_EMAIL` / `VITE_DEFAULT_PASSWORD`.
+No hay servidor propio: el "backend" es PostgreSQL (RLS y funciones) + PostgREST + GoTrue. Por eso la autorización vive en la base (`supabase/migrations/00011_usuarios_roles_seguridad.sql`):
 
-Nunca subas `.env` al repositorio; solo `.env.example` se versiona.
+- **Autenticación:** la llave anónima por sí sola no da acceso a nada; el registro público está desactivado. Las contraseñas se guardan con bcrypt (Supabase Auth).
+- **Autorización por rol:** políticas RLS en todas las tablas según `perfiles.rol`. Lo que la interfaz oculta al operador, la API también lo rechaza con **403**. La tabla de permisos de la interfaz (`packages/shared/usuarios/permisos.js`) debe coincidir con las políticas.
+- **Gestión de usuarios:** funciones SQL `fn_*_usuario` que verifican que quien llama sea admin. El navegador nunca usa la llave `service_role`.
+- **Usuarios deshabilitados:** pierden el acceso al instante, aunque su token siga vigente.
+- **Inyección SQL:** todo el acceso es por PostgREST (consultas parametrizadas) y funciones sin SQL dinámico.
+- **Validación:** en `packages/shared` (navegador) y otra vez en la base (`check` y funciones).
+- **Token en el navegador:** supabase-js lo guarda en `localStorage`, no en cookies, así que los flags `HttpOnly`/`Secure`/`SameSite` no aplican. Mitigaciones: token de 1 hora, refresh tokens rotados, expiración por inactividad y nada de HTML sin escapar en la app.
+
+Antes de desplegar fuera de tu máquina: sirve la app y la API por **HTTPS**, cambia `JWT_SECRET`, `POSTGRES_PASSWORD` y la llave anónima por valores propios, y cambia la contraseña del admin inicial.
+
+Nunca subas `.env` al repositorio; solo `.env.example` se versiona. Toda variable `VITE_*` queda incrustada en el JavaScript del navegador: no pongas secretos ahí.
 
 ## Reglas del código
 
