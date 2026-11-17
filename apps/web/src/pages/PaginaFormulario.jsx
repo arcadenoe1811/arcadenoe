@@ -626,7 +626,7 @@ export default function PaginaFormulario({ pieza: piezaRuta = 'cuello' }) {
       <Aviso
         tipo="error"
         accion={
-          <Link to="/" className="boton boton-secundario">
+          <Link to="/cuellos" className="boton boton-secundario">
             Volver
           </Link>
         }
@@ -639,7 +639,7 @@ export default function PaginaFormulario({ pieza: piezaRuta = 'cuello' }) {
   return (
     <form className="formulario" onSubmit={enviar} noValidate>
       <nav className="migas">
-        <Link to={esEdicion ? rutaPieza(pieza, id) : '/'}>← Cancelar</Link>
+        <Link to={esEdicion ? rutaPieza(pieza, id) : '/cuellos'}>← Cancelar</Link>
       </nav>
       <h1>
         {esEdicion
@@ -698,7 +698,7 @@ export default function PaginaFormulario({ pieza: piezaRuta = 'cuello' }) {
           {guardando ? 'Guardando…' : textoGuardar}
         </button>
         <Link
-          to={esEdicion ? rutaPieza(pieza, id) : '/'}
+          to={esEdicion ? rutaPieza(pieza, id) : '/cuellos'}
           className="boton boton-secundario"
         >
           Cancelar

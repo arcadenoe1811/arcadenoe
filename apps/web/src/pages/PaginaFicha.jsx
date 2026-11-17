@@ -42,7 +42,7 @@ export default function PaginaFicha() {
       <Aviso
         tipo="error"
         accion={
-          <Link to="/" className="boton boton-secundario">
+          <Link to="/cuellos" className="boton boton-secundario">
             Volver
           </Link>
         }
@@ -80,7 +80,7 @@ export default function PaginaFicha() {
     try {
       if (cuello.activo) {
         await desactivarCuello(cuello.id)
-        navegar('/')
+        navegar('/cuellos')
       } else {
         await reactivarCuello(cuello.id)
         recargar()
@@ -99,7 +99,9 @@ export default function PaginaFicha() {
           type="button"
           className="boton boton-fantasma"
           // vuelve a la busqueda anterior (con sus filtros) si se llego desde la app
-          onClick={() => (window.history.state?.idx > 0 ? navegar(-1) : navegar('/'))}
+          onClick={() =>
+            window.history.state?.idx > 0 ? navegar(-1) : navegar('/cuellos')
+          }
         >
           ← Volver
         </button>

@@ -1,7 +1,8 @@
 /**
  * Roles y permisos. Esta tabla solo decide que MUESTRA la interfaz
  * (botones, enlaces, rutas). La proteccion real esta en la base de datos:
- * politicas RLS y funciones de supabase/migrations/00011_usuarios_roles_seguridad.sql.
+ * politicas RLS y funciones de supabase/migrations/00011_usuarios_roles_seguridad.sql
+ * y 00012_ventas_estimador_reportes.sql.
  * Si se cambia un permiso aqui, hay que cambiarlo tambien alla.
  */
 
@@ -37,6 +38,22 @@ const PERMISOS = {
   'conos.ver': ['admin', 'operador'],
   'conos.editar': ['admin', 'operador'], // crear, editar, entradas/salidas/ajustes
   'conos.eliminar': ['admin'], // eliminar y desactivar/reactivar
+
+  'dashboard.ver': ['admin', 'operador'],
+  'reportes.ver': ['admin', 'operador'],
+
+  'ventas.ver': ['admin', 'operador'],
+  'ventas.registrar': ['admin', 'operador'],
+  'ventas.eliminar': ['admin'],
+
+  'estimador.usar': ['admin', 'operador'], // calcular y guardar estimaciones
+  'estimaciones.eliminar': ['admin'],
+
+  'produccion.registrar': ['admin', 'operador'],
+  'produccion.eliminar': ['admin'],
+
+  'precios.editar': ['admin'], // precio base de cada diseno
+  'configuracion.editar': ['admin'], // tarifa por hora predeterminada
 }
 
 /** @typedef {keyof typeof PERMISOS} Permiso */

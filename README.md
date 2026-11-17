@@ -65,12 +65,17 @@ Todas las pantallas exigen sesión; sin ella se redirige a `/login`. No hay regi
 
 El primer usuario del sistema es **admin**. Hay dos roles:
 
-| Módulo          | Administrador (`admin`)                         | Operador (`operador`)           |
-| --------------- | ----------------------------------------------- | ------------------------------- |
-| Usuarios        | Crear, editar, habilitar/deshabilitar, resetear | Sin acceso                      |
-| Conos           | Todo (incluye eliminar y desactivar)            | Crear, editar, entradas/salidas |
-| Colores         | Todo (incluye eliminar)                         | Crear y editar                  |
-| Cuellos / puños | Todo                                            | Solo consulta                   |
+| Módulo               | Administrador (`admin`)                         | Operador (`operador`)           |
+| -------------------- | ----------------------------------------------- | ------------------------------- |
+| Usuarios             | Crear, editar, habilitar/deshabilitar, resetear | Sin acceso                      |
+| Conos                | Todo (incluye eliminar y desactivar)            | Crear, editar, entradas/salidas |
+| Colores              | Todo (incluye eliminar)                         | Crear y editar                  |
+| Cuellos / puños      | Todo                                            | Solo consulta                   |
+| Precios y tarifa     | Cambiar precio base y tarifa por hora           | Solo consulta                   |
+| Ventas               | Registrar y eliminar                            | Registrar                       |
+| Estimador            | Guardar y eliminar estimaciones                 | Guardar estimaciones            |
+| Producción           | Registrar y eliminar                            | Registrar                       |
+| Dashboard y reportes | Ver                                             | Ver                             |
 
 - Los usuarios **no se eliminan**: se deshabilitan (no pueden entrar y se cierran sus sesiones).
 - Siempre queda al menos un admin activo y un admin no puede deshabilitarse a sí mismo.
@@ -169,6 +174,14 @@ Funciones SQL:
 - **`fn_buscar_cuellos(termino)`**: busca cuellos activos por código parcial, nombre, notas y colores, sin distinguir mayúsculas ni acentos (`unaccent` + `ILIKE`, con índices `pg_trgm`). Ordena primero coincidencia exacta de código, luego prefijo. Los filtros de tipo y medida se aplican encima desde PostgREST.
 - **`fn_guardar_cuello(p_cuello, p_colores)`**: crea o actualiza un cuello y reemplaza sus colores en una sola transacción.
 
+Ventas, estimador y reportes (`00012_ventas_estimador_reportes.sql`):
+
+- **`cuellos.precio_base`**: precio de venta del diseño (igual para todas las tallas). Cada línea de venta guarda su propio precio, así que cambiarlo no altera ventas pasadas.
+- **`ventas` / `venta_lineas`**, **`estimaciones` / `estimacion_lineas`**, **`producciones`**: no aceptan escrituras directas por la API; se registran con `fn_registrar_venta`, `fn_guardar_estimacion` y `fn_registrar_produccion`, que validan cada dato y calculan los totales en la base.
+- **`v_stock_cuellos`**: vendido y producido por diseño y medida. Se trabaja **bajo pedido**: no se lleva existencia de cuellos; lo vendido que aún no se produjo aparece como _pendiente de producir_ en la pantalla Producción.
+- **`configuracion`**: fila única con la tarifa de mano de obra por hora del estimador.
+- **`fn_dashboard`, `fn_reporte_inventario|produccion|ventas`, `fn_resumen_periodo`, `fn_actividad_reciente`**: devuelven las cifras ya agregadas para un rango de fechas (la API entrega como mucho 1000 filas, por eso no se suma en el navegador).
+
 ## Imágenes
 
 No se usa Supabase Storage. El campo `imagen_url` guarda un enlace externo público (ImgBB, Cloudinary, Google Drive compartido...). Los enlaces de Google Drive del tipo `drive.google.com/file/d/<id>/view` se convierten solos en una miniatura directa.
@@ -184,6 +197,10 @@ No hay servidor propio: el "backend" es PostgreSQL (RLS y funciones) + PostgREST
 - **Gestión de usuarios:** funciones SQL `fn_*_usuario` que verifican que quien llama sea admin. El navegador nunca usa la llave `service_role`.
 - **Usuarios deshabilitados:** pierden el acceso al instante, aunque su token siga vigente.
 - **Inyección SQL:** todo el acceso es por PostgREST (consultas parametrizadas) y funciones sin SQL dinámico.
+- **Totales y autoría:** los totales de ventas y estimaciones se calculan en la base y `usuario_id` sale de la sesión; el navegador no puede falsearlos.
+- **CORS:** el proxy (`supabase/docker/nginx.conf`) y PostgREST solo aceptan el origen de la app (`localhost:5173`). Si sirves la app desde otra dirección, agrégala en ambos.
+- **Exportación a Excel:** las celdas de texto que empiezan por `=`, `+`, `-` o `@` se neutralizan (inyección de fórmulas en CSV).
+- **Cabeceras:** Vite envía `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff` y `Referrer-Policy: no-referrer`.
 - **Validación:** en `packages/shared` (navegador) y otra vez en la base (`check` y funciones).
 - **Token en el navegador:** supabase-js lo guarda en `localStorage`, no en cookies, así que los flags `HttpOnly`/`Secure`/`SameSite` no aplican. Mitigaciones: token de 1 hora, refresh tokens rotados, expiración por inactividad y nada de HTML sin escapar en la app.
 

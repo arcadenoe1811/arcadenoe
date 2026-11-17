@@ -19,6 +19,18 @@ const ICONOS = {
       <path d="M8 12.5l2.8 2.8L16 10" />
     </>
   ),
+  salida: (
+    <>
+      <path d="M12 4v11M7 10l5 5 5-5" />
+      <path d="M5 20h14" />
+    </>
+  ),
+  cuello: (
+    <>
+      <path d="M8 3L3 7l3 4 2-1.5V21h8V9.5L18 11l3-4-5-4" />
+      <path d="M8 3c.8 2 2.2 3 4 3s3.2-1 4-3" />
+    </>
+  ),
   alerta: (
     <>
       <path d="M12 4L2.5 20h19L12 4z" />
@@ -64,7 +76,11 @@ export default function TarjetaKpi({
         </svg>
       </span>
       <span className="kpi-texto">
-        <span className="kpi-valor">{valor}</span>
+        <span
+          className={`kpi-valor${String(valor).length > 9 ? ' kpi-valor-largo' : ''}`}
+        >
+          {valor}
+        </span>
         <span className="kpi-etiqueta">{etiqueta}</span>
         {detalle && <span className="kpi-detalle">{detalle}</span>}
       </span>

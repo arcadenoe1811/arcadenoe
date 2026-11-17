@@ -39,6 +39,9 @@ services:
       - ./supabase/migrations/00009_puno_del_cuello.sql:/docker-entrypoint-initdb.d/migrations/90-00009.sql:ro
       - ./supabase/migrations/00010_inventario_conos.sql:/docker-entrypoint-initdb.d/migrations/90-00010.sql:ro
       - ./supabase/migrations/00011_usuarios_roles_seguridad.sql:/docker-entrypoint-initdb.d/migrations/90-00011.sql:ro
+      - ./supabase/migrations/00012_ventas_estimador_reportes.sql:/docker-entrypoint-initdb.d/migrations/90-00012.sql:ro
+      - ./supabase/migrations/00013_estado_ventas.sql:/docker-entrypoint-initdb.d/migrations/90-00013.sql:ro
+      - ./supabase/migrations/00014_produccion_dirigida.sql:/docker-entrypoint-initdb.d/migrations/90-00014.sql:ro
       - ./supabase/seed.sql:/docker-entrypoint-initdb.d/migrations/99-seed.sql:ro
       - ./supabase/seed_disenos.sql:/docker-entrypoint-initdb.d/migrations/99-zz-seed-disenos.sql:ro
       - ./supabase/seed_conos.sql:/docker-entrypoint-initdb.d/migrations/99-zz-seed-conos.sql:ro
@@ -62,6 +65,8 @@ services:
       PGRST_DB_ANON_ROLE: anon
       PGRST_JWT_SECRET: ${JWT_SECRET}
       PGRST_DB_MAX_ROWS: 1000
+      # Solo la app puede llamar a la API desde un navegador (CORS).
+      PGRST_SERVER_CORS_ALLOWED_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
 
   auth:
     image: supabase/gotrue:v2.177.0
