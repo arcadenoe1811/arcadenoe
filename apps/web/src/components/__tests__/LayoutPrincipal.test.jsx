@@ -51,12 +51,30 @@ describe('LayoutPrincipal (menu lateral)', () => {
       expect(enlace(nombre)).toBeInTheDocument()
   })
 
-  it('el operador no ve Usuarios, pero si ventas, estimador y reportes', () => {
+  it('el operador no ve Dashboard, Ventas, Estimador, Reportes ni Usuarios', () => {
     montar('operador')
-    expect(enlace('Usuarios')).not.toBeInTheDocument()
-    expect(enlace('Registrar venta')).toBeInTheDocument()
-    expect(enlace('Estimador de costos')).toBeInTheDocument()
-    expect(enlace('Reportes')).toBeInTheDocument()
+    for (const nombre of [
+      'Dashboard',
+      'Registrar venta',
+      'Historial de ventas',
+      'Estimador de costos',
+      'Reportes',
+      'Usuarios',
+    ])
+      expect(enlace(nombre)).not.toBeInTheDocument()
+  })
+
+  it('el operador sí ve inventario, colores, cuellos y producción', () => {
+    montar('operador')
+    for (const nombre of [
+      'Muestrario de colores',
+      'Conos',
+      'Colores',
+      'Catálogo de cuellos',
+      'Diseños',
+      'Producción',
+    ])
+      expect(enlace(nombre)).toBeInTheDocument()
   })
 
   it('muestra el nombre y el rol del usuario', () => {

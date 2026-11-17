@@ -39,14 +39,14 @@ const PERMISOS = {
   'conos.editar': ['admin', 'operador'], // crear, editar, entradas/salidas/ajustes
   'conos.eliminar': ['admin'], // eliminar y desactivar/reactivar
 
-  'dashboard.ver': ['admin', 'operador'],
-  'reportes.ver': ['admin', 'operador'],
+  'dashboard.ver': ['admin'],
+  'reportes.ver': ['admin'],
 
-  'ventas.ver': ['admin', 'operador'],
-  'ventas.registrar': ['admin', 'operador'],
+  'ventas.ver': ['admin'],
+  'ventas.registrar': ['admin'],
   'ventas.eliminar': ['admin'],
 
-  'estimador.usar': ['admin', 'operador'], // calcular y guardar estimaciones
+  'estimador.usar': ['admin'], // calcular y guardar estimaciones
   'estimaciones.eliminar': ['admin'],
 
   'produccion.registrar': ['admin', 'operador'],

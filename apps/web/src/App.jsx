@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { useAuth } from './hooks/useAuth.js'
 import RutaProtegida, { RUTA_CAMBIAR_CONTRASENA } from './components/RutaProtegida.jsx'
 import LayoutPrincipal from './components/LayoutPrincipal.jsx'
 import InicioSesion from './pages/InicioSesion.jsx'
@@ -53,6 +54,20 @@ import PaginaReportes from './pages/PaginaReportes.jsx'
  * Cuello y puno usan las mismas paginas. Las altas llevan `key` para que
  * pasar de /cuellos/nuevo a /punos/nuevo monte un formulario limpio.
  */
+
+/**
+ * Pantalla de inicio (ruta `/`). Quien puede ver el dashboard lo ve; el
+ * resto (p. ej. el operador) aterriza en Producción, su flujo principal.
+ */
+function Inicio() {
+  const { puede } = useAuth()
+  return puede('dashboard.ver') ? (
+    <PaginaDashboard />
+  ) : (
+    <Navigate to="/produccion" replace />
+  )
+}
+
 export default function App() {
   return (
     <Routes>
@@ -74,14 +89,23 @@ export default function App() {
           </RutaProtegida>
         }
       >
-        <Route index element={<PaginaDashboard />} />
+        <Route index element={<Inicio />} />
         <Route path="cuellos" element={<PaginaInicio />} />
         <Route path="disenos" element={<PaginaDisenos />} />
         <Route path="produccion" element={<PaginaProduccion />} />
-        <Route path="ventas" element={<PaginaVentas />} />
-        <Route path="ventas/nueva" element={<PaginaRegistrarVenta />} />
-        <Route path="estimador" element={<PaginaEstimador />} />
-        <Route path="reportes" element={<PaginaReportes />} />
+
+        <Route element={<RutaProtegida permiso="ventas.ver" />}>
+          <Route path="ventas" element={<PaginaVentas />} />
+        </Route>
+        <Route element={<RutaProtegida permiso="ventas.registrar" />}>
+          <Route path="ventas/nueva" element={<PaginaRegistrarVenta />} />
+        </Route>
+        <Route element={<RutaProtegida permiso="estimador.usar" />}>
+          <Route path="estimador" element={<PaginaEstimador />} />
+        </Route>
+        <Route element={<RutaProtegida permiso="reportes.ver" />}>
+          <Route path="reportes" element={<PaginaReportes />} />
+        </Route>
         <Route path="cuellos/:id" element={<PaginaFicha />} />
         <Route path="punos/:id" element={<PaginaFicha />} />
         <Route path="colores" element={<PaginaColores />} />

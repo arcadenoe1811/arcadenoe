@@ -399,16 +399,18 @@ describe('resumenVentas', () => {
 })
 
 describe('permisos de los modulos nuevos', () => {
-  it('el operador registra ventas, estima, produce y ve reportes', () => {
+  it('el operador produce, pero no ve dashboard, ventas, estimador ni reportes', () => {
+    expect(puede('operador', 'produccion.registrar')).toBe(true)
     for (const p of [
       'dashboard.ver',
       'reportes.ver',
       'ventas.ver',
       'ventas.registrar',
       'estimador.usar',
-      'produccion.registrar',
-    ])
-      expect(puede('operador', p)).toBe(true)
+    ]) {
+      expect(puede('operador', p)).toBe(false)
+      expect(puede('admin', p)).toBe(true)
+    }
   })
   it('el operador no elimina ni cambia precios o configuracion', () => {
     for (const p of [
