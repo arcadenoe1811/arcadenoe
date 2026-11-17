@@ -12,16 +12,31 @@ import PaginaFichaCono from './pages/PaginaFichaCono.jsx'
 import PaginaFormularioCono from './pages/PaginaFormularioCono.jsx'
 import PaginaUsuarios from './pages/PaginaUsuarios.jsx'
 import PaginaCambiarContrasena from './pages/PaginaCambiarContrasena.jsx'
+import PaginaDashboard from './pages/PaginaDashboard.jsx'
+import PaginaEstimador from './pages/PaginaEstimador.jsx'
+import PaginaRegistrarVenta from './pages/PaginaRegistrarVenta.jsx'
+import PaginaVentas from './pages/PaginaVentas.jsx'
+import PaginaDisenos from './pages/PaginaDisenos.jsx'
+import PaginaProduccion from './pages/PaginaProduccion.jsx'
+import PaginaReportes from './pages/PaginaReportes.jsx'
 
 /**
  * Rutas (todas exigen sesion salvo /login):
  *   /login                 -> InicioSesion (publica)
  *   /cuenta/contrasena     -> cambiar la contrasena propia
- *   /                      -> busqueda e inventario
+ *   /                      -> dashboard
+ *   /cuellos               -> catalogo de cuellos y punos (busqueda)
  *   /cuellos/:id           -> ficha del cuello
  *   /punos/:id             -> ficha del puno
+ *   /disenos               -> disenos con precio base y existencia
+ *   /produccion            -> registro de cuellos producidos
  *   /colores               -> catalogo de colores
  *   /conos                 -> resumen del inventario de conos
+ *   /conos/entrada|salida  -> el resumen con el registro de movimiento abierto
+ *   /ventas                -> historial de ventas
+ *   /ventas/nueva          -> registrar venta
+ *   /estimador             -> estimador de costos
+ *   /reportes              -> reportes
  *   /conos/muestrario      -> muestrario de colores/conos
  *   /conos/nuevo           -> alta de cono
  *   /conos/:id             -> ficha e historial del cono
@@ -32,7 +47,8 @@ import PaginaCambiarContrasena from './pages/PaginaCambiarContrasena.jsx'
  *   *                      -> redirige a /
  *
  * RutaProtegida solo decide que se muestra; la autorizacion real esta en
- * la base (RLS por rol).
+ * la base (RLS por rol y funciones SQL): un operador que llame a la API de
+ * una ruta de admin recibe 403.
  *
  * Cuello y puno usan las mismas paginas. Las altas llevan `key` para que
  * pasar de /cuellos/nuevo a /punos/nuevo monte un formulario limpio.
@@ -58,11 +74,26 @@ export default function App() {
           </RutaProtegida>
         }
       >
-        <Route index element={<PaginaInicio />} />
+        <Route index element={<PaginaDashboard />} />
+        <Route path="cuellos" element={<PaginaInicio />} />
+        <Route path="disenos" element={<PaginaDisenos />} />
+        <Route path="produccion" element={<PaginaProduccion />} />
+        <Route path="ventas" element={<PaginaVentas />} />
+        <Route path="ventas/nueva" element={<PaginaRegistrarVenta />} />
+        <Route path="estimador" element={<PaginaEstimador />} />
+        <Route path="reportes" element={<PaginaReportes />} />
         <Route path="cuellos/:id" element={<PaginaFicha />} />
         <Route path="punos/:id" element={<PaginaFicha />} />
         <Route path="colores" element={<PaginaColores />} />
-        <Route path="conos" element={<PaginaConos />} />
+        <Route path="conos" element={<PaginaConos key="resumen" />} />
+        <Route
+          path="conos/entrada"
+          element={<PaginaConos key="entrada" abrir="entrada" />}
+        />
+        <Route
+          path="conos/salida"
+          element={<PaginaConos key="salida" abrir="salida" />}
+        />
         <Route path="conos/muestrario" element={<PaginaMuestrario />} />
         <Route path="conos/nuevo" element={<PaginaFormularioCono key="nuevo" />} />
         <Route path="conos/:id" element={<PaginaFichaCono />} />

@@ -31,4 +31,15 @@ export * from './usuarios/permisos.js'
 export * from './usuarios/validaciones.js'
 export * from './usuarios/api.js'
 
+export * from './ventas/constantes.js'
+export * from './ventas/validaciones.js'
+export * from './ventas/api.js'
+
+export * from './estimador/calculos.js'
+export * from './estimador/api.js'
+
+export * from './reportes/periodos.js'
+export * from './reportes/exportar.js'
+export * from './reportes/api.js'
+
 export * from './formato/index.js'

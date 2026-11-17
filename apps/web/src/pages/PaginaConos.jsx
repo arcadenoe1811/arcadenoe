@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   formatearConos,
   formatearEntero,
@@ -16,15 +16,26 @@ import TarjetaKpi from '../components/conos/TarjetaKpi.jsx'
 import Cargando from '../components/Cargando.jsx'
 import Aviso from '../components/Aviso.jsx'
 
-/** Resumen del inventario de conos: cifras, alertas y ultimos movimientos. */
-export default function PaginaConos() {
+/**
+ * Resumen del inventario de conos: cifras, alertas y ultimos movimientos.
+ * `abrir` (rutas /conos/entrada y /conos/salida del menu) muestra la pagina
+ * con el registro de ese movimiento ya abierto.
+ * @param {{ abrir?: 'entrada'|'salida' }} props
+ */
+export default function PaginaConos({ abrir: movimientoInicial }) {
+  const navegar = useNavigate()
   const { conos, cargando, error, recargar } = useConos()
   const recientes = useMovimientosRecientes()
   const [modal, setModal] = useState(
     /** @type {null|{ tipo: 'entrada'|'salida', cono?: import('@inventario/shared').Cono }} */ (
-      null
+      movimientoInicial ? { tipo: movimientoInicial } : null
     ),
   )
+  // Al cerrar el registro abierto desde el menu se vuelve al resumen.
+  const cerrarModal = () => {
+    setModal(null)
+    if (movimientoInicial) navegar('/conos', { replace: true })
+  }
   const [mensaje, setMensaje] = useState(/** @type {string|null} */ (null))
 
   const abrir = (tipo, cono) => {
@@ -193,12 +204,12 @@ export default function PaginaConos() {
         </>
       )}
 
-      {modal && (
+      {modal && conos.length > 0 && (
         <ModalMovimiento
           tipoInicial={modal.tipo}
           cono={modal.cono}
           conos={conos}
-          alCerrar={() => setModal(null)}
+          alCerrar={cerrarModal}
           alRegistrar={(texto) => {
             setModal(null)
             setMensaje(texto)

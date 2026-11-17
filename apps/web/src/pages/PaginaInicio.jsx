@@ -46,6 +46,20 @@ export default function PaginaInicio() {
 
   return (
     <section>
+      <div className="encabezado-pagina">
+        <h1>Catálogo de cuellos</h1>
+        {puedeEditar && (
+          <div className="acciones-pagina">
+            <Link to="/cuellos/nuevo" className="boton boton-primario boton-compacto">
+              + Nuevo cuello
+            </Link>
+            <Link to="/punos/nuevo" className="boton boton-secundario">
+              + Nuevo puño
+            </Link>
+          </div>
+        )}
+      </div>
+
       <FiltrosCuellos
         filtros={filtros}
         alCambiar={cambiarFiltro}
