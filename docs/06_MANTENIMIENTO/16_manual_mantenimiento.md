@@ -62,12 +62,12 @@
 
 ## 10. Rutina de mantenimiento sugerida
 
-| Frecuencia | Tarea |
-| --- | --- |
-| Semanal | Revisar logs e `intentos_acceso`; verificar respaldos. |
-| Mensual | `npm audit`; prueba de restauración; revisar dependencias. |
+| Frecuencia | Tarea                                                                                                    |
+| ---------- | -------------------------------------------------------------------------------------------------------- |
+| Semanal    | Revisar logs e `intentos_acceso`; verificar respaldos.                                                   |
+| Mensual    | `npm audit`; prueba de restauración; revisar dependencias.                                               |
 | Por cambio | Ejecutar `npm run ci`; crear migración si cambia el esquema; actualizar el [changelog](17_changelog.md). |
-| Trimestral | Revisar políticas RLS y permisos; plan de actualizaciones mayores. |
+| Trimestral | Revisar políticas RLS y permisos; plan de actualizaciones mayores.                                       |
 
 ## 11. Historial de cambios
 

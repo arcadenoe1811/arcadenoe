@@ -9,13 +9,13 @@
 
 ## 1. Portada
 
-| | |
-| --- | --- |
-| **Nombre del sistema** | Inventario de Cuellos |
-| **Tipo de aplicación** | Aplicación web (SPA) de gestión de inventario y producción |
-| **Dominio** | Taller de tejido industrial (fabricación de cuellos y puños) |
-| **Stack** | React + Vite · Supabase (PostgreSQL + PostgREST + GoTrue) |
-| **Modalidad de uso** | Mono-taller, un solo inventario compartido por el personal autenticado |
+|                        |                                                                        |
+| ---------------------- | ---------------------------------------------------------------------- |
+| **Nombre del sistema** | Inventario de Cuellos                                                  |
+| **Tipo de aplicación** | Aplicación web (SPA) de gestión de inventario y producción             |
+| **Dominio**            | Taller de tejido industrial (fabricación de cuellos y puños)           |
+| **Stack**              | React + Vite · Supabase (PostgreSQL + PostgREST + GoTrue)              |
+| **Modalidad de uso**   | Mono-taller, un solo inventario compartido por el personal autenticado |
 
 ## 2. Introducción
 
@@ -26,7 +26,7 @@ inventario de conos de hilo, las ventas, la producción bajo pedido y la estimac
 costos.
 
 La aplicación es una **SPA (Single Page Application)** que el personal usa desde el
-navegador, tanto en computadora como en móvil (diseño *mobile-first*). No existe un
+navegador, tanto en computadora como en móvil (diseño _mobile-first_). No existe un
 servidor de aplicaciones propio: el navegador se comunica directamente con la plataforma
 Supabase, y toda la lógica de negocio sensible y la autorización viven en la base de datos.
 
@@ -47,7 +47,7 @@ problemas concretos:
 - **Búsqueda lenta** de un diseño entre decenas de cuellos con códigos parecidos.
 - **Falta de visibilidad** del inventario de conos (qué hay, cuánto queda, cuándo está bajo o agotado).
 - **Dificultad para estimar costos** de un pedido (material + mano de obra) de forma consistente.
-- **Sin historial confiable** de ventas y producción, lo que impide saber qué está *pendiente de producir*.
+- **Sin historial confiable** de ventas y producción, lo que impide saber qué está _pendiente de producir_.
 - **Sin control de acceso**: cualquiera con el cuaderno podía ver o alterar todo.
 
 ## 5. Justificación
@@ -57,7 +57,7 @@ Digitalizar el inventario permite:
 - Buscar un cuello por código, nombre, notas o color en segundos (búsqueda sin acentos ni mayúsculas).
 - Conocer en todo momento el estado del inventario de conos (disponible / bajo / agotado) y su valor.
 - Registrar ventas y producción con totales **calculados y validados por la base de datos**, no a mano.
-- Trabajar **bajo pedido**: lo vendido que aún no se produjo aparece como *pendiente de producir*.
+- Trabajar **bajo pedido**: lo vendido que aún no se produjo aparece como _pendiente de producir_.
 - Separar responsabilidades mediante **roles** (administrador y operador) con permisos distintos.
 - Mantener la información **protegida** (autenticación, autorización por rol, validaciones y respaldo).
 
@@ -108,34 +108,34 @@ información protegida y validada.
 
 ## 10. Descripción general de las funcionalidades
 
-| Módulo | Descripción |
-| --- | --- |
-| **Autenticación** | Inicio de sesión, cambio de contraseña obligatorio en primer ingreso, bloqueo por fuerza bruta, expiración por inactividad. |
-| **Cuellos / puños** | Catálogo con búsqueda, filtros, ficha técnica, diseñador de colores por zona y herencia puño–cuello. |
-| **Colores** | Catálogo de colores normalizados para autocompletar el diseñador. |
-| **Conos** | Inventario de conos de hilo: alta/edición, movimientos (entrada/salida/ajuste), estado de stock, muestrario y familias de color. |
-| **Diseños** | Precio base por diseño y existencia (producido − vendido) por talla. |
-| **Ventas** | Registro de ventas con líneas por talla, métodos de pago, historial y estado de venta. |
-| **Producción** | Registro de producción bajo pedido y vista de lo *pendiente de producir*. |
-| **Estimador** | Cálculo y guardado de estimaciones de costo (material + mano de obra). |
-| **Dashboard y reportes** | Cifras agregadas por período (inventario, producción, ventas, resumen) exportables. |
-| **Usuarios** | Gestión de usuarios y roles (solo administrador). |
+| Módulo                   | Descripción                                                                                                                      |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| **Autenticación**        | Inicio de sesión, cambio de contraseña obligatorio en primer ingreso, bloqueo por fuerza bruta, expiración por inactividad.      |
+| **Cuellos / puños**      | Catálogo con búsqueda, filtros, ficha técnica, diseñador de colores por zona y herencia puño–cuello.                             |
+| **Colores**              | Catálogo de colores normalizados para autocompletar el diseñador.                                                                |
+| **Conos**                | Inventario de conos de hilo: alta/edición, movimientos (entrada/salida/ajuste), estado de stock, muestrario y familias de color. |
+| **Diseños**              | Precio base por diseño y existencia (producido − vendido) por talla.                                                             |
+| **Ventas**               | Registro de ventas con líneas por talla, métodos de pago, historial y estado de venta.                                           |
+| **Producción**           | Registro de producción bajo pedido y vista de lo _pendiente de producir_.                                                        |
+| **Estimador**            | Cálculo y guardado de estimaciones de costo (material + mano de obra).                                                           |
+| **Dashboard y reportes** | Cifras agregadas por período (inventario, producción, ventas, resumen) exportables.                                              |
+| **Usuarios**             | Gestión de usuarios y roles (solo administrador).                                                                                |
 
 ## 11. Tecnologías utilizadas
 
-| Capa | Tecnología | Versión |
-| --- | --- | --- |
-| Frontend | React | 18.3.x |
-| Frontend | React Router DOM | 6.28.x |
-| Build / dev server | Vite | 6.x |
-| Lenguaje | JavaScript (ESM) con JSDoc | — |
-| Cliente de datos | `@supabase/supabase-js` | 2.45+ |
-| Base de datos | PostgreSQL (Supabase) | 15 |
-| API de datos | PostgREST | (gestionado por Supabase) |
-| Autenticación | GoTrue (Supabase Auth) | (gestionado por Supabase) |
-| Pruebas | Vitest + Testing Library | Vitest 4.x |
-| Calidad | ESLint 9 + Prettier 3 | — |
-| Infra local | Docker Compose / Supabase CLI | — |
-| Monorepo | npm workspaces (`apps/*`, `packages/*`) | — |
+| Capa               | Tecnología                              | Versión                   |
+| ------------------ | --------------------------------------- | ------------------------- |
+| Frontend           | React                                   | 18.3.x                    |
+| Frontend           | React Router DOM                        | 6.28.x                    |
+| Build / dev server | Vite                                    | 6.x                       |
+| Lenguaje           | JavaScript (ESM) con JSDoc              | —                         |
+| Cliente de datos   | `@supabase/supabase-js`                 | 2.45+                     |
+| Base de datos      | PostgreSQL (Supabase)                   | 15                        |
+| API de datos       | PostgREST                               | (gestionado por Supabase) |
+| Autenticación      | GoTrue (Supabase Auth)                  | (gestionado por Supabase) |
+| Pruebas            | Vitest + Testing Library                | Vitest 4.x                |
+| Calidad            | ESLint 9 + Prettier 3                   | —                         |
+| Infra local        | Docker Compose / Supabase CLI           | —                         |
+| Monorepo           | npm workspaces (`apps/*`, `packages/*`) | —                         |
 
 Más detalle en [04 — Arquitectura del sistema](../02_TECNICA/04_arquitectura.md).

@@ -57,15 +57,15 @@ arcadenoe/
 
 ## 2. Descripción de archivos principales
 
-| Archivo | Responsabilidad |
-| --- | --- |
-| [`apps/web/src/App.jsx`](../../apps/web/src/App.jsx) | Define todas las rutas y qué página se monta según permiso. |
-| [`apps/web/src/main.jsx`](../../apps/web/src/main.jsx) | Monta React, el router y el `ContextoAuth`; único `console.log` de arranque. |
-| [`apps/web/src/contextos/ContextoAuth.jsx`](../../apps/web/src/contextos/ContextoAuth.jsx) | Estado global de sesión; escucha `onAuthStateChange`; expone rol y `puede()`. |
-| [`packages/shared/api/cliente.js`](../../packages/shared/api/cliente.js) | Instancia única de supabase-js (URL + anon key, persistencia de sesión). |
-| [`packages/shared/api/errores.js`](../../packages/shared/api/errores.js) | `ErrorNormalizado` y `normalizarError` (mensajes genéricos, sin filtrar internos). |
-| [`packages/shared/auth/sesion.js`](../../packages/shared/auth/sesion.js) | `iniciarSesion`, `cerrarSesion`, `obtenerSesion`, `validarInicioSesion`. |
-| [`packages/shared/usuarios/permisos.js`](../../packages/shared/usuarios/permisos.js) | Tabla permiso→roles; debe coincidir con las políticas RLS. |
+| Archivo                                                                                    | Responsabilidad                                                                    |
+| ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| [`apps/web/src/App.jsx`](../../apps/web/src/App.jsx)                                       | Define todas las rutas y qué página se monta según permiso.                        |
+| [`apps/web/src/main.jsx`](../../apps/web/src/main.jsx)                                     | Monta React, el router y el `ContextoAuth`; único `console.log` de arranque.       |
+| [`apps/web/src/contextos/ContextoAuth.jsx`](../../apps/web/src/contextos/ContextoAuth.jsx) | Estado global de sesión; escucha `onAuthStateChange`; expone rol y `puede()`.      |
+| [`packages/shared/api/cliente.js`](../../packages/shared/api/cliente.js)                   | Instancia única de supabase-js (URL + anon key, persistencia de sesión).           |
+| [`packages/shared/api/errores.js`](../../packages/shared/api/errores.js)                   | `ErrorNormalizado` y `normalizarError` (mensajes genéricos, sin filtrar internos). |
+| [`packages/shared/auth/sesion.js`](../../packages/shared/auth/sesion.js)                   | `iniciarSesion`, `cerrarSesion`, `obtenerSesion`, `validarInicioSesion`.           |
+| [`packages/shared/usuarios/permisos.js`](../../packages/shared/usuarios/permisos.js)       | Tabla permiso→roles; debe coincidir con las políticas RLS.                         |
 
 ## 3. Funciones principales
 
@@ -116,15 +116,15 @@ uno por tabla. No hay ORM: las tablas y vistas de PostgreSQL son el modelo físi
 
 ## 10. Dependencias utilizadas
 
-| Paquete | Uso |
-| --- | --- |
-| `react`, `react-dom` (18.3) | UI. |
-| `react-router-dom` (6.28) | Enrutado SPA. |
+| Paquete                         | Uso                               |
+| ------------------------------- | --------------------------------- |
+| `react`, `react-dom` (18.3)     | UI.                               |
+| `react-router-dom` (6.28)       | Enrutado SPA.                     |
 | `@supabase/supabase-js` (2.45+) | Cliente de datos y autenticación. |
-| `vite` (6) | Dev server y build. |
-| `vitest` (4) + Testing Library | Pruebas. |
-| `eslint` (9), `prettier` (3) | Calidad y formato. |
-| `supabase` (CLI, 2) | Stack local y migraciones. |
+| `vite` (6)                      | Dev server y build.               |
+| `vitest` (4) + Testing Library  | Pruebas.                          |
+| `eslint` (9), `prettier` (3)    | Calidad y formato.                |
+| `supabase` (CLI, 2)             | Stack local y migraciones.        |
 
 ## 11. Reglas del código (convenciones)
 
@@ -132,5 +132,5 @@ uno por tabla. No hay ORM: las tablas y vistas de PostgreSQL son el modelo físi
 - Un único `console.log` (arranque en `main.jsx`); los errores se normalizan.
 - `packages/shared` **no** importa React DOM.
 - Las **validaciones** viven en `packages/shared`, no en los componentes.
-- **CSS puro**, *mobile-first* (`min-width` 640/1024 px), con tokens de `estilos/variables.css`; toques ≥ 44px y entradas de 16px en móvil.
+- **CSS puro**, _mobile-first_ (`min-width` 640/1024 px), con tokens de `estilos/variables.css`; toques ≥ 44px y entradas de 16px en móvil.
 - Calidad verificable con `npm run ci` (lint + formato + build + pruebas).

@@ -42,7 +42,7 @@
 
 - **JWT de 1 hora**; **refresh tokens rotados** con revocación por reúso.
 - Cierre automático por **inactividad de 8 horas** (cliente y servidor).
-- *Cerrar sesión* revoca los tokens en el servidor y limpia el almacenamiento local.
+- _Cerrar sesión_ revoca los tokens en el servidor y limpia el almacenamiento local.
 - **Bloqueo por fuerza bruta:** la cuenta se bloquea **15 minutos** tras **5 intentos fallidos**; además hay rate-limit de login por IP.
 - El token se guarda en `localStorage` (patrón estándar de las SPA de Supabase). Riesgo aceptado y mitigado por disciplina anti-XSS + CSP (ver hallazgo M-4).
 

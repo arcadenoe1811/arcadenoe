@@ -61,7 +61,7 @@ Los códigos de respuesta comunes: **200** OK · **201** creado · **204** sin c
 - **Autenticación:** requerida. **Permiso:** `cuellos.ver` (admin y operador).
 - **Respuesta (200):**
   ```json
-  [{ "id": "…", "codigo": "maza4", "tipo": "tubular", "medidas": [18,17,16] }]
+  [{ "id": "…", "codigo": "maza4", "tipo": "tubular", "medidas": [18, 17, 16] }]
   ```
 
 ### Buscar cuellos (RPC)
@@ -119,23 +119,25 @@ Los códigos de respuesta comunes: **200** OK · **201** creado · **204** sin c
   ```json
   {
     "p_venta": { "cliente": "Ana", "metodo_pago": "efectivo" },
-    "p_lineas": [ { "diseno_codigo": "maza4", "talla": "16", "cantidad": 3, "precio_unitario": 50.00 } ]
+    "p_lineas": [
+      { "diseno_codigo": "maza4", "talla": "16", "cantidad": 3, "precio_unitario": 50.0 }
+    ]
   }
   ```
 - **Respuesta:** la venta creada con su `total` y `total_unidades`.
 
 ### Otras funciones de escritura
 
-| Función RPC | Descripción | Permiso |
-| --- | --- | --- |
-| `fn_registrar_produccion` | Registra producción bajo pedido. | `produccion.registrar` |
-| `fn_guardar_estimacion` | Guarda una estimación de costo. | `estimador.usar` |
-| `fn_marcar_entrega` | Marca entrega de líneas de venta. | `ventas.*` |
-| `fn_crear_usuario` | Crea usuario con contraseña temporal. | `usuarios.gestionar` (admin) |
-| `fn_actualizar_usuario` | Edita nombre/rol de un usuario. | admin |
-| `fn_cambiar_estado_usuario` | Habilita/deshabilita un usuario. | admin |
-| `fn_resetear_contrasena` | Resetea la contraseña de un usuario. | admin |
-| `fn_cambiar_mi_contrasena` | Cambia la contraseña propia. | usuario autenticado |
+| Función RPC                 | Descripción                           | Permiso                      |
+| --------------------------- | ------------------------------------- | ---------------------------- |
+| `fn_registrar_produccion`   | Registra producción bajo pedido.      | `produccion.registrar`       |
+| `fn_guardar_estimacion`     | Guarda una estimación de costo.       | `estimador.usar`             |
+| `fn_marcar_entrega`         | Marca entrega de líneas de venta.     | `ventas.*`                   |
+| `fn_crear_usuario`          | Crea usuario con contraseña temporal. | `usuarios.gestionar` (admin) |
+| `fn_actualizar_usuario`     | Edita nombre/rol de un usuario.       | admin                        |
+| `fn_cambiar_estado_usuario` | Habilita/deshabilita un usuario.      | admin                        |
+| `fn_resetear_contrasena`    | Resetea la contraseña de un usuario.  | admin                        |
+| `fn_cambiar_mi_contrasena`  | Cambia la contraseña propia.          | usuario autenticado          |
 
 ---
 
@@ -150,6 +152,7 @@ Los códigos de respuesta comunes: **200** OK · **201** creado · **204** sin c
 **Permiso:** Administrador (`usuarios.gestionar`).
 
 **Respuesta esperada (200):**
+
 ```json
 {
   "success": true,
@@ -158,10 +161,12 @@ Los códigos de respuesta comunes: **200** OK · **201** creado · **204** sin c
   ]
 }
 ```
+
 > En la práctica PostgREST devuelve el array de filas directamente; el envoltorio
 > `success/data` se arma en la capa `packages/shared/usuarios/api.js`.
 
 **Códigos de respuesta:**
+
 - **200** — Solicitud exitosa.
 - **401** — No autenticado.
 - **403** — Sin permisos (un operador recibe 403 por RLS).

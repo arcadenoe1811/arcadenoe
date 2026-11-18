@@ -15,17 +15,17 @@
 - Asistentes de IA de generación de código y documentación (modelos de lenguaje tipo
   Claude / asistentes integrados al editor).
 
-> *Nota para el equipo:* indique aquí las herramientas concretas que usaron (por ejemplo
+> _Nota para el equipo:_ indique aquí las herramientas concretas que usaron (por ejemplo
 > Claude Code, GitHub Copilot, ChatGPT), sus versiones aproximadas y el período de uso.
 
 ## 2. Actividades en las que se utilizó
 
-| Actividad | Uso de IA |
-| --- | --- |
-| Generación de código | Apoyo en componentes React, hooks, validaciones y funciones SQL. |
-| Documentación | Redacción y estructura de los documentos de la carpeta `docs/`. |
-| Auditoría de seguridad | Revisión del código y redacción de hallazgos (`auditoria.md`). |
-| Depuración | Sugerencias para corregir errores y entender mensajes. |
+| Actividad              | Uso de IA                                                        |
+| ---------------------- | ---------------------------------------------------------------- |
+| Generación de código   | Apoyo en componentes React, hooks, validaciones y funciones SQL. |
+| Documentación          | Redacción y estructura de los documentos de la carpeta `docs/`.  |
+| Auditoría de seguridad | Revisión del código y redacción de hallazgos (`auditoria.md`).   |
+| Depuración             | Sugerencias para corregir errores y entender mensajes.           |
 
 ## 3. Componentes o módulos que recibieron asistencia de IA
 
@@ -34,12 +34,12 @@
 - Base de datos (`supabase/migrations`): funciones, políticas RLS y triggers.
 - Documentación (`docs/`, `README.md`, `auditoria.md`, `recomendacion.md`).
 
-> *Nota para el equipo:* ajuste esta lista a lo que realmente fue asistido por IA frente a
+> _Nota para el equipo:_ ajuste esta lista a lo que realmente fue asistido por IA frente a
 > lo escrito manualmente.
 
 ## 4. Modificaciones y validaciones realizadas por el equipo
 
-- Revisión y adaptación del código generado al estilo del proyecto (nombres en español, JSDoc, CSS *mobile-first*, sin TypeScript).
+- Revisión y adaptación del código generado al estilo del proyecto (nombres en español, JSDoc, CSS _mobile-first_, sin TypeScript).
 - Verificación de que las validaciones viven en `packages/shared` y la autorización en la base.
 - Ajuste de las políticas RLS y de la tabla de permisos de la interfaz para que coincidan.
 - Pruebas manuales de los flujos principales y revisión de los resultados.

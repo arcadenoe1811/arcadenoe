@@ -66,11 +66,11 @@ Elija **una** opción de entorno local:
 npm run docker:iniciar      # docker compose up -d --build
 ```
 
-| Capa | URL |
-| --- | --- |
-| Frontend (Vite) | http://localhost:5173 |
+| Capa            | URL                    |
+| --------------- | ---------------------- |
+| Frontend (Vite) | http://localhost:5173  |
 | API (PostgREST) | http://localhost:54321 |
-| PostgreSQL | localhost:54322 |
+| PostgreSQL      | localhost:54322        |
 
 Las migraciones `00001`–`00015` se aplican automáticamente con el volumen vacío. Para
 empezar de cero: `docker compose down -v`.
@@ -112,7 +112,7 @@ despliega backend propio).
 
 Sigue el [plan de remediación](../../recomendacion.md). Resumen:
 
-1. Crear el proyecto en **Supabase Cloud**; copiar *Project URL* y *anon key* al `.env` de producción. **No** copiar la *service_role key* al frontend.
+1. Crear el proyecto en **Supabase Cloud**; copiar _Project URL_ y _anon key_ al `.env` de producción. **No** copiar la _service_role key_ al frontend.
 2. Subir migraciones: `npx supabase link --project-ref <ref>` y `npx supabase db push`.
 3. Crear el admin real desde el panel con contraseña fuerte; marcar `debe_cambiar_contrasena = true`. **No** ejecutar `seed_usuario.sql` en cloud.
 4. En Auth → URL Configuration: **Site URL** y **Redirect URLs** con el dominio `https://` real.
@@ -128,10 +128,10 @@ Sigue el [plan de remediación](../../recomendacion.md). Resumen:
 
 ## Comandos útiles
 
-| Comando | Qué hace |
-| --- | --- |
-| `npm run dev` | Dev server de la web. |
-| `npm run build` | Build de producción. |
-| `npm run db:iniciar` / `db:detener` / `db:estado` / `db:reiniciar` | Supabase local (CLI). |
-| `npm run docker:iniciar` / `docker:detener` / `docker:estado` / `docker:logs` | Stack Docker completo. |
-| `npm run ci` | lint + formato + build + pruebas. |
+| Comando                                                                       | Qué hace                          |
+| ----------------------------------------------------------------------------- | --------------------------------- |
+| `npm run dev`                                                                 | Dev server de la web.             |
+| `npm run build`                                                               | Build de producción.              |
+| `npm run db:iniciar` / `db:detener` / `db:estado` / `db:reiniciar`            | Supabase local (CLI).             |
+| `npm run docker:iniciar` / `docker:detener` / `docker:estado` / `docker:logs` | Stack Docker completo.            |
+| `npm run ci`                                                                  | lint + formato + build + pruebas. |

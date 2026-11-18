@@ -1,7 +1,7 @@
 # 09 — Manual de administrador
 
 **Sistema:** Inventario de Cuellos (Arca de Noé)
-**Dirigido a:** usuarios con rol *administrador*
+**Dirigido a:** usuarios con rol _administrador_
 **Versión del documento:** 1.0
 **Fecha:** 2026-11-17
 
@@ -30,12 +30,12 @@ Entre a **Usuarios** (`/usuarios`).
 
 ### Editar, deshabilitar y resetear
 
-| Acción | Efecto |
-| --- | --- |
-| **Editar** | Cambia nombre y rol. Un admin **no** puede cambiarse su propio rol. |
-| **Deshabilitar** | El usuario pierde acceso al instante y se cierran sus sesiones. **No se elimina.** |
-| **Reactivar** | Restaura el acceso. |
-| **Resetear contraseña** | Genera una contraseña temporal; el usuario la cambia al entrar. |
+| Acción                  | Efecto                                                                             |
+| ----------------------- | ---------------------------------------------------------------------------------- |
+| **Editar**              | Cambia nombre y rol. Un admin **no** puede cambiarse su propio rol.                |
+| **Deshabilitar**        | El usuario pierde acceso al instante y se cierran sus sesiones. **No se elimina.** |
+| **Reactivar**           | Restaura el acceso.                                                                |
+| **Resetear contraseña** | Genera una contraseña temporal; el usuario la cambia al entrar.                    |
 
 > **Reglas de integridad (impuestas por la base):** siempre debe quedar **al menos un
 > administrador activo**; un admin no puede deshabilitarse a sí mismo. Estas reglas se
@@ -47,17 +47,17 @@ Entre a **Usuarios** (`/usuarios`).
 
 Hay dos roles: **administrador** y **operador**. El detalle de permisos:
 
-| Módulo | Administrador | Operador |
-| --- | --- | --- |
-| Usuarios | Crear, editar, habilitar/deshabilitar, resetear | Sin acceso |
-| Conos | Todo (incluye eliminar y desactivar) | Crear, editar, entradas/salidas |
-| Colores | Todo (incluye eliminar) | Crear y editar |
-| Cuellos / puños | Todo | Solo consulta |
-| Precios y tarifa | Cambiar precio base y tarifa por hora | Solo consulta |
-| Ventas | Registrar y eliminar, ver historial | Solo registrar |
-| Estimador | Guardar y eliminar estimaciones | — |
-| Producción | Registrar y eliminar | Registrar |
-| Dashboard y reportes | Ver | — |
+| Módulo               | Administrador                                   | Operador                        |
+| -------------------- | ----------------------------------------------- | ------------------------------- |
+| Usuarios             | Crear, editar, habilitar/deshabilitar, resetear | Sin acceso                      |
+| Conos                | Todo (incluye eliminar y desactivar)            | Crear, editar, entradas/salidas |
+| Colores              | Todo (incluye eliminar)                         | Crear y editar                  |
+| Cuellos / puños      | Todo                                            | Solo consulta                   |
+| Precios y tarifa     | Cambiar precio base y tarifa por hora           | Solo consulta                   |
+| Ventas               | Registrar y eliminar, ver historial             | Solo registrar                  |
+| Estimador            | Guardar y eliminar estimaciones                 | —                               |
+| Producción           | Registrar y eliminar                            | Registrar                       |
+| Dashboard y reportes | Ver                                             | —                               |
 
 > La tabla de permisos de la interfaz vive en
 > [`packages/shared/usuarios/permisos.js`](../../packages/shared/usuarios/permisos.js) y

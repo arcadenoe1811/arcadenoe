@@ -54,21 +54,21 @@ puntos **con hallazgo** como los **revisados sin hallazgo explotable**.
 
 **Total: 13 hallazgos** — Críticos: 1 · Altos: 3 · Medios: 5 · Bajos/informativos: 4.
 
-| # | Nivel | Hallazgo |
-| --- | --- | --- |
+| #   | Nivel      | Hallazgo                                                                                                                                                 |
+| --- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | C-1 | 🔴 Crítico | `JWT_SECRET`/`POSTGRES_PASSWORD` con valores demo públicos + API expuesta en todas las interfaces → forja de token `service_role` y bypass total de RLS. |
-| A-1 | 🟠 Alto | Credenciales de admin por defecto versionadas (`seed_usuario.sql`: `admin1234`) sin forzar cambio. |
-| A-2 | 🟠 Alto | El “despliegue” sirve el dev server de Vite expuesto en `0.0.0.0:5173`. |
-| A-3 | 🟠 Alto | Puertos de API (`54321`) y web (`5173`) publicados en todas las interfaces. |
-| M-1 | 🟡 Medio | Dependencia `react-router` con vulnerabilidad conocida (open redirect). |
-| M-2 | 🟡 Medio | Sin cabeceras de seguridad (CSP, etc.) servidas por el host de producción. |
-| M-3 | 🟡 Medio | Sin HTTPS/TLS en los servicios locales. |
-| M-4 | 🟡 Medio | Token de sesión en `localStorage` (no `httpOnly`). |
-| M-5 | 🟡 Medio | `.env` con credenciales débiles y variables muertas (`VITE_DEFAULT_*`). |
-| B-1 | 🔵 Bajo | El operador ve nombres de clientes vía funciones de producción (intencional). |
-| B-2 | 🔵 Bajo | `imagen_url` renderiza una URL externa arbitraria como `<img>`. |
-| B-3 | 🔵 Bajo | Esquema `graphql_public` expuesto (superficie extra). |
-| B-4 | 🔵 Bajo | Sin registro de auditoría de cambios de rol / eliminaciones. |
+| A-1 | 🟠 Alto    | Credenciales de admin por defecto versionadas (`seed_usuario.sql`: `admin1234`) sin forzar cambio.                                                       |
+| A-2 | 🟠 Alto    | El “despliegue” sirve el dev server de Vite expuesto en `0.0.0.0:5173`.                                                                                  |
+| A-3 | 🟠 Alto    | Puertos de API (`54321`) y web (`5173`) publicados en todas las interfaces.                                                                              |
+| M-1 | 🟡 Medio   | Dependencia `react-router` con vulnerabilidad conocida (open redirect).                                                                                  |
+| M-2 | 🟡 Medio   | Sin cabeceras de seguridad (CSP, etc.) servidas por el host de producción.                                                                               |
+| M-3 | 🟡 Medio   | Sin HTTPS/TLS en los servicios locales.                                                                                                                  |
+| M-4 | 🟡 Medio   | Token de sesión en `localStorage` (no `httpOnly`).                                                                                                       |
+| M-5 | 🟡 Medio   | `.env` con credenciales débiles y variables muertas (`VITE_DEFAULT_*`).                                                                                  |
+| B-1 | 🔵 Bajo    | El operador ve nombres de clientes vía funciones de producción (intencional).                                                                            |
+| B-2 | 🔵 Bajo    | `imagen_url` renderiza una URL externa arbitraria como `<img>`.                                                                                          |
+| B-3 | 🔵 Bajo    | Esquema `graphql_public` expuesto (superficie extra).                                                                                                    |
+| B-4 | 🔵 Bajo    | Sin registro de auditoría de cambios de rol / eliminaciones.                                                                                             |
 
 ### Ejemplo de hallazgo documentado (formato estándar)
 
@@ -113,16 +113,16 @@ El detalle de cada recomendación y el plan completo están en
 El despliegue previsto es **Supabase Cloud** con usuarios recreados desde cero. Esto
 **resuelve de raíz** varios hallazgos:
 
-| Hallazgo | Estado tras migrar a Supabase Cloud |
-| --- | --- |
-| C-1 | ✅ Resuelto: Supabase gestiona un `JWT secret` único y privado; API por HTTPS. |
-| A-2 / A-3 | ✅ Resueltos: ya no se sirve la API/dev server propios; solo el frontend estático. |
-| M-3 | ✅ Resuelto para API/Auth (HTTPS de Supabase) y frontend (host con HTTPS). |
-| A-1 | 🔧 Acción: crear el admin real con contraseña fuerte y `debe_cambiar_contrasena = true`; no ejecutar `seed_usuario.sql` en cloud. |
-| M-2 | 🔧 Acción: configurar cabeceras + CSP en el host del frontend. |
-| M-5 | 🔧 Acción: eliminar `VITE_DEFAULT_*` del `.env`. |
-| M-1 | 🔧 Acción: `npm audit fix` y planificar subida de `react-router-dom`. |
-| B-1…B-4 | 🔧 Decisiones de negocio / endurecimientos opcionales. |
+| Hallazgo  | Estado tras migrar a Supabase Cloud                                                                                               |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| C-1       | ✅ Resuelto: Supabase gestiona un `JWT secret` único y privado; API por HTTPS.                                                    |
+| A-2 / A-3 | ✅ Resueltos: ya no se sirve la API/dev server propios; solo el frontend estático.                                                |
+| M-3       | ✅ Resuelto para API/Auth (HTTPS de Supabase) y frontend (host con HTTPS).                                                        |
+| A-1       | 🔧 Acción: crear el admin real con contraseña fuerte y `debe_cambiar_contrasena = true`; no ejecutar `seed_usuario.sql` en cloud. |
+| M-2       | 🔧 Acción: configurar cabeceras + CSP en el host del frontend.                                                                    |
+| M-5       | 🔧 Acción: eliminar `VITE_DEFAULT_*` del `.env`.                                                                                  |
+| M-1       | 🔧 Acción: `npm audit fix` y planificar subida de `react-router-dom`.                                                             |
+| B-1…B-4   | 🔧 Decisiones de negocio / endurecimientos opcionales.                                                                            |
 
 ## 12. Resultados de la nueva evaluación
 
@@ -140,4 +140,4 @@ configuración y se resuelve al migrar a Supabase Cloud. Corrigiendo C-1, A-1 y 
 de exponer el stack, el sistema queda en un nivel de seguridad adecuado para su uso
 previsto.
 
-*Auditoría realizada sin modificar código; las correcciones quedan a criterio del equipo.*
+_Auditoría realizada sin modificar código; las correcciones quedan a criterio del equipo._

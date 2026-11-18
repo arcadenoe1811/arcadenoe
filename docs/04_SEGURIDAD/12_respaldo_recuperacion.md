@@ -13,23 +13,23 @@ información, con tiempos y responsabilidades claros.
 
 ## 2. Información que debe respaldarse
 
-| Elemento | Dónde vive | Prioridad |
-| --- | --- | --- |
-| **Base de datos PostgreSQL** (datos y esquema) | Supabase (local o cloud) | Crítica |
-| **Migraciones SQL** (`supabase/migrations/`) | Repositorio git | Crítica (ya versionada) |
-| **Código fuente** | Repositorio git | Crítica (ya versionado) |
-| **Variables de entorno** (`.env`) | Fuera de git | Alta (guardar en gestor de secretos) |
-| **Imágenes** | Hosts externos (ImgBB, Drive…) | Media (son enlaces, no archivos propios) |
+| Elemento                                       | Dónde vive                     | Prioridad                                |
+| ---------------------------------------------- | ------------------------------ | ---------------------------------------- |
+| **Base de datos PostgreSQL** (datos y esquema) | Supabase (local o cloud)       | Crítica                                  |
+| **Migraciones SQL** (`supabase/migrations/`)   | Repositorio git                | Crítica (ya versionada)                  |
+| **Código fuente**                              | Repositorio git                | Crítica (ya versionado)                  |
+| **Variables de entorno** (`.env`)              | Fuera de git                   | Alta (guardar en gestor de secretos)     |
+| **Imágenes**                                   | Hosts externos (ImgBB, Drive…) | Media (son enlaces, no archivos propios) |
 
 > El código y las migraciones ya están respaldados por **git**. El plan se centra en los
 > **datos** de la base, que no están en el repositorio.
 
 ## 3. Frecuencia de los respaldos
 
-| Entorno | Estrategia | Frecuencia |
-| --- | --- | --- |
-| **Supabase Cloud** | Backups automáticos gestionados por Supabase (según el plan contratado). | Diaria (automática) |
-| **Local / self-hosted** | `pg_dump` manual o programado. | Diaria o antes de cada cambio importante |
+| Entorno                 | Estrategia                                                               | Frecuencia                               |
+| ----------------------- | ------------------------------------------------------------------------ | ---------------------------------------- |
+| **Supabase Cloud**      | Backups automáticos gestionados por Supabase (según el plan contratado). | Diaria (automática)                      |
+| **Local / self-hosted** | `pg_dump` manual o programado.                                           | Diaria o antes de cada cambio importante |
 
 ## 4. Ubicación de almacenamiento
 
@@ -38,10 +38,10 @@ información, con tiempos y responsabilidades claros.
 
 ## 5. Responsables
 
-| Rol | Responsabilidad |
-| --- | --- |
-| Administrador del sistema | Ejecutar/verificar respaldos y restauraciones. |
-| Responsable técnico | Mantener los scripts y la configuración de backups de Supabase. |
+| Rol                       | Responsabilidad                                                 |
+| ------------------------- | --------------------------------------------------------------- |
+| Administrador del sistema | Ejecutar/verificar respaldos y restauraciones.                  |
+| Responsable técnico       | Mantener los scripts y la configuración de backups de Supabase. |
 
 ## 6. Procedimiento de respaldo
 
@@ -90,10 +90,10 @@ docker compose up -d
 
 ## 10. Objetivos de recuperación
 
-| Métrica | Valor objetivo | Justificación |
-| --- | --- | --- |
-| **RTO** (Tiempo objetivo de recuperación) | ≤ 4 horas | Un taller puede operar en papel unas horas mientras se restaura. |
-| **RPO** (Punto objetivo de recuperación) | ≤ 24 horas | Con respaldo diario, la pérdida máxima es de un día de registros. |
+| Métrica                                   | Valor objetivo | Justificación                                                     |
+| ----------------------------------------- | -------------- | ----------------------------------------------------------------- |
+| **RTO** (Tiempo objetivo de recuperación) | ≤ 4 horas      | Un taller puede operar en papel unas horas mientras se restaura.  |
+| **RPO** (Punto objetivo de recuperación)  | ≤ 24 horas     | Con respaldo diario, la pérdida máxima es de un día de registros. |
 
 > Ajuste RTO/RPO según la criticidad real para el negocio; si se requiere RPO menor,
 > aumentar la frecuencia de respaldo o usar Point-in-Time Recovery de Supabase.

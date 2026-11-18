@@ -1,7 +1,7 @@
 # 08 — Manual de usuario
 
 **Sistema:** Inventario de Cuellos (Arca de Noé)
-**Dirigido a:** personal operativo (rol *operador* y *administrador*)
+**Dirigido a:** personal operativo (rol _operador_ y _administrador_)
 **Versión del documento:** 1.0
 **Fecha:** 2026-11-17
 
@@ -57,7 +57,7 @@ de conocimientos de programación.
 
 - **Menú de navegación** (lateral/superior): acceso a cada módulo según su rol.
 - **Área de contenido:** la pantalla del módulo seleccionado.
-- **Su nombre** (esquina): opción *Cambiar contraseña* y *Cerrar sesión*.
+- **Su nombre** (esquina): opción _Cambiar contraseña_ y _Cerrar sesión_.
 
 El operador aterriza en **Producción** al iniciar sesión; el administrador, en el
 **Dashboard**.
@@ -66,13 +66,13 @@ El operador aterriza en **Producción** al iniciar sesión; el administrador, en
 
 ## 8. Explicación de cada módulo
 
-| Módulo | Qué permite (operador) |
-| --- | --- |
-| **Cuellos** | Buscar y consultar diseños de cuellos y puños. |
-| **Colores** | Consultar, crear y editar colores del catálogo. |
-| **Conos** | Crear/editar conos y registrar entradas, salidas y ajustes. |
-| **Producción** | Ver lo pendiente de producir y registrar producción. |
-| **Ventas** | Registrar ventas (el historial completo es solo para el administrador). |
+| Módulo         | Qué permite (operador)                                                  |
+| -------------- | ----------------------------------------------------------------------- |
+| **Cuellos**    | Buscar y consultar diseños de cuellos y puños.                          |
+| **Colores**    | Consultar, crear y editar colores del catálogo.                         |
+| **Conos**      | Crear/editar conos y registrar entradas, salidas y ajustes.             |
+| **Producción** | Ver lo pendiente de producir y registrar producción.                    |
+| **Ventas**     | Registrar ventas (el historial completo es solo para el administrador). |
 
 ## 9. Procedimientos paso a paso
 
@@ -119,17 +119,17 @@ El operador aterriza en **Producción** al iniciar sesión; el administrador, en
 
 ## 10. Mensajes de error frecuentes
 
-| Mensaje | Causa | Solución |
-| --- | --- | --- |
-| Credenciales incorrectas | Correo o contraseña equivocados. | Verifique los datos; cuide mayúsculas. |
-| Cuenta bloqueada | 5 intentos fallidos. | Espere 15 minutos o pida al admin que la desbloquee. |
-| Debe cambiar su contraseña | Contraseña temporal. | Cambie la contraseña para continuar. |
-| Sin permiso para esta acción | Su rol no incluye esa operación. | Solicítelo a un administrador. |
-| Datos inválidos | Un campo fuera de rango o vacío. | Corrija el campo señalado. |
+| Mensaje                      | Causa                            | Solución                                             |
+| ---------------------------- | -------------------------------- | ---------------------------------------------------- |
+| Credenciales incorrectas     | Correo o contraseña equivocados. | Verifique los datos; cuide mayúsculas.               |
+| Cuenta bloqueada             | 5 intentos fallidos.             | Espere 15 minutos o pida al admin que la desbloquee. |
+| Debe cambiar su contraseña   | Contraseña temporal.             | Cambie la contraseña para continuar.                 |
+| Sin permiso para esta acción | Su rol no incluye esa operación. | Solicítelo a un administrador.                       |
+| Datos inválidos              | Un campo fuera de rango o vacío. | Corrija el campo señalado.                           |
 
 ## 11. Preguntas frecuentes
 
-- **¿Puedo usarlo desde el celular?** Sí, el diseño es *mobile-first*.
+- **¿Puedo usarlo desde el celular?** Sí, el diseño es _mobile-first_.
 - **Cerré la pestaña, ¿perdí la sesión?** No necesariamente; la sesión dura hasta 8 h de inactividad.
 - **No veo el módulo de Ventas/Reportes.** Es normal para el rol operador; son del administrador.
 - **El stock de un cono se ve mal.** Regístrelo con un **ajuste**; nunca se edita a mano.
