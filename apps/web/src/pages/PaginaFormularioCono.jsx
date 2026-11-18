@@ -16,6 +16,7 @@ import { useCatalogoColores } from '../hooks/useCatalogoColores.js'
 import { soloEnteros } from '../utils/soloEnteros.js'
 import SelectorColorHex, { leerHex } from '../components/SelectorColorHex.jsx'
 import MuestraCono from '../components/conos/MuestraCono.jsx'
+import ModalProveedor from '../components/conos/ModalProveedor.jsx'
 import CampoSugerencias from '../components/ui/CampoSugerencias.jsx'
 import Cargando from '../components/Cargando.jsx'
 import Aviso from '../components/Aviso.jsx'
@@ -103,6 +104,7 @@ function FormularioCono({ inicial }) {
   const [errores, setErrores] = useState(/** @type {Record<string, string>} */ ({}))
   const [errorGeneral, setErrorGeneral] = useState(/** @type {string|null} */ (null))
   const [guardando, setGuardando] = useState(false)
+  const [modalProveedor, setModalProveedor] = useState(false)
   const editando = Boolean(inicial)
 
   const cambiar = (nombre, valor) => {
@@ -162,279 +164,307 @@ function FormularioCono({ inicial }) {
   ]
 
   return (
-    <form className="formulario formulario-cono" onSubmit={enviar} noValidate>
-      {errorGeneral && <Aviso tipo="error">{errorGeneral}</Aviso>}
+    <>
+      <form className="formulario formulario-cono" onSubmit={enviar} noValidate>
+        {errorGeneral && <Aviso tipo="error">{errorGeneral}</Aviso>}
 
-      <fieldset className="grupo-campos">
-        <legend>Color</legend>
-        <div className="vista-color-cono">
-          <MuestraCono
-            hex={hexValido ?? '#ffffff'}
-            texto={f.codigo_color || null}
-            tamano="lg"
-            className={hexValido ? '' : 'muestra-cono-vacia'}
-          />
+        <fieldset className="grupo-campos">
+          <legend>Color</legend>
+          <div className="vista-color-cono">
+            <MuestraCono
+              hex={hexValido ?? '#ffffff'}
+              texto={f.codigo_color || null}
+              tamano="lg"
+              className={hexValido ? '' : 'muestra-cono-vacia'}
+            />
+            <div className="campos">
+              <Campo
+                id="cono-nombre"
+                etiqueta="Nombre del color"
+                requerido
+                error={errores.nombre_color}
+              >
+                <input
+                  id="cono-nombre"
+                  autoComplete="off"
+                  placeholder="Ej: Dorado oscuro"
+                  value={f.nombre_color}
+                  onChange={(e) => cambiar('nombre_color', e.target.value)}
+                />
+              </Campo>
+              <Campo id="cono-hex" etiqueta="Color (hex)" requerido error={errores.hex}>
+                <div className="entrada-hex">
+                  <SelectorColorHex
+                    valor={hexValido ?? ''}
+                    etiqueta="Color del cono"
+                    mostrarHex={false}
+                    conCatalogo={false}
+                    alCambiar={(hex) => cambiar('hex', hex)}
+                  />
+                  <input
+                    id="cono-hex"
+                    autoComplete="off"
+                    placeholder="#b8860b"
+                    value={f.hex}
+                    onChange={(e) => cambiar('hex', e.target.value)}
+                  />
+                </div>
+              </Campo>
+              <Campo
+                id="cono-catalogo"
+                etiqueta="Color del catálogo"
+                ayuda="Lo enlaza con el diseñador de cuellos y puños."
+              >
+                <select
+                  id="cono-catalogo"
+                  value={f.color_catalogo_id}
+                  onChange={(e) => elegirDelCatalogo(e.target.value)}
+                >
+                  <option value="">— Sin enlazar —</option>
+                  {catalogo.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.nombre}
+                      {c.hex ? ` (${c.hex})` : ''}
+                    </option>
+                  ))}
+                </select>
+              </Campo>
+              <Campo
+                id="cono-codigo-color"
+                etiqueta="N.º de color"
+                error={errores.codigo_color}
+                ayuda="El mismo número que usas en el diseño (ej: 34)."
+              >
+                <input
+                  id="cono-codigo-color"
+                  autoComplete="off"
+                  value={f.codigo_color}
+                  onChange={(e) => cambiar('codigo_color', e.target.value)}
+                />
+              </Campo>
+              <Campo
+                id="cono-familia"
+                etiqueta="Familia de color"
+                error={errores.familia_color}
+                ayuda={familiaManual ? undefined : 'Sugerida según el color.'}
+              >
+                <select
+                  id="cono-familia"
+                  value={familia}
+                  onChange={(e) => {
+                    setFamiliaManual(true)
+                    cambiar('familia_color', e.target.value)
+                  }}
+                >
+                  {!familia && <option value="">— Elegir —</option>}
+                  {FAMILIAS_COLOR.map((fam) => (
+                    <option key={fam.valor} value={fam.valor}>
+                      {fam.etiqueta}
+                    </option>
+                  ))}
+                </select>
+              </Campo>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset className="grupo-campos">
+          <legend>Hilo</legend>
           <div className="campos">
             <Campo
-              id="cono-nombre"
-              etiqueta="Nombre del color"
-              requerido
-              error={errores.nombre_color}
+              id="cono-codigo"
+              etiqueta="Código del cono"
+              error={errores.codigo}
+              ayuda={editando ? undefined : 'Vacío = se genera (CON-0001…).'}
             >
               <input
-                id="cono-nombre"
+                id="cono-codigo"
                 autoComplete="off"
-                placeholder="Ej: Dorado oscuro"
-                value={f.nombre_color}
-                onChange={(e) => cambiar('nombre_color', e.target.value)}
+                placeholder={editando ? '' : 'Automático'}
+                value={f.codigo}
+                onChange={(e) => cambiar('codigo', e.target.value.toUpperCase())}
               />
             </Campo>
-            <Campo id="cono-hex" etiqueta="Color (hex)" requerido error={errores.hex}>
-              <div className="entrada-hex">
-                <SelectorColorHex
-                  valor={hexValido ?? ''}
-                  etiqueta="Color del cono"
-                  mostrarHex={false}
-                  conCatalogo={false}
-                  alCambiar={(hex) => cambiar('hex', hex)}
+            <Campo
+              id="cono-material"
+              etiqueta="Material"
+              requerido
+              error={errores.material}
+            >
+              <CampoSugerencias
+                id="cono-material"
+                placeholder="Ej: acrílico"
+                valor={f.material}
+                alCambiar={(v) => cambiar('material', v)}
+                sugerencias={materiales}
+                invalido={Boolean(errores.material)}
+              />
+            </Campo>
+            <Campo
+              id="cono-titulo"
+              etiqueta="Título / calibre"
+              error={errores.titulo_hilo}
+            >
+              <CampoSugerencias
+                id="cono-titulo"
+                placeholder="Ej: 2/32"
+                valor={f.titulo_hilo}
+                alCambiar={(v) => cambiar('titulo_hilo', v)}
+                sugerencias={titulos}
+                invalido={Boolean(errores.titulo_hilo)}
+              />
+            </Campo>
+            <Campo id="cono-proveedor" etiqueta="Proveedor" error={errores.proveedor}>
+              <div className="campo-con-boton">
+                <CampoSugerencias
+                  id="cono-proveedor"
+                  placeholder="Ej: Hilos del Norte"
+                  valor={f.proveedor}
+                  alCambiar={(v) => cambiar('proveedor', v)}
+                  sugerencias={proveedores}
+                  invalido={Boolean(errores.proveedor)}
+                  vacio="Proveedor nuevo: se guardará como lo escribas."
                 />
-                <input
-                  id="cono-hex"
-                  autoComplete="off"
-                  placeholder="#b8860b"
-                  value={f.hex}
-                  onChange={(e) => cambiar('hex', e.target.value)}
-                />
+                <button
+                  type="button"
+                  className="boton boton-secundario"
+                  onClick={() => setModalProveedor(true)}
+                >
+                  + Nuevo
+                </button>
               </div>
             </Campo>
             <Campo
-              id="cono-catalogo"
-              etiqueta="Color del catálogo"
-              ayuda="Lo enlaza con el diseñador de cuellos y puños."
+              id="cono-costo"
+              etiqueta="Costo"
+              error={errores.costo}
+              ayuda={costoEquivalente}
             >
-              <select
-                id="cono-catalogo"
-                value={f.color_catalogo_id}
-                onChange={(e) => elegirDelCatalogo(e.target.value)}
-              >
-                <option value="">— Sin enlazar —</option>
-                {catalogo.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.nombre}
-                    {c.hex ? ` (${c.hex})` : ''}
-                  </option>
-                ))}
-              </select>
-            </Campo>
-            <Campo
-              id="cono-codigo-color"
-              etiqueta="N.º de color"
-              error={errores.codigo_color}
-              ayuda="El mismo número que usas en el diseño (ej: 34)."
-            >
-              <input
-                id="cono-codigo-color"
-                autoComplete="off"
-                value={f.codigo_color}
-                onChange={(e) => cambiar('codigo_color', e.target.value)}
-              />
-            </Campo>
-            <Campo
-              id="cono-familia"
-              etiqueta="Familia de color"
-              error={errores.familia_color}
-              ayuda={familiaManual ? undefined : 'Sugerida según el color.'}
-            >
-              <select
-                id="cono-familia"
-                value={familia}
-                onChange={(e) => {
-                  setFamiliaManual(true)
-                  cambiar('familia_color', e.target.value)
-                }}
-              >
-                {!familia && <option value="">— Elegir —</option>}
-                {FAMILIAS_COLOR.map((fam) => (
-                  <option key={fam.valor} value={fam.valor}>
-                    {fam.etiqueta}
-                  </option>
-                ))}
-              </select>
+              <div className="entrada-con-unidad">
+                <input
+                  id="cono-costo"
+                  inputMode="decimal"
+                  autoComplete="off"
+                  value={f.costo}
+                  onChange={(e) => cambiar('costo', e.target.value)}
+                />
+                <select
+                  aria-label="El costo es"
+                  value={f.modo_costo}
+                  onChange={(e) => cambiar('modo_costo', e.target.value)}
+                >
+                  <option value="cono">por cono</option>
+                  <option value="docena">por docena</option>
+                </select>
+              </div>
             </Campo>
           </div>
-        </div>
-      </fieldset>
+        </fieldset>
 
-      <fieldset className="grupo-campos">
-        <legend>Hilo</legend>
-        <div className="campos">
-          <Campo
-            id="cono-codigo"
-            etiqueta="Código del cono"
-            error={errores.codigo}
-            ayuda={editando ? undefined : 'Vacío = se genera (CON-0001…).'}
-          >
-            <input
-              id="cono-codigo"
-              autoComplete="off"
-              placeholder={editando ? '' : 'Automático'}
-              value={f.codigo}
-              onChange={(e) => cambiar('codigo', e.target.value.toUpperCase())}
-            />
-          </Campo>
-          <Campo
-            id="cono-material"
-            etiqueta="Material"
-            requerido
-            error={errores.material}
-          >
-            <CampoSugerencias
-              id="cono-material"
-              placeholder="Ej: acrílico"
-              valor={f.material}
-              alCambiar={(v) => cambiar('material', v)}
-              sugerencias={materiales}
-              invalido={Boolean(errores.material)}
-            />
-          </Campo>
-          <Campo id="cono-titulo" etiqueta="Título / calibre" error={errores.titulo_hilo}>
-            <CampoSugerencias
-              id="cono-titulo"
-              placeholder="Ej: 2/32"
-              valor={f.titulo_hilo}
-              alCambiar={(v) => cambiar('titulo_hilo', v)}
-              sugerencias={titulos}
-              invalido={Boolean(errores.titulo_hilo)}
-            />
-          </Campo>
-          <Campo id="cono-proveedor" etiqueta="Proveedor" error={errores.proveedor}>
-            <CampoSugerencias
-              id="cono-proveedor"
-              placeholder="Ej: Hilos del Norte"
-              valor={f.proveedor}
-              alCambiar={(v) => cambiar('proveedor', v)}
-              sugerencias={proveedores}
-              invalido={Boolean(errores.proveedor)}
-              vacio="Proveedor nuevo: se guardará como lo escribas."
-            />
-          </Campo>
-          <Campo
-            id="cono-costo"
-            etiqueta="Costo"
-            error={errores.costo}
-            ayuda={costoEquivalente}
-          >
-            <div className="entrada-con-unidad">
-              <input
-                id="cono-costo"
-                inputMode="decimal"
-                autoComplete="off"
-                value={f.costo}
-                onChange={(e) => cambiar('costo', e.target.value)}
-              />
-              <select
-                aria-label="El costo es"
-                value={f.modo_costo}
-                onChange={(e) => cambiar('modo_costo', e.target.value)}
-              >
-                <option value="cono">por cono</option>
-                <option value="docena">por docena</option>
-              </select>
-            </div>
-          </Campo>
-        </div>
-      </fieldset>
-
-      <fieldset className="grupo-campos">
-        <legend>Stock</legend>
-        <div className="campos">
-          <Campo
-            id="cono-minimo"
-            etiqueta="Stock mínimo"
-            error={errores.stock_minimo}
-            ayuda="Avisa cuando queden esta cantidad o menos."
-          >
-            <input
-              id="cono-minimo"
-              inputMode="numeric"
-              autoComplete="off"
-              value={f.stock_minimo}
-              placeholder="0"
-              onChange={(e) => cambiar('stock_minimo', soloEnteros(e.target.value, 5))}
-            />
-          </Campo>
-          {!editando && (
+        <fieldset className="grupo-campos">
+          <legend>Stock</legend>
+          <div className="campos">
             <Campo
-              id="cono-inicial"
-              etiqueta="Conos que hay ahora"
-              error={errores.stock_inicial}
-              ayuda="Se registra como entrada de stock inicial."
+              id="cono-minimo"
+              etiqueta="Stock mínimo"
+              error={errores.stock_minimo}
+              ayuda="Avisa cuando queden esta cantidad o menos."
             >
               <input
-                id="cono-inicial"
+                id="cono-minimo"
                 inputMode="numeric"
                 autoComplete="off"
-                value={f.stock_inicial}
+                value={f.stock_minimo}
                 placeholder="0"
-                onChange={(e) => cambiar('stock_inicial', soloEnteros(e.target.value, 5))}
+                onChange={(e) => cambiar('stock_minimo', soloEnteros(e.target.value, 5))}
               />
             </Campo>
+            {!editando && (
+              <Campo
+                id="cono-inicial"
+                etiqueta="Conos que hay ahora"
+                error={errores.stock_inicial}
+                ayuda="Se registra como entrada de stock inicial."
+              >
+                <input
+                  id="cono-inicial"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  value={f.stock_inicial}
+                  placeholder="0"
+                  onChange={(e) =>
+                    cambiar('stock_inicial', soloEnteros(e.target.value, 5))
+                  }
+                />
+              </Campo>
+            )}
+          </div>
+          {editando && (
+            <p className="texto-suave texto-pequeno margen-arriba">
+              El stock solo cambia con entradas, salidas o ajustes desde la ficha del
+              cono.
+            </p>
           )}
-        </div>
-        {editando && (
-          <p className="texto-suave texto-pequeno margen-arriba">
-            El stock solo cambia con entradas, salidas o ajustes desde la ficha del cono.
-          </p>
-        )}
-      </fieldset>
+        </fieldset>
 
-      <fieldset className="grupo-campos">
-        <legend>Otros</legend>
-        <div className="campos">
-          <Campo
-            id="cono-imagen"
-            etiqueta="Foto del cono (URL, opcional)"
-            error={errores.imagen_url}
-            ancho
-          >
-            <input
+        <fieldset className="grupo-campos">
+          <legend>Otros</legend>
+          <div className="campos">
+            <Campo
               id="cono-imagen"
-              type="url"
-              inputMode="url"
-              autoComplete="off"
-              placeholder="https://…"
-              value={f.imagen_url}
-              onChange={(e) => cambiar('imagen_url', e.target.value)}
-            />
-          </Campo>
-          <Campo id="cono-notas" etiqueta="Notas" error={errores.notas} ancho>
-            <textarea
-              id="cono-notas"
-              rows={3}
-              value={f.notas}
-              onChange={(e) => cambiar('notas', e.target.value)}
-            />
-          </Campo>
-        </div>
-      </fieldset>
+              etiqueta="Foto del cono (URL, opcional)"
+              error={errores.imagen_url}
+              ancho
+            >
+              <input
+                id="cono-imagen"
+                type="url"
+                inputMode="url"
+                autoComplete="off"
+                placeholder="https://…"
+                value={f.imagen_url}
+                onChange={(e) => cambiar('imagen_url', e.target.value)}
+              />
+            </Campo>
+            <Campo id="cono-notas" etiqueta="Notas" error={errores.notas} ancho>
+              <textarea
+                id="cono-notas"
+                rows={3}
+                value={f.notas}
+                onChange={(e) => cambiar('notas', e.target.value)}
+              />
+            </Campo>
+          </div>
+        </fieldset>
 
-      <div className="formulario-acciones">
-        <button
-          type="submit"
-          className="boton boton-primario boton-lg"
-          disabled={guardando}
-        >
-          {guardando && 'Guardando…'}
-          {!guardando && (editando ? 'Guardar cambios' : 'Registrar cono')}
-        </button>
-        <Link
-          to={editando ? `/conos/${inicial.id}` : '/conos'}
-          className="boton boton-secundario boton-lg"
-        >
-          Cancelar
-        </Link>
-      </div>
-    </form>
+        <div className="formulario-acciones">
+          <button
+            type="submit"
+            className="boton boton-primario boton-lg"
+            disabled={guardando}
+          >
+            {guardando && 'Guardando…'}
+            {!guardando && (editando ? 'Guardar cambios' : 'Registrar cono')}
+          </button>
+          <Link
+            to={editando ? `/conos/${inicial.id}` : '/conos'}
+            className="boton boton-secundario boton-lg"
+          >
+            Cancelar
+          </Link>
+        </div>
+      </form>
+      {modalProveedor && (
+        <ModalProveedor
+          existentes={proveedores}
+          alCerrar={() => setModalProveedor(false)}
+          alGuardar={(nombre) => {
+            cambiar('proveedor', nombre)
+            setModalProveedor(false)
+          }}
+        />
+      )}
+    </>
   )
 }
 

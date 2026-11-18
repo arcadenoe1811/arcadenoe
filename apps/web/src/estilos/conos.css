@@ -879,6 +879,20 @@
 .campo-ancho {
   grid-column: 1 / -1;
 }
+/* Campo con sugerencias + botón al lado: [ Hilos del Norte v ][ + Nuevo ] */
+.campo-con-boton {
+  display: flex;
+  gap: var(--espacio-2);
+  align-items: flex-start;
+}
+.campo-con-boton .sugerencias {
+  flex: 1;
+  min-width: 0;
+}
+.campo-con-boton > .boton {
+  flex: none;
+  white-space: nowrap;
+}
 /* Valor + unidad en un solo control: [ 1080 | por docena v ] */
 .entrada-con-unidad {
   display: flex;
