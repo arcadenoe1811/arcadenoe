@@ -40,6 +40,20 @@ describe('puede (permisos por rol)', () => {
     expect(puede('operador', 'usuarios.gestionar')).toBe(false)
   })
 
+  it('el operador registra producción pero no ve dashboard, ventas, estimador ni reportes', () => {
+    expect(puede('operador', 'produccion.registrar')).toBe(true)
+    expect(puede('operador', 'dashboard.ver')).toBe(false)
+    expect(puede('operador', 'ventas.ver')).toBe(false)
+    expect(puede('operador', 'ventas.registrar')).toBe(false)
+    expect(puede('operador', 'estimador.usar')).toBe(false)
+    expect(puede('operador', 'reportes.ver')).toBe(false)
+    // El admin conserva el acceso a esos módulos.
+    expect(puede('admin', 'dashboard.ver')).toBe(true)
+    expect(puede('admin', 'ventas.ver')).toBe(true)
+    expect(puede('admin', 'estimador.usar')).toBe(true)
+    expect(puede('admin', 'reportes.ver')).toBe(true)
+  })
+
   it('sin rol, con rol desconocido o permiso desconocido no hay acceso', () => {
     expect(puede(null, 'conos.ver')).toBe(false)
     expect(puede(undefined, 'conos.ver')).toBe(false)

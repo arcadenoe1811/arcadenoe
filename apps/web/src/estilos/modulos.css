@@ -841,6 +841,10 @@
 .badge-estado {
   display: inline-flex;
   align-items: center;
+  /* Todos los badges con el mismo ancho (el del texto más largo, "Entregado
+     parcial") y texto centrado, para que la columna Estado quede alineada. */
+  justify-content: center;
+  min-width: 11.5rem;
   gap: 5px;
   padding: 2px var(--espacio-2);
   border: 1px solid transparent;
@@ -930,13 +934,14 @@
   gap: var(--espacio-1) var(--espacio-3);
 }
 .desglose-nota {
-  margin-top: 2px;
+  margin-top: var(--espacio-1);
   color: var(--color-texto-secundario);
-  font-size: var(--texto-pequeno);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 48ch;
+  font-size: var(--texto-base);
+  line-height: 1.4;
+  /* La nota se muestra completa: hace salto de línea en lugar de truncarse. */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-width: 60ch;
 }
 
 .desglose-form {
