@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { eliminarColor, guardarColor, normalizarError } from '@inventario/shared'
 import { useCatalogoColores } from '../hooks/useCatalogoColores.js'
+import { useAuth } from '../hooks/useAuth.js'
 import Cargando from '../components/Cargando.jsx'
 import Aviso from '../components/Aviso.jsx'
 import MuestraColor from '../components/MuestraColor.jsx'
@@ -11,6 +12,8 @@ const FORMULARIO_VACIO = { id: '', nombre: '', hex: '' }
 /** Administracion simple del catalogo de colores. */
 export default function PaginaColores() {
   const { colores, cargando, error, recargar } = useCatalogoColores()
+  // Solo el admin elimina (la base responde 403 a un operador).
+  const puedeEliminar = useAuth().puede('colores.eliminar')
   const [formulario, setFormulario] = useState(FORMULARIO_VACIO)
   const [errores, setErrores] = useState({})
   const [errorGeneral, setErrorGeneral] = useState(null)
@@ -151,13 +154,15 @@ export default function PaginaColores() {
               >
                 Editar
               </button>
-              <button
-                type="button"
-                className="boton boton-fantasma boton-fantasma-peligro"
-                onClick={() => borrar(color)}
-              >
-                Eliminar
-              </button>
+              {puedeEliminar && (
+                <button
+                  type="button"
+                  className="boton boton-fantasma boton-fantasma-peligro"
+                  onClick={() => borrar(color)}
+                >
+                  Eliminar
+                </button>
+              )}
             </li>
           ))}
         </ul>

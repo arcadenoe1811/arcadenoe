@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { validarInicioSesion } from '@inventario/shared'
 import { useAuth } from '../hooks/useAuth.js'
@@ -7,6 +7,8 @@ import CampoTexto from '../components/ui/CampoTexto.jsx'
 import Tarjeta from '../components/ui/Tarjeta.jsx'
 import Spinner from '../components/ui/Spinner.jsx'
 import MensajeError from '../components/ui/MensajeError.jsx'
+import Aviso from '../components/Aviso.jsx'
+import { borrarAviso, leerAviso } from '../utils/sesionLocal.js'
 import {
   IconoCandado,
   IconoCorreo,
@@ -15,19 +17,15 @@ import {
 } from '../components/Iconos.jsx'
 import './InicioSesion.css'
 
-// Solo en desarrollo se pre-llenan las credenciales del .env.
-const EMAIL_POR_DEFECTO = import.meta.env.DEV
-  ? (import.meta.env.VITE_DEFAULT_EMAIL ?? '')
-  : ''
-const CONTRASENA_POR_DEFECTO = import.meta.env.DEV
-  ? (import.meta.env.VITE_DEFAULT_PASSWORD ?? '')
-  : ''
-
 export default function InicioSesion() {
   const { usuario, cargando, iniciarSesion } = useAuth()
   const ubicacion = useLocation()
-  const [email, setEmail] = useState(EMAIL_POR_DEFECTO)
-  const [contrasena, setContrasena] = useState(CONTRASENA_POR_DEFECTO)
+  // Los campos empiezan vacios: no hay credenciales por defecto.
+  const [email, setEmail] = useState('')
+  const [contrasena, setContrasena] = useState('')
+  // Motivo de un cierre automatico (inactividad, usuario deshabilitado).
+  const [aviso] = useState(leerAviso)
+  useEffect(() => borrarAviso(), [])
   const [verContrasena, setVerContrasena] = useState(false)
   const [errores, setErrores] = useState(/** @type {Record<string, string>} */ ({}))
   const [error, setError] = useState(/** @type {string|null} */ (null))
@@ -81,13 +79,20 @@ export default function InicioSesion() {
   return (
     <div className="acceso">
       <header className="acceso-encabezado">
-        <img src="/icono.svg" alt="" width="56" height="56" className="acceso-logo" />
+        <img
+          src="/logo-emblema-claro.png"
+          alt="Arca de Noé"
+          width="80"
+          height="80"
+          className="acceso-logo"
+        />
         <h1>Inventario de Cuellos</h1>
         <p className="acceso-subtitulo">Tejedora industrial · inventario personal</p>
       </header>
 
       <Tarjeta padding="lg" className="acceso-tarjeta">
         <form className="acceso-formulario" onSubmit={enviar} noValidate>
+          {aviso && !error && <Aviso tipo="info">{aviso}</Aviso>}
           <CampoTexto
             ref={refEmail}
             etiqueta="Correo electrónico"

@@ -1,0 +1,116 @@
+/* Campo con lista de sugerencias propia (reemplaza a <datalist>). */
+
+.sugerencias {
+  position: relative;
+}
+.campo .sugerencias input {
+  padding-right: 40px;
+}
+.sugerencias-boton {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0 var(--radio) var(--radio) 0;
+  color: var(--color-texto-secundario);
+  cursor: pointer;
+}
+.sugerencias-boton:hover {
+  color: var(--color-texto);
+}
+.sugerencias-boton svg {
+  transition: transform 0.2s;
+}
+.sugerencias-abierta .sugerencias-boton svg {
+  transform: rotate(180deg);
+}
+.sugerencias-abierta .sugerencias-boton {
+  color: var(--color-primario);
+}
+
+.sugerencias-panel {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  min-width: 200px;
+  padding: var(--espacio-1);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-grande);
+  box-shadow: var(--sombra-elevada);
+  animation: sugerencias-aparecer 0.12s ease-out;
+}
+@keyframes sugerencias-aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sugerencias-panel {
+    animation: none;
+  }
+}
+
+.sugerencias-lista {
+  list-style: none;
+  max-height: 240px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-borde-fuerte) transparent;
+}
+.sugerencia {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  min-height: 40px;
+  padding: var(--espacio-2) var(--espacio-3);
+  border-radius: var(--radio);
+  color: var(--color-texto);
+  cursor: pointer;
+}
+.sugerencia-activa {
+  background: var(--color-fondo-alt);
+}
+.sugerencia[aria-selected='true'] {
+  color: var(--color-primario);
+  font-weight: 600;
+}
+.sugerencia-texto {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+}
+.sugerencia-valor mark {
+  background: none;
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--color-salvia);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+.sugerencia-descripcion {
+  font-size: var(--texto-pequeno);
+  font-weight: 400;
+  color: var(--color-texto-secundario);
+}
+.sugerencia-check {
+  flex-shrink: 0;
+  color: var(--color-primario);
+}
+.sugerencias-vacio {
+  margin: 0;
+  padding: var(--espacio-2) var(--espacio-3);
+  font-size: var(--texto-pequeno);
+  color: var(--color-texto-secundario);
+}
